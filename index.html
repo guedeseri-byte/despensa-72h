@@ -4,49 +4,53 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Despensa 72h</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap">
+<link rel="icon" type="image/webp" href="icon.webp">
+<link rel="apple-touch-icon" href="icon.webp">
+<meta name="theme-color" content="#2A3A10">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap">
 <style>
 :root {
-  --bg:#F4F2ED; --bg-card:#FFF; --bg-muted:#ECEAE3;
-  --fg:#1A1A14; --fg-muted:#686656; --fg-dim:#A09C88;
-  --accent:#4A5C1E; --accent-mid:#7A9230; --accent-light:#EDF2DC;
-  --amber:#B8720C; --amber-bg:#FDF4DC;
-  --red:#A82C22; --red-bg:#FCECEA;
-  --green:#2E6B2E; --green-bg:#E4F2E4;
-  --border:#D6D2C7; --border-strong:#B0ACA0;
-  --shadow:0 1px 3px rgba(0,0,0,.08); --shadow-md:0 4px 16px rgba(0,0,0,.12);
-  --bottom-nav-h:60px; --header-h:52px;
-  --cat-agua:#1A6B9A; --cat-agua-bg:#DFF0FA;
-  --cat-alimento:#4A5C1E; --cat-alimento-bg:#EDF2DC;
-  --cat-energia:#7A6010; --cat-energia-bg:#FDF4DC;
-  --cat-saude:#7A1850; --cat-saude-bg:#FCEEF6;
-  --cat-higiene:#286080; --cat-higiene-bg:#DFF0FA;
-  --cat-pet:#804820; --cat-pet-bg:#FFF0E5;
-  --cat-outros:#3D3D2A; --cat-outros-bg:#EDEAE0;
+  --bg:#F0EDE4; --bg-card:#FAF8F3; --bg-muted:#E6E2D8;
+  --fg:#1C1A10; --fg-muted:#5C5840; --fg-dim:#9C9870;
+  --accent:#3A5010; --accent-mid:#5A7820; --accent-light:#E8EDD8;
+  --accent-dark:#2A3A0A;
+  --amber:#9A5E08; --amber-bg:#FCF0D0;
+  --red:#922418; --red-bg:#FCEAE8;
+  --green:#246020; --green-bg:#E0F0DC;
+  --border:#CCC8B8; --border-strong:#A8A490;
+  --shadow:0 1px 4px rgba(0,0,0,.10); --shadow-md:0 4px 20px rgba(0,0,0,.14);
+  --bottom-nav-h:60px; --header-h:58px;
+  --cat-agua:#1A5A8A; --cat-agua-bg:#D8ECF8;
+  --cat-alimento:#3A5010; --cat-alimento-bg:#E8EDD8;
+  --cat-energia:#7A5008; --cat-energia-bg:#FBF0CC;
+  --cat-saude:#701848; --cat-saude-bg:#FAE8F0;
+  --cat-higiene:#246080; --cat-higiene-bg:#D8EDF8;
+  --cat-pet:#703818; --cat-pet-bg:#FAEADA;
+  --cat-outros:#3C3820; --cat-outros-bg:#ECEADA;
 }
 @media (prefers-color-scheme:dark) {
   :root:not([data-theme="light"]) {
-    --bg:#181B12; --bg-card:#22261A; --bg-muted:#1C2014;
-    --fg:#E8E5D8; --fg-muted:#9A9880; --fg-dim:#6A6850;
-    --accent:#8DB040; --accent-mid:#A0C048; --accent-light:#202E08;
-    --amber:#E09A30; --amber-bg:#2A1E08; --red:#E05040; --red-bg:#2C1008;
-    --green:#60B060; --green-bg:#0A2008; --border:#343620; --border-strong:#585840;
-    --cat-agua:#60B0E0; --cat-agua-bg:#0A1E2C; --cat-alimento:#A0C048; --cat-alimento-bg:#182208;
-    --cat-energia:#E0B040; --cat-energia-bg:#281C08; --cat-saude:#D070B0; --cat-saude-bg:#280818;
-    --cat-higiene:#60A8D0; --cat-higiene-bg:#0A1A28; --cat-pet:#D09060; --cat-pet-bg:#2A1008;
-    --cat-outros:#C0BCA0; --cat-outros-bg:#1E1E16; color-scheme:dark;
+    --bg:#141710; --bg-card:#1E221A; --bg-muted:#181C14;
+    --fg:#E4E0D0; --fg-muted:#908C70; --fg-dim:#606048;
+    --accent:#90B838; --accent-mid:#A8D040; --accent-light:#1A2808; --accent-dark:#0C1404;
+    --amber:#D8982A; --amber-bg:#281A06; --red:#D84838; --red-bg:#280C08;
+    --green:#58A858; --green-bg:#081C08; --border:#30340A; --border-strong:#50540A;
+    --cat-agua:#58A8D8; --cat-agua-bg:#081A28; --cat-alimento:#90B838; --cat-alimento-bg:#141E06;
+    --cat-energia:#D8A030; --cat-energia-bg:#241806; --cat-saude:#C868A8; --cat-saude-bg:#240816;
+    --cat-higiene:#58A0C8; --cat-higiene-bg:#081624; --cat-pet:#C88858; --cat-pet-bg:#280E06;
+    --cat-outros:#B8B498; --cat-outros-bg:#1A1A12; color-scheme:dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg:#181B12; --bg-card:#22261A; --bg-muted:#1C2014;
-  --fg:#E8E5D8; --fg-muted:#9A9880; --fg-dim:#6A6850;
-  --accent:#8DB040; --accent-mid:#A0C048; --accent-light:#202E08;
-  --amber:#E09A30; --amber-bg:#2A1E08; --red:#E05040; --red-bg:#2C1008;
-  --green:#60B060; --green-bg:#0A2008; --border:#343620; --border-strong:#585840;
-  --cat-agua:#60B0E0; --cat-agua-bg:#0A1E2C; --cat-alimento:#A0C048; --cat-alimento-bg:#182208;
-  --cat-energia:#E0B040; --cat-energia-bg:#281C08; --cat-saude:#D070B0; --cat-saude-bg:#280818;
-  --cat-higiene:#60A8D0; --cat-higiene-bg:#0A1A28; --cat-pet:#D09060; --cat-pet-bg:#2A1008;
-  --cat-outros:#C0BCA0; --cat-outros-bg:#1E1E16; color-scheme:dark;
+  --bg:#141710; --bg-card:#1E221A; --bg-muted:#181C14;
+  --fg:#E4E0D0; --fg-muted:#908C70; --fg-dim:#606048;
+  --accent:#90B838; --accent-mid:#A8D040; --accent-light:#1A2808; --accent-dark:#0C1404;
+  --amber:#D8982A; --amber-bg:#281A06; --red:#D84838; --red-bg:#280C08;
+  --green:#58A858; --green-bg:#081C08; --border:#30340A; --border-strong:#50540A;
+  --cat-agua:#58A8D8; --cat-agua-bg:#081A28; --cat-alimento:#90B838; --cat-alimento-bg:#141E06;
+  --cat-energia:#D8A030; --cat-energia-bg:#241806; --cat-saude:#C868A8; --cat-saude-bg:#240816;
+  --cat-higiene:#58A0C8; --cat-higiene-bg:#081624; --cat-pet:#C88858; --cat-pet-bg:#280E06;
+  --cat-outros:#B8B498; --cat-outros-bg:#1A1A12; color-scheme:dark;
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -61,12 +65,29 @@ body {
 
 /* HEADER */
 .app-header {
-  flex-shrink:0; height:var(--header-h); background:var(--accent); color:#fff;
-  display:flex; align-items:center; gap:10px;
-  padding:0 max(16px,env(safe-area-inset-left,0px)) 0 max(16px,env(safe-area-inset-right,0px));
-  box-shadow:0 2px 8px rgba(0,0,0,.2); z-index:20;
+  flex-shrink:0; height:var(--header-h);
+  background:linear-gradient(135deg, var(--accent-dark) 0%, var(--accent) 100%);
+  color:#fff; display:flex; align-items:center; gap:12px;
+  padding:0 max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));
+  box-shadow:0 3px 12px rgba(0,0,0,.35); z-index:20; position:relative;
 }
-.app-header h1 { flex:1; font-family:'Barlow Condensed',sans-serif; font-size:20px; font-weight:700; letter-spacing:.03em; }
+.app-header::after {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);
+}
+.app-header-icon {
+  width:40px; height:40px; border-radius:50%; border:2px solid rgba(255,255,255,.35);
+  object-fit:cover; flex-shrink:0; box-shadow:0 2px 8px rgba(0,0,0,.4);
+}
+.app-header-titles { flex:1; min-width:0; }
+.app-header h1 {
+  font-family:'Barlow Condensed',sans-serif; font-size:21px; font-weight:800;
+  letter-spacing:.06em; text-transform:uppercase; line-height:1.1;
+}
+.app-header-sub {
+  font-size:10px; font-weight:600; letter-spacing:.12em; text-transform:uppercase;
+  color:rgba(255,255,255,.65); margin-top:1px;
+}
 
 /* MAIN */
 .app-main { flex:1; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; }
@@ -101,59 +122,96 @@ body {
 
 /* READINESS BAND */
 .readiness-band {
-  background:var(--bg-card); border-bottom:2px solid var(--border);
+  background:var(--accent-dark);
   padding:14px max(16px,env(safe-area-inset-left,0px));
+  border-bottom:3px solid var(--accent-mid);
 }
-.readiness-row { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:7px; }
-.readiness-title { font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--fg-muted); }
-.readiness-pct { font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:700; color:var(--accent); font-variant-numeric:tabular-nums; }
-.readiness-track { height:8px; background:var(--border); border-radius:4px; overflow:hidden; }
-.readiness-fill { height:100%; background:var(--accent); border-radius:4px; transition:width .6s ease; }
-.readiness-sub { margin-top:6px; font-size:11px; color:var(--fg-dim); font-style:italic; }
+.readiness-row { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; }
+.readiness-title {
+  font-family:'Barlow Condensed',sans-serif; font-size:11px; font-weight:700;
+  letter-spacing:.12em; text-transform:uppercase; color:rgba(255,255,255,.60);
+}
+.readiness-pct {
+  font-family:'Barlow Condensed',sans-serif; font-size:26px; font-weight:800;
+  color:#C8E060; font-variant-numeric:tabular-nums; letter-spacing:-.01em;
+}
+.readiness-track { height:9px; background:rgba(255,255,255,.12); border-radius:5px; overflow:hidden; }
+.readiness-fill {
+  height:100%; border-radius:5px; transition:width .6s ease;
+  background:linear-gradient(90deg,#6A9820,#C8E060);
+}
+.readiness-sub { margin-top:7px; font-size:11px; color:rgba(255,255,255,.55); font-style:italic; }
 
 /* MONTH NAVIGATOR */
 .month-nav {
-  display:flex; border-bottom:1px solid var(--border); background:var(--bg-card);
+  display:flex; border-bottom:2px solid var(--border); background:var(--bg-muted);
   position:sticky; top:0; z-index:10; overflow-x:auto; scrollbar-width:none;
 }
 .month-nav::-webkit-scrollbar{display:none}
 .month-nav-btn {
-  flex:1; min-width:52px; border:none; cursor:pointer; padding:9px 4px 7px;
-  font-family:'Barlow',sans-serif; background:none; color:var(--fg-muted);
+  flex:1; min-width:52px; border:none; cursor:pointer; padding:8px 4px 6px;
+  font-family:'Barlow Condensed',sans-serif; background:none; color:var(--fg-dim);
   transition:all .15s; border-bottom:3px solid transparent;
-  display:flex; flex-direction:column; align-items:center; gap:1px; white-space:nowrap;
+  display:flex; flex-direction:column; align-items:center; gap:2px; white-space:nowrap;
 }
 .month-nav-btn.active { color:var(--accent); border-bottom-color:var(--accent); background:var(--accent-light); }
 .month-nav-btn.done { color:var(--green); }
-.month-nav-btn .mn-label { font-size:12px; font-weight:700; }
-.month-nav-btn .mn-count { font-size:9px; opacity:.8; font-variant-numeric:tabular-nums; }
+.month-nav-btn .mn-label { font-size:13px; font-weight:700; letter-spacing:.03em; }
+.month-nav-btn .mn-count { font-size:9px; opacity:.75; font-variant-numeric:tabular-nums; font-family:'Barlow',sans-serif; }
 
 /* MONTH CARD */
 .month-card {
-  margin:16px; border-radius:10px; overflow:hidden;
-  border:1px solid var(--border); background:var(--bg-card); box-shadow:var(--shadow);
+  margin:14px 16px; border-radius:10px; overflow:hidden;
+  border:1px solid var(--border); background:var(--bg-card);
+  box-shadow:var(--shadow-md);
 }
-.month-card-head { padding:14px 16px 12px; background:var(--accent-light); border-bottom:1px solid var(--border); }
-.month-eyebrow { font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin-bottom:4px; display:flex; align-items:center; gap:6px; }
-.month-title { font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:700; color:var(--fg); line-height:1.15; margin-bottom:6px; }
-.month-desc { font-size:13px; color:var(--fg-muted); line-height:1.5; margin-bottom:10px; }
+.month-card-head {
+  padding:16px 16px 14px;
+  background:linear-gradient(135deg,var(--accent) 0%,var(--accent-mid) 100%);
+  position:relative; overflow:hidden;
+}
+.month-card-head::before {
+  content:''; position:absolute; right:-20px; top:-20px;
+  width:100px; height:100px; border-radius:50%;
+  background:rgba(255,255,255,.06); pointer-events:none;
+}
+.month-eyebrow {
+  font-size:10px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color:rgba(255,255,255,.70); margin-bottom:5px; display:flex; align-items:center; gap:6px;
+}
+.month-title {
+  font-family:'Barlow Condensed',sans-serif; font-size:26px; font-weight:800;
+  color:#fff; line-height:1.1; margin-bottom:8px; text-transform:uppercase; letter-spacing:.02em;
+}
+.month-desc { font-size:13px; color:rgba(255,255,255,.82); line-height:1.5; margin-bottom:12px; }
 .month-pills { display:flex; gap:8px; flex-wrap:wrap; }
-.month-pill { font-size:11px; font-weight:600; padding:3px 10px; border-radius:20px; background:var(--bg); border:1px solid var(--border); color:var(--fg-muted); }
-.month-card-prog { padding:12px 16px; }
+.month-pill {
+  font-size:11px; font-weight:600; padding:3px 10px; border-radius:4px;
+  background:rgba(0,0,0,.25); border:1px solid rgba(255,255,255,.18); color:rgba(255,255,255,.85);
+  letter-spacing:.02em;
+}
+.month-card-prog { padding:12px 16px; border-top:1px solid var(--border); }
 .month-prog-row { display:flex; align-items:center; gap:10px; }
-.month-prog-track { flex:1; height:7px; background:var(--border); border-radius:4px; overflow:hidden; }
-.month-prog-fill { height:100%; background:var(--accent); border-radius:4px; transition:width .4s; }
-.month-prog-label { font-size:12px; font-weight:700; color:var(--accent); flex-shrink:0; font-variant-numeric:tabular-nums; }
+.month-prog-track { flex:1; height:8px; background:var(--border); border-radius:4px; overflow:hidden; }
+.month-prog-fill {
+  height:100%; border-radius:4px; transition:width .4s;
+  background:linear-gradient(90deg,var(--accent),var(--accent-mid));
+}
+.month-prog-label {
+  font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:700;
+  color:var(--accent); flex-shrink:0; font-variant-numeric:tabular-nums; letter-spacing:.03em;
+}
 
 .month-complete-banner {
-  margin:0 16px 16px; padding:10px 14px; border-radius:8px;
+  margin:0 16px 16px; padding:12px 16px; border-radius:8px;
   background:var(--green-bg); border:1px solid var(--green);
   display:flex; align-items:center; justify-content:space-between; gap:10px;
 }
-.month-complete-text { font-size:13px; font-weight:600; color:var(--green); }
+.month-complete-text { font-size:13px; font-weight:700; color:var(--green); letter-spacing:.02em; }
 .month-next-btn {
   background:var(--green); color:#fff; border:none; border-radius:6px;
-  padding:7px 14px; font:600 12px 'Barlow',sans-serif; cursor:pointer; flex-shrink:0;
+  padding:8px 16px; font:700 12px 'Barlow Condensed',sans-serif;
+  letter-spacing:.06em; text-transform:uppercase; cursor:pointer; flex-shrink:0;
 }
 
 /* SECTION LABELS */
@@ -272,8 +330,11 @@ body {
 
 <div style="display:flex;flex-direction:column;height:100%;">
 <header class="app-header">
-  <span style="font-size:22px;">🧰</span>
-  <h1>Despensa 72h</h1>
+  <img src="icon.webp" class="app-header-icon" alt="Despensa 72h">
+  <div class="app-header-titles">
+    <h1>Despensa 72h</h1>
+    <div class="app-header-sub">Plano de preparação familiar</div>
+  </div>
 </header>
 
 <div class="app-main" id="app-main">
