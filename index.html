@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Despensa 72h</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+:root {
+  --bg:#F4F2ED; --bg-card:#FFF; --bg-muted:#ECEAE3;
+  --fg:#1A1A14; --fg-muted:#686656; --fg-dim:#A09C88;
+  --accent:#4A5C1E; --accent-mid:#7A9230; --accent-light:#EDF2DC;
+  --amber:#B8720C; --amber-bg:#FDF4DC;
+  --red:#A82C22; --red-bg:#FCECEA;
+  --green:#2E6B2E; --green-bg:#E4F2E4;
+  --border:#D6D2C7; --border-strong:#B0ACA0;
+  --shadow:0 1px 3px rgba(0,0,0,.08); --shadow-md:0 4px 16px rgba(0,0,0,.12);
+  --bottom-nav-h:60px; --header-h:52px;
+  --cat-agua:#1A6B9A; --cat-agua-bg:#DFF0FA;
+  --cat-alimento:#4A5C1E; --cat-alimento-bg:#EDF2DC;
+  --cat-energia:#7A6010; --cat-energia-bg:#FDF4DC;
+  --cat-saude:#7A1850; --cat-saude-bg:#FCEEF6;
+  --cat-higiene:#286080; --cat-higiene-bg:#DFF0FA;
+  --cat-pet:#804820; --cat-pet-bg:#FFF0E5;
+  --cat-outros:#3D3D2A; --cat-outros-bg:#EDEAE0;
+}
+@media (prefers-color-scheme:dark) {
+  :root:not([data-theme="light"]) {
+    --bg:#181B12; --bg-card:#22261A; --bg-muted:#1C2014;
+    --fg:#E8E5D8; --fg-muted:#9A9880; --fg-dim:#6A6850;
+    --accent:#8DB040; --accent-mid:#A0C048; --accent-light:#202E08;
+    --amber:#E09A30; --amber-bg:#2A1E08; --red:#E05040; --red-bg:#2C1008;
+    --green:#60B060; --green-bg:#0A2008; --border:#343620; --border-strong:#585840;
+    --cat-agua:#60B0E0; --cat-agua-bg:#0A1E2C; --cat-alimento:#A0C048; --cat-alimento-bg:#182208;
+    --cat-energia:#E0B040; --cat-energia-bg:#281C08; --cat-saude:#D070B0; --cat-saude-bg:#280818;
+    --cat-higiene:#60A8D0; --cat-higiene-bg:#0A1A28; --cat-pet:#D09060; --cat-pet-bg:#2A1008;
+    --cat-outros:#C0BCA0; --cat-outros-bg:#1E1E16; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:#181B12; --bg-card:#22261A; --bg-muted:#1C2014;
+  --fg:#E8E5D8; --fg-muted:#9A9880; --fg-dim:#6A6850;
+  --accent:#8DB040; --accent-mid:#A0C048; --accent-light:#202E08;
+  --amber:#E09A30; --amber-bg:#2A1E08; --red:#E05040; --red-bg:#2C1008;
+  --green:#60B060; --green-bg:#0A2008; --border:#343620; --border-strong:#585840;
+  --cat-agua:#60B0E0; --cat-agua-bg:#0A1E2C; --cat-alimento:#A0C048; --cat-alimento-bg:#182208;
+  --cat-energia:#E0B040; --cat-energia-bg:#281C08; --cat-saude:#D070B0; --cat-saude-bg:#280818;
+  --cat-higiene:#60A8D0; --cat-higiene-bg:#0A1A28; --cat-pet:#D09060; --cat-pet-bg:#2A1008;
+  --cat-outros:#C0BCA0; --cat-outros-bg:#1E1E16; color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body {
+  background:var(--bg); color:var(--fg);
+  font-family:'Barlow',sans-serif; font-size:15px; line-height:1.5;
+  display:flex; flex-direction:column; overflow:hidden;
+  padding-left:max(0px,env(safe-area-inset-left,0px));
+  padding-right:max(0px,env(safe-area-inset-right,0px));
+}
+
+/* HEADER */
+.app-header {
+  flex-shrink:0; height:var(--header-h); background:var(--accent); color:#fff;
+  display:flex; align-items:center; gap:10px;
+  padding:0 max(16px,env(safe-area-inset-left,0px)) 0 max(16px,env(safe-area-inset-right,0px));
+  box-shadow:0 2px 8px rgba(0,0,0,.2); z-index:20;
+}
+.app-header h1 { flex:1; font-family:'Barlow Condensed',sans-serif; font-size:20px; font-weight:700; letter-spacing:.03em; }
+
+/* MAIN */
+.app-main { flex:1; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; }
+.view { display:none; min-height:100%; padding-bottom:80px; }
+.view.active { display:block; }
+
+/* BOTTOM NAV */
+.bottom-nav {
+  flex-shrink:0; height:calc(var(--bottom-nav-h) + env(safe-area-inset-bottom,0px));
+  background:var(--bg-card); border-top:1px solid var(--border);
+  display:flex; padding-bottom:env(safe-area-inset-bottom,0px); z-index:20;
+}
+.nav-btn {
+  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:3px; cursor:pointer; border:none; background:none; padding:8px 4px;
+  color:var(--fg-muted); font-family:'Barlow',sans-serif; transition:color .15s; position:relative;
+}
+.nav-btn.active { color:var(--accent); }
+.nav-btn.active::after {
+  content:''; position:absolute; top:0; left:20%; right:20%;
+  height:2px; background:var(--accent); border-radius:0 0 2px 2px;
+}
+.nav-icon { font-size:22px; line-height:1; }
+.nav-label { font-size:11px; font-weight:600; letter-spacing:.03em; }
+.nav-badge {
+  position:absolute; top:6px; right:calc(50% - 18px);
+  background:var(--red); color:#fff; border-radius:10px;
+  font-size:10px; font-weight:700; min-width:16px; height:16px;
+  display:flex; align-items:center; justify-content:center; padding:0 4px;
+}
+.nav-badge[hidden]{display:none}
+
+/* READINESS BAND */
+.readiness-band {
+  background:var(--bg-card); border-bottom:2px solid var(--border);
+  padding:14px max(16px,env(safe-area-inset-left,0px));
+}
+.readiness-row { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:7px; }
+.readiness-title { font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--fg-muted); }
+.readiness-pct { font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:700; color:var(--accent); font-variant-numeric:tabular-nums; }
+.readiness-track { height:8px; background:var(--border); border-radius:4px; overflow:hidden; }
+.readiness-fill { height:100%; background:var(--accent); border-radius:4px; transition:width .6s ease; }
+.readiness-sub { margin-top:6px; font-size:11px; color:var(--fg-dim); font-style:italic; }
+
+/* MONTH NAVIGATOR */
+.month-nav {
+  display:flex; border-bottom:1px solid var(--border); background:var(--bg-card);
+  position:sticky; top:0; z-index:10; overflow-x:auto; scrollbar-width:none;
+}
+.month-nav::-webkit-scrollbar{display:none}
+.month-nav-btn {
+  flex:1; min-width:52px; border:none; cursor:pointer; padding:9px 4px 7px;
+  font-family:'Barlow',sans-serif; background:none; color:var(--fg-muted);
+  transition:all .15s; border-bottom:3px solid transparent;
+  display:flex; flex-direction:column; align-items:center; gap:1px; white-space:nowrap;
+}
+.month-nav-btn.active { color:var(--accent); border-bottom-color:var(--accent); background:var(--accent-light); }
+.month-nav-btn.done { color:var(--green); }
+.month-nav-btn .mn-label { font-size:12px; font-weight:700; }
+.month-nav-btn .mn-count { font-size:9px; opacity:.8; font-variant-numeric:tabular-nums; }
+
+/* MONTH CARD */
+.month-card {
+  margin:16px; border-radius:10px; overflow:hidden;
+  border:1px solid var(--border); background:var(--bg-card); box-shadow:var(--shadow);
+}
+.month-card-head { padding:14px 16px 12px; background:var(--accent-light); border-bottom:1px solid var(--border); }
+.month-eyebrow { font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin-bottom:4px; display:flex; align-items:center; gap:6px; }
+.month-title { font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:700; color:var(--fg); line-height:1.15; margin-bottom:6px; }
+.month-desc { font-size:13px; color:var(--fg-muted); line-height:1.5; margin-bottom:10px; }
+.month-pills { display:flex; gap:8px; flex-wrap:wrap; }
+.month-pill { font-size:11px; font-weight:600; padding:3px 10px; border-radius:20px; background:var(--bg); border:1px solid var(--border); color:var(--fg-muted); }
+.month-card-prog { padding:12px 16px; }
+.month-prog-row { display:flex; align-items:center; gap:10px; }
+.month-prog-track { flex:1; height:7px; background:var(--border); border-radius:4px; overflow:hidden; }
+.month-prog-fill { height:100%; background:var(--accent); border-radius:4px; transition:width .4s; }
+.month-prog-label { font-size:12px; font-weight:700; color:var(--accent); flex-shrink:0; font-variant-numeric:tabular-nums; }
+
+.month-complete-banner {
+  margin:0 16px 16px; padding:10px 14px; border-radius:8px;
+  background:var(--green-bg); border:1px solid var(--green);
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+}
+.month-complete-text { font-size:13px; font-weight:600; color:var(--green); }
+.month-next-btn {
+  background:var(--green); color:#fff; border:none; border-radius:6px;
+  padding:7px 14px; font:600 12px 'Barlow',sans-serif; cursor:pointer; flex-shrink:0;
+}
+
+/* SECTION LABELS */
+.sec-head { display:flex; align-items:center; gap:8px; padding:12px 16px 5px; position:sticky; top:46px; z-index:5; background:var(--bg); }
+.sec-tag { font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; padding:2px 10px; border-radius:4px; }
+.tag-agua{background:var(--cat-agua-bg);color:var(--cat-agua)}
+.tag-alimento{background:var(--cat-alimento-bg);color:var(--cat-alimento)}
+.tag-energia{background:var(--cat-energia-bg);color:var(--cat-energia)}
+.tag-saude{background:var(--cat-saude-bg);color:var(--cat-saude)}
+.tag-higiene{background:var(--cat-higiene-bg);color:var(--cat-higiene)}
+.tag-pet{background:var(--cat-pet-bg);color:var(--cat-pet)}
+.tag-outros{background:var(--cat-outros-bg);color:var(--cat-outros)}
+.sec-count { font-size:12px; color:var(--fg-dim); }
+
+/* SHOPPING ITEM */
+.shop-item{background:var(--bg-card);border-bottom:1px solid var(--border);transition:background .1s}
+.shop-row{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;cursor:pointer;min-height:56px}
+.shop-row:hover{background:var(--bg-muted)}
+.shop-cb{flex-shrink:0;width:22px;height:22px;margin-top:1px;accent-color:var(--accent);cursor:pointer}
+.shop-info{flex:1;min-width:0}
+.shop-name{font-weight:500;font-size:14px;line-height:1.3}
+.shop-hint{font-size:12px;color:var(--fg-muted);margin-top:2px}
+.shop-qty{font-size:12px;font-weight:700;color:var(--accent);flex-shrink:0;min-width:32px;text-align:right}
+.shop-item.done .shop-name{text-decoration:line-through;color:var(--fg-dim)}
+.shop-item.done{opacity:.65}
+.expiry-row{display:none;padding:0 16px 12px 50px;gap:8px;align-items:center;flex-wrap:wrap}
+.expiry-row.show{display:flex}
+.expiry-label{font-size:12px;color:var(--fg-muted);flex-shrink:0}
+.expiry-input{border:1px solid var(--border);background:var(--bg);color:var(--fg);border-radius:6px;padding:5px 10px;font:500 13px 'Barlow',sans-serif;min-width:0;flex:1}
+.expiry-input:focus{outline:2px solid var(--accent);border-color:transparent}
+.expiry-btn-add{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:5px 12px;font:600 12px 'Barlow',sans-serif;cursor:pointer;flex-shrink:0;white-space:nowrap}
+.expiry-btn-skip{background:none;color:var(--fg-muted);border:none;font:600 12px 'Barlow',sans-serif;cursor:pointer;padding:5px 4px;flex-shrink:0}
+
+/* FAB */
+.fab {
+  position:fixed; bottom:calc(var(--bottom-nav-h) + env(safe-area-inset-bottom,0px) + 16px);
+  right:max(16px,env(safe-area-inset-right,0px));
+  width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;
+  border:none;cursor:pointer;box-shadow:var(--shadow-md);font-size:26px;
+  display:flex;align-items:center;justify-content:center;z-index:15;
+  transition:transform .15s,background .15s;
+}
+.fab:hover{transform:scale(1.06);background:var(--accent-mid)}
+.fab[hidden]{display:none}
+
+/* STOCK */
+.export-bar{display:flex;gap:8px;padding:10px 16px;background:var(--bg-muted);border-bottom:1px solid var(--border);align-items:center}
+.export-btn{background:none;border:1px solid var(--border-strong);color:var(--fg-muted);border-radius:7px;padding:7px 14px;font:600 13px 'Barlow',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px}
+.export-btn:hover{background:var(--bg-card);color:var(--fg)}
+.sort-label{font-size:12px;color:var(--fg-dim);margin-left:auto}
+.stock-list{padding:8px 0}
+.stock-item{background:var(--bg-card);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;padding:12px 16px;min-height:60px}
+.stock-item:hover{background:var(--bg-muted)}
+.stock-left{flex:1;min-width:0}
+.stock-name{font-weight:500;font-size:14px;line-height:1.3}
+.stock-meta{display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap}
+.stock-qty{font-size:12px;color:var(--fg-muted);font-variant-numeric:tabular-nums}
+.expiry-badge{font-size:11px;font-weight:600;border-radius:4px;padding:2px 8px;flex-shrink:0}
+.expiry-ok{background:var(--green-bg);color:var(--green)}
+.expiry-warn{background:var(--amber-bg);color:var(--amber)}
+.expiry-urgent{background:var(--red-bg);color:var(--red)}
+.expiry-none{background:var(--bg-muted);color:var(--fg-dim)}
+.stock-actions{display:flex;gap:4px;flex-shrink:0}
+.action-btn{background:none;border:1px solid var(--border);color:var(--fg-muted);border-radius:6px;padding:5px 10px;font:600 12px 'Barlow',sans-serif;cursor:pointer;white-space:nowrap}
+.action-btn:hover{background:var(--bg-muted);color:var(--fg)}
+.action-btn.del:hover{background:var(--red-bg);color:var(--red);border-color:var(--red)}
+
+/* ALERTS */
+.alert-group-head{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:14px 16px 6px;color:var(--fg-muted);display:flex;align-items:center;gap:8px}
+.alert-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot-red{background:var(--red)}.dot-amber{background:var(--amber)}.dot-green{background:var(--green)}.dot-gray{background:var(--fg-dim)}
+
+/* ROTATION */
+.rotation-card{margin:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.rotation-head{background:var(--accent-light);padding:12px 16px;display:flex;align-items:center;gap:8px}
+.rotation-head-title{font-weight:600;font-size:14px;color:var(--accent);flex:1}
+.rotation-reset{font-size:12px;color:var(--fg-muted);background:none;border:none;cursor:pointer;font-family:'Barlow',sans-serif;text-decoration:underline}
+.rot-item{display:flex;align-items:flex-start;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);cursor:pointer}
+.rot-item:last-child{border-bottom:none}
+.rot-item:hover{background:var(--bg-muted)}
+.rot-cb{flex-shrink:0;width:18px;height:18px;margin-top:2px;accent-color:var(--accent)}
+.rot-label{font-size:13px;line-height:1.4}
+.rot-item.done .rot-label{text-decoration:line-through;color:var(--fg-dim)}
+
+/* EMPTY */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;text-align:center;color:var(--fg-muted);gap:10px}
+.empty-icon{font-size:40px}
+.empty-title{font-weight:600;font-size:16px;color:var(--fg)}
+.empty-desc{font-size:13px;max-width:28ch}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;display:flex;align-items:flex-end;opacity:0;transition:opacity .2s;pointer-events:none}
+.overlay.open{opacity:1;pointer-events:all}
+.sheet{width:100%;background:var(--bg-card);border-radius:16px 16px 0 0;padding:max(20px,env(safe-area-inset-left,0px));padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));padding-bottom:max(20px,env(safe-area-inset-bottom,0px));transform:translateY(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);max-height:90vh;overflow-y:auto}
+.overlay.open .sheet{transform:none}
+.sheet-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;margin-bottom:16px;color:var(--fg)}
+.form-group{margin-bottom:14px}
+.form-label{display:block;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--fg-muted);margin-bottom:5px}
+.form-input,.form-select{width:100%;border:1px solid var(--border);background:var(--bg);color:var(--fg);border-radius:8px;padding:10px 12px;font:500 15px 'Barlow',sans-serif}
+.form-input:focus,.form-select:focus{outline:2px solid var(--accent);border-color:transparent}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-actions{display:flex;gap:10px;margin-top:18px}
+.btn-primary{flex:1;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:12px;font:600 15px 'Barlow',sans-serif;cursor:pointer}
+.btn-primary:hover{background:var(--accent-mid)}
+.btn-secondary{background:none;border:1px solid var(--border);color:var(--fg-muted);border-radius:8px;padding:12px 20px;font:600 15px 'Barlow',sans-serif;cursor:pointer}
+.btn-secondary:hover{background:var(--bg-muted)}
+
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div style="display:flex;flex-direction:column;height:100%;">
+<header class="app-header">
+  <span style="font-size:22px;">🧰</span>
+  <h1>Despensa 72h</h1>
+</header>
+
+<div class="app-main" id="app-main">
+  <div class="view active" id="view-guia"><div id="guia-content"></div></div>
+  <div class="view" id="view-estoque"><div id="estoque-content"></div></div>
+  <div class="view" id="view-alertas"><div id="alertas-content"></div></div>
+</div>
+
+<nav class="bottom-nav">
+  <button class="nav-btn active" data-view="guia" onclick="switchView('guia')">
+    <span class="nav-icon">🗺️</span><span class="nav-label">Guia</span>
+  </button>
+  <button class="nav-btn" data-view="estoque" onclick="switchView('estoque')">
+    <span class="nav-icon">📦</span><span class="nav-label">Estoque</span>
+  </button>
+  <button class="nav-btn" data-view="alertas" onclick="switchView('alertas')">
+    <span class="nav-icon">🔔</span><span class="nav-label">Alertas</span>
+    <span class="nav-badge" id="badge-alertas" hidden></span>
+  </button>
+</nav>
+</div>
+
+<button class="fab" id="fab-btn" onclick="openModal()" aria-label="Adicionar ao estoque" hidden>+</button>
+
+<div class="overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="sheet">
+    <div class="sheet-title" id="modal-title">Adicionar ao estoque</div>
+    <form id="stock-form" onsubmit="submitStockForm(event)">
+      <div class="form-group">
+        <label class="form-label" for="f-name">Nome do item</label>
+        <input class="form-input" id="f-name" type="text" placeholder="Ex: Arroz 1 kg" required autocomplete="off">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="f-qty">Quantidade</label>
+          <input class="form-input" id="f-qty" type="number" min="0.1" step="0.1" value="1">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="f-unit">Unidade</label>
+          <input class="form-input" id="f-unit" list="units-list" placeholder="un, kg…" autocomplete="off">
+          <datalist id="units-list">
+            <option value="un"><option value="kg"><option value="g"><option value="L">
+            <option value="pct"><option value="cx"><option value="fr"><option value="rl"><option value="sc">
+          </datalist>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="f-cat">Categoria</label>
+        <select class="form-select" id="f-cat">
+          <option value="alimento">🥫 Alimento</option>
+          <option value="agua">💧 Água</option>
+          <option value="saude">🩹 Saúde</option>
+          <option value="higiene">🧼 Higiene</option>
+          <option value="energia">🔦 Energia/Luz</option>
+          <option value="pet">🐾 Pet</option>
+          <option value="outros">📦 Outros</option>
+        </select>
+      </div>
+      <div class="form-group" id="fg-expiry">
+        <label class="form-label" for="f-expiry">Validade</label>
+        <input class="form-input" id="f-expiry" type="date">
+      </div>
+      <div class="form-group" id="fg-notes">
+        <label class="form-label" for="f-notes">Observação (opcional)</label>
+        <input class="form-input" id="f-notes" type="text" placeholder="Marca, onde guardou…" autocomplete="off">
+      </div>
+      <input type="hidden" id="f-edit-id">
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" onclick="closeModal()">Cancelar</button>
+        <button type="submit" class="btn-primary">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// PLANO MENSAL
+// ═══════════════════════════════════════════
+const MONTHS = [
+  {
+    num:1, icon:'🏠', title:'Sobrevivência básica',
+    period:'Mês 1 — esta semana', budget:'~R$180–250', where:'Supermercado comum',
+    desc:'Se falhar luz ou água por 72h, vocês ficam bem. Tudo disponível num único supermercado — dá pra ir hoje.',
+  },
+  {
+    num:2, icon:'💧', title:'Água independente',
+    period:'Mês 2', budget:'~R$130–180', where:'Loja de embalagens + farmácia',
+    desc:'Água mineral acaba em 2 dias. Galões PEAD duram décadas. Hipoclorito trata água de torneira em emergência.',
+  },
+  {
+    num:3, icon:'🩹', title:'Saúde e higiene',
+    period:'Mês 3', budget:'~R$150–220', where:'Farmácia + supermercado',
+    desc:'Kit médico completo e higiene para 7+ dias. Fechar essas lacunas faz diferença em qualquer emergência prolongada.',
+  },
+  {
+    num:4, icon:'🐾', title:'Cão + mochila de saída',
+    period:'Mês 4', budget:'~R$150–200', where:'Pet shop + mercado',
+    desc:'O Pastor Alemão no plano e a mochila de saída montada. Se precisar sair em 10 minutos, tudo está pronto.',
+  },
+  {
+    num:5, icon:'🫙', title:'Reserva de grãos',
+    period:'Mês 5', budget:'~R$80–120', where:'Supermercado + loja de R$1,99',
+    desc:'Método PET a fogo: arroz e feijão em garrafas seladas a vácuo duram anos. Louro repele insetos; chama consome o O₂.',
+  },
+  {
+    num:6, icon:'📋', title:'Mochila e documentos',
+    period:'Mês 6 — rotina', budget:'~R$80–120', where:'Papelaria + loja online',
+    desc:'Documentos importantes protegidos, contatos impressos e itens finais que completam a preparação da família.',
+  },
+];
+
+// ═══════════════════════════════════════════
+// LISTA DE COMPRAS (por mês)
+// ═══════════════════════════════════════════
+const DEFAULT_SHOPPING = [
+  // ── MÊS 1: SOBREVIVÊNCIA BÁSICA ──────────
+  {id:'w3',month:1,name:'Água mineral 5 L',cat:'agua',qty:4,unit:'un',done:false,
+    hint:'Crystal, Bonafont — reserva imediata enquanto galões não chegam'},
+  {id:'f1',month:1,name:'Cream cracker ou biscoito de água e sal',cat:'alimento',qty:4,unit:'pac',done:false,
+    hint:'Nestlé, Vitarella — base de carboidrato, validade 8–12 meses'},
+  {id:'f2',month:1,name:'Atum em lata (em água)',cat:'alimento',qty:8,unit:'un',done:false,
+    hint:'Gomes da Costa, Coqueiro — verificar abre-fácil'},
+  {id:'f3',month:1,name:'Sardinha em lata',cat:'alimento',qty:4,unit:'un',done:false,
+    hint:'Gomes da Costa — levar abridor manual de reserva'},
+  {id:'f4',month:1,name:'Leite UHT 1 L',cat:'alimento',qty:6,unit:'cx',done:false,
+    hint:'Parmalat, Piracanjuba — validade 3–6 meses sem refrigeração'},
+  {id:'f5',month:1,name:'Rapadura (blocos)',cat:'alimento',qty:4,unit:'un',done:false,
+    hint:'Validade 3–5 anos. Energia rápida, substitui mel e barrinha. Feira livre ou mercado nordestino'},
+  {id:'f6',month:1,name:'Paçoca dura (tipo rolha/tablete)',cat:'alimento',qty:12,unit:'un',done:false,
+    hint:'A SECA — não a mole. Validade 6–12 meses. Proteína + carboidrato num pacote que a criança aceita'},
+  {id:'l1',month:1,name:'Lanterna LED (200+ lúmens)',cat:'energia',qty:1,unit:'un',done:false,
+    hint:'Rayovac, Vonder — evitar sem marca'},
+  {id:'l2',month:1,name:'Lanterna de cabeça (headlamp)',cat:'energia',qty:1,unit:'un',done:false,
+    hint:'Vonder, Rayovac — deixa as mãos livres'},
+  {id:'l3',month:1,name:'Pilhas AA — caixa 20 un',cat:'energia',qty:1,unit:'cx',done:false,
+    hint:'Duracell, Rayovac Ultra, Energizer'},
+  {id:'l4',month:1,name:'Power bank 10.000 mAh',cat:'energia',qty:1,unit:'un',done:false,
+    hint:'Multilaser, Intelbras — manter sempre carregado'},
+  {id:'l6',month:1,name:'Rádio AM/FM a pilhas',cat:'energia',qty:1,unit:'un',done:false,
+    hint:'Mondial, Multilaser — essencial para alertas da Defesa Civil sem internet'},
+  {id:'h1',month:1,name:'Curativo adesivo — caixa variada',cat:'saude',qty:1,unit:'cx',done:false,
+    hint:'Curitas 3M, Johnson — tamanhos variados'},
+  {id:'h3',month:1,name:'Álcool 70% gel 500 mL',cat:'saude',qty:2,unit:'fr',done:false,
+    hint:'Farmax, Asseptgel — verificar que é 70%'},
+  {id:'h7',month:1,name:'Paracetamol adulto + infantil em gotas',cat:'saude',qty:1,unit:'cx',done:false,
+    hint:'Verificar dosagem por peso da criança — essencial'},
+  {id:'hy1',month:1,name:'Papel higiênico',cat:'higiene',qty:12,unit:'rl',done:false,
+    hint:'Neve, Personal, Mili'},
+  {id:'hy3',month:1,name:'Lenços umedecidos — pacote grande',cat:'higiene',qty:2,unit:'pct',done:false,
+    hint:'Pampers Sensitive — sem álcool; substitui banho em emergência'},
+
+  // ── MÊS 2: ÁGUA INDEPENDENTE ─────────────
+  {id:'w1',month:2,name:'Galão PEAD 20 L — grau alimentício',cat:'agua',qty:2,unit:'un',done:false,
+    hint:'Balde D\'Água, Protec — loja de embalagens ou Leroy Merlin. Dura décadas, bloqueia luz'},
+  {id:'w2',month:2,name:'Hipoclorito de sódio 2,5% (100 mL)',cat:'agua',qty:1,unit:'fr',done:false,
+    hint:'Hidrosan Plus — farmácia. 2 gotas/L para tratar água de torneira ou chuva'},
+  {id:'f7',month:2,name:'Amendoim torrado salgado',cat:'alimento',qty:2,unit:'pct',done:false,
+    hint:'Validade 1–2 anos fechado. Alto valor calórico — ótimo para armazenar em PET'},
+  {id:'f8',month:2,name:'Frutas em conserva (pêssego, uva, salada)',cat:'alimento',qty:4,unit:'un',done:false,
+    hint:'Del Monte — validade 2–3 anos. Vitaminas sem refrigeração, criança aceita bem'},
+
+  // ── MÊS 3: SAÚDE E HIGIENE ───────────────
+  {id:'h2',month:3,name:'Gaze estéril 10×10 + esparadrapo',cat:'saude',qty:1,unit:'cx',done:false,
+    hint:'Neve, Polar Fix + Micropore 3M'},
+  {id:'h4',month:3,name:'Soro fisiológico 0,9% — ampolas',cat:'saude',qty:1,unit:'cx',done:false,
+    hint:'Farmax — para lavar feridas e olhos'},
+  {id:'h5',month:3,name:'Luvas descartáveis caixa 20 un',cat:'saude',qty:1,unit:'cx',done:false,
+    hint:'Supermax — nitrila se alergia a látex'},
+  {id:'h6',month:3,name:'Termômetro digital',cat:'saude',qty:1,unit:'un',done:false,
+    hint:'G-Tech, Incoterm, Omron'},
+  {id:'h8',month:3,name:'Reidratação oral — sachês',cat:'saude',qty:4,unit:'sc',done:false,
+    hint:'Hidralyte, Pedialyte — essencial em diarreia ou calor extremo'},
+  {id:'h9',month:3,name:'Repelente adulto + versão infantil',cat:'saude',qty:2,unit:'fr',done:false,
+    hint:'Repelex Max adulto · versão infantil sem DEET'},
+  {id:'hy2',month:3,name:'Sabonete em barra — sem fragrância (4 un)',cat:'higiene',qty:4,unit:'un',done:false,
+    hint:'Dove sem perfume, Granado — tolerado por pele sensível'},
+  {id:'hy4',month:3,name:'Escova de dentes extra + pasta reserva',cat:'higiene',qty:1,unit:'cx',done:false,
+    hint:'1 escova embalada na mochila de saída'},
+  {id:'hy5',month:3,name:'Absorvente feminino — reserva 7 dias',cat:'higiene',qty:1,unit:'cx',done:false,
+    hint:'Estresse pode antecipar — manter reserva fora do ciclo'},
+  {id:'hy6',month:3,name:'Sacos de lixo 100 L + 30 L',cat:'higiene',qty:2,unit:'rl',done:false,
+    hint:'Gestão de resíduos evita pragas em emergência'},
+
+  // ── MÊS 4: CÃO + MOCHILA DE SAÍDA ────────
+  {id:'p1',month:4,name:'Ração — reserva 7 a 10 dias (Pastor Alemão)',cat:'pet',qty:1,unit:'cx',done:false,
+    hint:'~400–600 g/dia → 4–6 kg reserva. Pote hermético após abrir'},
+  {id:'p2',month:4,name:'Coleira reforçada + TAG gravável',cat:'pet',qty:1,unit:'un',done:false,
+    hint:'Pastor precisa coleira resistente. TAG com nome e telefone gravados a laser'},
+  {id:'p3',month:4,name:'Pote inox 2–3 L para ração e água',cat:'pet',qty:2,unit:'un',done:false,
+    hint:'NÃO dobrável — pastor quebra silicone. Inox é durável e higiênico'},
+  {id:'p4',month:4,name:'Guia/correia nylon reforçada 2 m',cat:'pet',qty:1,unit:'un',done:false,
+    hint:'Para cão >40 kg. Uma reserva na mochila de saída'},
+  {id:'l5',month:4,name:'Vela de parafina + caixa de fósforos',cat:'energia',qty:1,unit:'cx',done:false,
+    hint:'Backup barato — só com ventilação, nunca sem supervisão'},
+
+  // ── MÊS 5: RESERVA DE GRÃOS ──────────────
+  {id:'g1',month:5,name:'Arroz branco 5 kg (para envasar)',cat:'alimento',qty:2,unit:'pct',done:false,
+    hint:'Comprar extra — será armazenado em garrafas PET a vácuo com método da vela'},
+  {id:'g2',month:5,name:'Feijão carioca ou preto 1 kg (para envasar)',cat:'alimento',qty:3,unit:'pct',done:false,
+    hint:'Comprar extra — envasar em PET a vácuo. Validade se extende de 1 para 3–5 anos'},
+  {id:'v1',month:5,name:'Folha de louro seca (repelente natural)',cat:'alimento',qty:1,unit:'pct',done:false,
+    hint:'2–3 folhas por garrafa PET antes de selar — impede insetos nos grãos'},
+  {id:'v2',month:5,name:'Vela fina para o método vácuo',cat:'outros',qty:1,unit:'cx',done:false,
+    hint:'Acender DENTRO da garrafa PET cheia de grão e tampar imediatamente — consome O₂, cria vácuo. Garrafa comprime = sucesso'},
+  {id:'v3',month:5,name:'Funil plástico pequeno',cat:'outros',qty:1,unit:'un',done:false,
+    hint:'Facilita encher PETs sem desperdiçar. Pode improvisar cortando uma garrafa'},
+
+  // ── MÊS 6: MOCHILA E DOCUMENTOS ──────────
+  {id:'d1',month:6,name:'Pasta impermeável/ziploc para documentos',cat:'outros',qty:1,unit:'un',done:false,
+    hint:'RG, CPF, certidões, apólices de seguro — cópias plastificadas. Papelaria ou AliExpress'},
+  {id:'d2',month:6,name:'Lista impressa: contatos de emergência',cat:'outros',qty:1,unit:'un',done:false,
+    hint:'Defesa Civil local, vizinhos, familiar de referência, médico. Funciona sem bateria — plastificar'},
+  {id:'d3',month:6,name:'Apito de emergência',cat:'saude',qty:2,unit:'un',done:false,
+    hint:'Fox 40, Storm — sinalização em desastre. Um por mochila (adulto e criança)'},
+  {id:'d4',month:6,name:'Cobertor térmico de emergência (mylar)',cat:'outros',qty:2,unit:'un',done:false,
+    hint:'Prata/dourado, dobra no tamanho de um baralho. Farmácia, lojas de camping, AliExpress'},
+  {id:'d5',month:6,name:'Extintor pó ABC 1 kg',cat:'outros',qty:1,unit:'un',done:false,
+    hint:'Recomendado Defesa Civil — para o carro e um de reserva em casa. Revenda de extintores'},
+];
+
+const CAT_LABEL = {agua:'Água',alimento:'Alimento',energia:'Energia/Luz',saude:'Saúde',higiene:'Higiene',pet:'Pet',outros:'Outros'};
+const CAT_ICON  = {agua:'💧',alimento:'🥫',energia:'🔦',saude:'🩹',higiene:'🧼',pet:'🐾',outros:'📦'};
+
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+let state = {
+  view:'guia', shopping:[], stock:[], rotation:[], currentMonth:1, _shopAddMode:false,
+};
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('despensa72h_v1');
+    if (s) {
+      const p = JSON.parse(s);
+      state.shopping    = p.shopping    || DEFAULT_SHOPPING.map(i=>({...i}));
+      state.stock       = p.stock       || [];
+      state.rotation    = p.rotation    || defaultRotation();
+      state.currentMonth = p.currentMonth || getActiveMonth();
+    } else {
+      state.shopping = DEFAULT_SHOPPING.map(i=>({...i}));
+      state.stock    = [];
+      state.rotation = defaultRotation();
+      state.currentMonth = 1;
+    }
+  } catch(e) {
+    state.shopping = DEFAULT_SHOPPING.map(i=>({...i}));
+    state.stock    = [];
+    state.rotation = defaultRotation();
+    state.currentMonth = 1;
+  }
+}
+
+function saveState() {
+  try {
+    localStorage.setItem('despensa72h_v1', JSON.stringify({
+      shopping:state.shopping, stock:state.stock,
+      rotation:state.rotation, currentMonth:state.currentMonth,
+    }));
+  } catch(e){}
+}
+
+function defaultRotation() {
+  return [
+    {id:'r1',label:'Conferir validade e integridade dos alimentos',done:false},
+    {id:'r2',label:'Repor o que foi consumido',done:false},
+    {id:'r3',label:'Verificar galões: tampa, vazamento e data',done:false},
+    {id:'r4',label:'Conferir carga das lanternas e power banks',done:false},
+    {id:'r5',label:'Testar rádio e conferir pilhas',done:false},
+    {id:'r6',label:'Conferir kit de primeiros socorros e validades',done:false},
+    {id:'r7',label:'Verificar ração, guia e itens do cão',done:false},
+    {id:'r8',label:'Conferir documentos, contatos e mochila de saída',done:false},
+  ];
+}
+
+// ═══════════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════════
+function switchView(v) {
+  state.view = v;
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-' + v).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.view === v));
+  document.getElementById('fab-btn').hidden = v !== 'estoque';
+  renderView(v);
+  document.getElementById('app-main').scrollTop = 0;
+}
+function renderView(v) {
+  if (v==='guia') renderGuia();
+  else if (v==='estoque') renderEstoque();
+  else if (v==='alertas') renderAlertas();
+  updateBadges();
+}
+
+// ═══════════════════════════════════════════
+// GUIA
+// ═══════════════════════════════════════════
+function getActiveMonth() {
+  for (let n=1; n<=6; n++) {
+    if (state.shopping.filter(i=>i.month===n).some(i=>!i.done)) return n;
+  }
+  return 6;
+}
+
+function readiness() {
+  const total = state.shopping.length;
+  return total ? Math.round(state.shopping.filter(i=>i.done).length / total * 100) : 0;
+}
+
+function readinessSub() {
+  const r = readiness();
+  if (r===0)   return 'Comece pelo Mês 1 — dá pra fazer hoje';
+  if (r<25)    return 'Bom começo — continue com o Mês 1';
+  if (r<50)    return 'Em andamento — siga para o Mês 2 e 3';
+  if (r<75)    return 'Mais da metade — família cada vez mais segura';
+  if (r<100)   return 'Falta pouco — revise os meses restantes';
+  return '🎉 Plano completo! Mantenha a rotação mensal.';
+}
+
+function setMonth(n) {
+  state.currentMonth = n;
+  saveState();
+  renderGuia();
+  document.getElementById('app-main').scrollTop = 0;
+}
+
+function renderGuia() {
+  const container = document.getElementById('guia-content');
+  const m = state.currentMonth;
+  const mData = MONTHS[m-1];
+
+  const mItems = state.shopping.filter(i=>i.month===m);
+  const doneCount  = mItems.filter(i=>i.done).length;
+  const totalCount = mItems.length;
+  const pct        = totalCount>0 ? Math.round(doneCount/totalCount*100) : 0;
+  const complete   = doneCount===totalCount && totalCount>0;
+  const r = readiness();
+
+  // Readiness band
+  const rHtml = `
+  <div class="readiness-band">
+    <div class="readiness-row">
+      <span class="readiness-title">Prontidão 72h</span>
+      <span class="readiness-pct">${r}%</span>
+    </div>
+    <div class="readiness-track"><div class="readiness-fill" style="width:${r}%"></div></div>
+    <div class="readiness-sub">${readinessSub()}</div>
+  </div>`;
+
+  // Month navigator
+  const navHtml = `
+  <div class="month-nav">
+    ${MONTHS.map(mo => {
+      const moItems = state.shopping.filter(i=>i.month===mo.num);
+      const moDone  = moItems.filter(i=>i.done).length;
+      const isActive = mo.num===m;
+      const isDone   = moDone===moItems.length && moItems.length>0;
+      return `<button class="month-nav-btn ${isActive?'active':isDone?'done':''}" onclick="setMonth(${mo.num})">
+        <span class="mn-label">${mo.icon} M${mo.num}${isDone&&!isActive?' ✓':''}</span>
+        <span class="mn-count">${moDone}/${moItems.length}</span>
+      </button>`;
+    }).join('')}
+  </div>`;
+
+  // Month card
+  const cardHtml = `
+  <div class="month-card">
+    <div class="month-card-head">
+      <div class="month-eyebrow"><span>${mData.icon}</span><span>${mData.period}</span></div>
+      <div class="month-title">${mData.title}</div>
+      <div class="month-desc">${mData.desc}</div>
+      <div class="month-pills">
+        <span class="month-pill">💰 ${mData.budget}</span>
+        <span class="month-pill">📍 ${mData.where}</span>
+      </div>
+    </div>
+    <div class="month-card-prog">
+      <div class="month-prog-row">
+        <div class="month-prog-track"><div class="month-prog-fill" style="width:${pct}%"></div></div>
+        <span class="month-prog-label">${doneCount}/${totalCount} itens</span>
+      </div>
+    </div>
+  </div>
+  ${complete ? `
+  <div class="month-complete-banner">
+    <span class="month-complete-text">✅ Mês ${m} concluído!</span>
+    ${m<6
+      ? `<button class="month-next-btn" onclick="setMonth(${m+1})">Ir para Mês ${m+1} →</button>`
+      : `<span class="month-complete-text">🎉 Plano completo!</span>`}
+  </div>` : ''}`;
+
+  // Item list
+  const cats = ['agua','alimento','energia','saude','higiene','pet','outros'];
+  const activeCats = cats.filter(c => mItems.some(i=>i.cat===c));
+  let itemsHtml = '';
+
+  activeCats.forEach(cat => {
+    const catItems = mItems.filter(i=>i.cat===cat);
+    if (!catItems.length) return;
+    itemsHtml += `<div class="sec-head">
+      <span class="sec-tag tag-${cat}">${CAT_ICON[cat]} ${CAT_LABEL[cat]}</span>
+      <span class="sec-count">${catItems.filter(i=>!i.done).length} restantes</span>
+    </div>`;
+    catItems.forEach(item => {
+      itemsHtml += `<div class="shop-item ${item.done?'done':''}" id="si-${item.id}">
+        <div class="shop-row" onclick="toggleShopItem('${item.id}')">
+          <input type="checkbox" class="shop-cb" ${item.done?'checked':''}
+            onclick="event.stopPropagation();toggleShopItem('${item.id}')" aria-label="${item.name}">
+          <div class="shop-info">
+            <div class="shop-name">${item.name}</div>
+            ${item.hint ? `<div class="shop-hint">${item.hint}</div>` : ''}
+          </div>
+          <span class="shop-qty">${item.qty} ${item.unit}</span>
+        </div>
+        <div class="expiry-row ${item.done&&!item.stockAdded?'show':''}" id="er-${item.id}">
+          <span class="expiry-label">Registrar validade:</span>
+          <input type="date" class="expiry-input" id="ed-${item.id}"
+            min="${new Date().toISOString().split('T')[0]}">
+          <button class="expiry-btn-add" onclick="addToStockFromShop('${item.id}')">+ Estoque</button>
+          <button class="expiry-btn-skip" onclick="dismissExpiryRow('${item.id}')">Pular</button>
+        </div>
+      </div>`;
+    });
+  });
+
+  itemsHtml += `<div style="padding:16px;">
+    <button class="btn-secondary" style="width:100%;" onclick="openAddShopItem()">+ Adicionar item a este mês</button>
+  </div>`;
+
+  container.innerHTML = rHtml + navHtml + cardHtml + itemsHtml;
+}
+
+function toggleShopItem(id) {
+  const item = state.shopping.find(i=>i.id===id);
+  if (!item) return;
+  item.done = !item.done;
+  if (!item.done) item.stockAdded = false;
+  saveState(); renderGuia();
+}
+
+function dismissExpiryRow(id) {
+  const item = state.shopping.find(i=>i.id===id);
+  if (item) item.stockAdded = true;
+  saveState();
+  const row = document.getElementById('er-'+id);
+  if (row) row.classList.remove('show');
+}
+
+function addToStockFromShop(id) {
+  const item = state.shopping.find(i=>i.id===id);
+  if (!item) return;
+  const dateInput = document.getElementById('ed-'+id);
+  state.stock.push({
+    id:'stk_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),
+    name: item.name.replace(/ \(.*?\)$/,'').replace(/ —.*$/,'').trim(),
+    cat:item.cat, qty:item.qty, unit:item.unit,
+    expiry: dateInput ? dateInput.value : '',
+    addedDate: new Date().toISOString().split('T')[0], notes:'',
+  });
+  if (item) item.stockAdded = true;
+  saveState();
+  const row = document.getElementById('er-'+id);
+  if (row) {
+    row.innerHTML = '<span style="font-size:12px;color:var(--accent);padding:0 0 10px 0;">✓ Adicionado ao estoque</span>';
+    row.classList.add('show');
+    setTimeout(() => row.classList.remove('show'), 2000);
+  }
+  updateBadges();
+}
+
+function openAddShopItem() {
+  state._shopAddMode = true;
+  document.getElementById('modal-title').textContent = 'Novo item — Mês ' + state.currentMonth;
+  document.getElementById('stock-form').reset();
+  document.getElementById('f-edit-id').value = '';
+  document.getElementById('f-cat').value = 'alimento';
+  document.getElementById('fg-expiry').hidden = true;
+  document.getElementById('fg-notes').hidden = true;
+  document.getElementById('modal-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('f-name').focus(), 300);
+}
+
+// ═══════════════════════════════════════════
+// ESTOQUE
+// ═══════════════════════════════════════════
+function renderEstoque() {
+  const container = document.getElementById('estoque-content');
+  const items = [...state.stock].sort((a,b) => {
+    if (!a.expiry&&!b.expiry) return 0;
+    if (!a.expiry) return 1;
+    if (!b.expiry) return -1;
+    return a.expiry.localeCompare(b.expiry);
+  });
+
+  const toolbar = `<div class="export-bar">
+    <button class="export-btn" onclick="openModal()">➕ Adicionar item</button>
+    <button class="export-btn" onclick="exportToPDF()" ${items.length===0?'disabled style="opacity:.4;cursor:default;"':''}>📄 Exportar PDF</button>
+    <span class="sort-label">${items.length} ${items.length===1?'item':'itens'}</span>
+  </div>`;
+
+  if (!items.length) {
+    container.innerHTML = toolbar + `<div class="empty-state">
+      <div class="empty-icon">📦</div>
+      <div class="empty-title">Estoque vazio</div>
+      <div class="empty-desc">No Guia, marque os itens comprados e registre a validade.</div>
+    </div>`;
+    return;
+  }
+
+  let html = toolbar + `<div class="stock-list">`;
+  items.forEach(item => {
+    const info = getExpiryInfo(item.expiry);
+    html += `<div class="stock-item">
+      <div class="stock-left">
+        <div class="stock-name">${esc(item.name)}</div>
+        <div class="stock-meta">
+          <span class="stock-qty">${item.qty} ${item.unit}</span>
+          <span class="sec-tag tag-${item.cat}" style="font-size:10px;padding:1px 7px;">${CAT_ICON[item.cat]||'📦'} ${CAT_LABEL[item.cat]||'Outros'}</span>
+          <span class="expiry-badge ${info.cls}">${info.label}</span>
+        </div>
+        ${item.notes ? `<div style="font-size:12px;color:var(--fg-dim);margin-top:3px;">${esc(item.notes)}</div>` : ''}
+      </div>
+      <div class="stock-actions">
+        <button class="action-btn" onclick="editStockItem('${item.id}')">✏️</button>
+        <button class="action-btn del" onclick="deleteStockItem('${item.id}')">🗑</button>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function getExpiryInfo(expiry) {
+  if (!expiry) return {label:'Sem validade',cls:'expiry-none'};
+  const today = new Date(); today.setHours(0,0,0,0);
+  const exp   = new Date(expiry+'T00:00:00');
+  const days  = Math.round((exp-today)/86400000);
+  if (days<0)   return {label:`Venceu há ${Math.abs(days)}d`,cls:'expiry-urgent'};
+  if (days===0) return {label:'Vence hoje',cls:'expiry-urgent'};
+  if (days<=30) return {label:`${days}d restantes`,cls:'expiry-urgent'};
+  if (days<=90) return {label:`${days}d restantes`,cls:'expiry-warn'};
+  return {label:`~${Math.floor(days/30)} meses`,cls:'expiry-ok'};
+}
+
+function editStockItem(id) {
+  const item = state.stock.find(i=>i.id===id);
+  if (!item) return;
+  document.getElementById('modal-title').textContent = 'Editar item';
+  document.getElementById('fg-expiry').hidden = false;
+  document.getElementById('fg-notes').hidden  = false;
+  document.getElementById('f-name').value   = item.name;
+  document.getElementById('f-qty').value    = item.qty;
+  document.getElementById('f-unit').value   = item.unit;
+  document.getElementById('f-cat').value    = item.cat;
+  document.getElementById('f-expiry').value = item.expiry||'';
+  document.getElementById('f-notes').value  = item.notes||'';
+  document.getElementById('f-edit-id').value = id;
+  document.getElementById('modal-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('f-name').focus(), 300);
+}
+
+function deleteStockItem(id) {
+  if (!confirm('Remover item do estoque?')) return;
+  state.stock = state.stock.filter(i=>i.id!==id);
+  saveState(); renderEstoque(); updateBadges();
+}
+
+// ═══════════════════════════════════════════
+// ALERTAS
+// ═══════════════════════════════════════════
+function renderAlertas() {
+  const container = document.getElementById('alertas-content');
+  const today = new Date(); today.setHours(0,0,0,0);
+  const expired=[],urgent=[],warn=[],ok=[],none=[];
+  state.stock.forEach(item => {
+    if (!item.expiry) { none.push(item); return; }
+    const days = Math.round((new Date(item.expiry+'T00:00:00')-today)/86400000);
+    if (days<0)      expired.push({...item,days});
+    else if(days<=30) urgent.push({...item,days});
+    else if(days<=90) warn.push({...item,days});
+    else              ok.push({...item,days});
+  });
+
+  let html='';
+  function renderGroup(title,items,dotClass,labelFn) {
+    if (!items.length) return '';
+    let g=`<div class="alert-group-head"><span class="alert-dot ${dotClass}"></span>${title} (${items.length})</div>`;
+    items.sort((a,b)=>(a.days||0)-(b.days||0)).forEach(item=>{
+      const info=getExpiryInfo(item.expiry);
+      g+=`<div class="stock-item">
+        <div class="stock-left">
+          <div class="stock-name">${esc(item.name)}</div>
+          <div class="stock-meta"><span class="stock-qty">${item.qty} ${item.unit}</span><span class="expiry-badge ${info.cls}">${labelFn(item)}</span></div>
+        </div>
+        <div class="stock-actions">
+          <button class="action-btn del" onclick="deleteStockItem('${item.id}')" style="font-size:11px;padding:4px 8px;">Consumido</button>
+        </div>
+      </div>`;
+    });
+    return g;
+  }
+
+  html += renderGroup('Vencidos',expired,'dot-gray',i=>`Venceu há ${Math.abs(i.days)}d`);
+  html += renderGroup('Vence em até 30 dias',urgent,'dot-red',i=>`${i.days}d restantes`);
+  html += renderGroup('Vence em 31–90 dias',warn,'dot-amber',i=>`${i.days}d`);
+
+  if (!expired.length&&!urgent.length&&!warn.length) {
+    html+=`<div class="empty-state">
+      <div class="empty-icon">✅</div>
+      <div class="empty-title">Nenhum alerta</div>
+      <div class="empty-desc">${state.stock.length===0?'Adicione itens ao estoque para monitorar vencimentos.':'Todos os itens estão OK por mais de 90 dias.'}</div>
+    </div>`;
+  }
+
+  if (ok.length) {
+    html+=`<div class="alert-group-head"><span class="alert-dot dot-green"></span>OK — mais de 90 dias (${ok.length})</div>`;
+    ok.forEach(item=>{
+      html+=`<div class="stock-item"><div class="stock-left">
+        <div class="stock-name" style="color:var(--fg-muted)">${esc(item.name)}</div>
+        <div class="stock-meta"><span class="expiry-badge expiry-ok">~${Math.floor(item.days/30)} meses</span></div>
+      </div></div>`;
+    });
+  }
+
+  const rotDone = state.rotation.filter(r=>r.done).length;
+  html+=`<div class="rotation-card">
+    <div class="rotation-head">
+      <span style="font-size:16px;">🔄</span>
+      <span class="rotation-head-title">Rotina mensal · ${rotDone}/${state.rotation.length}</span>
+      <button class="rotation-reset" onclick="resetRotation()">Reiniciar</button>
+    </div>
+    ${state.rotation.map(r=>`
+      <div class="rot-item ${r.done?'done':''}" onclick="toggleRotation('${r.id}')">
+        <input type="checkbox" class="rot-cb" ${r.done?'checked':''} onclick="event.stopPropagation();toggleRotation('${r.id}')">
+        <span class="rot-label">${r.label}</span>
+      </div>`).join('')}
+  </div>`;
+
+  container.innerHTML = html;
+}
+
+function toggleRotation(id) {
+  const r=state.rotation.find(x=>x.id===id);
+  if(r) r.done=!r.done;
+  saveState(); renderAlertas();
+}
+function resetRotation() {
+  state.rotation.forEach(r=>r.done=false);
+  saveState(); renderAlertas();
+}
+
+// ═══════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════
+function openModal(prefill) {
+  state._shopAddMode = false;
+  document.getElementById('fg-expiry').hidden = false;
+  document.getElementById('fg-notes').hidden  = false;
+  if (prefill) {
+    document.getElementById('modal-title').textContent = 'Adicionar ao estoque';
+    document.getElementById('f-name').value  = prefill.name||'';
+    document.getElementById('f-qty').value   = prefill.qty||1;
+    document.getElementById('f-unit').value  = prefill.unit||'un';
+    document.getElementById('f-cat').value   = prefill.cat||'alimento';
+    document.getElementById('f-expiry').value = '';
+    document.getElementById('f-notes').value  = '';
+    document.getElementById('f-edit-id').value = '';
+  } else if (!document.getElementById('f-edit-id').value) {
+    document.getElementById('modal-title').textContent = 'Adicionar ao estoque';
+    document.getElementById('stock-form').reset();
+    document.getElementById('f-edit-id').value = '';
+  }
+  document.getElementById('modal-overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('f-name').focus(),300);
+}
+
+function closeModal() {
+  state._shopAddMode = false;
+  document.getElementById('fg-expiry').hidden = false;
+  document.getElementById('fg-notes').hidden  = false;
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+function handleOverlayClick(e) {
+  if (e.target===document.getElementById('modal-overlay')) closeModal();
+}
+
+function submitStockForm(e) {
+  e.preventDefault();
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) return;
+
+  if (state._shopAddMode) {
+    state.shopping.push({
+      id:'custom_'+Date.now(), month:state.currentMonth, name,
+      cat:document.getElementById('f-cat').value,
+      qty:parseFloat(document.getElementById('f-qty').value)||1,
+      unit:document.getElementById('f-unit').value.trim()||'un',
+      done:false, hint:'',
+    });
+    saveState(); closeModal(); renderGuia();
+    return;
+  }
+
+  const editId = document.getElementById('f-edit-id').value;
+  const data = {
+    name,
+    qty:   parseFloat(document.getElementById('f-qty').value)||1,
+    unit:  document.getElementById('f-unit').value.trim()||'un',
+    cat:   document.getElementById('f-cat').value,
+    expiry:document.getElementById('f-expiry').value,
+    notes: document.getElementById('f-notes').value.trim(),
+  };
+  if (editId) {
+    const item=state.stock.find(i=>i.id===editId);
+    if(item) Object.assign(item,data);
+  } else {
+    state.stock.push({
+      id:'stk_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),
+      addedDate:new Date().toISOString().split('T')[0], ...data
+    });
+  }
+  saveState(); closeModal(); renderEstoque(); updateBadges();
+}
+
+// ═══════════════════════════════════════════
+// BADGES
+// ═══════════════════════════════════════════
+function updateBadges() {
+  const today=new Date(); today.setHours(0,0,0,0);
+  const count=state.stock.filter(item=>{
+    if(!item.expiry) return false;
+    return Math.round((new Date(item.expiry+'T00:00:00')-today)/86400000)<=30;
+  }).length;
+  const badge=document.getElementById('badge-alertas');
+  badge.textContent=count; badge.hidden=count===0;
+}
+
+// ═══════════════════════════════════════════
+// EXPORT / PDF
+// ═══════════════════════════════════════════
+function exportToPDF() {
+  const items=[...state.stock].sort((a,b)=>{
+    if(!a.expiry&&!b.expiry) return 0;
+    if(!a.expiry) return 1; if(!b.expiry) return -1;
+    return a.expiry.localeCompare(b.expiry);
+  });
+  if(!items.length) return;
+
+  const catOrder=['agua','alimento','saude','higiene','energia','pet','outros'];
+  const groups={};
+  items.forEach(item=>{if(!groups[item.cat])groups[item.cat]=[];groups[item.cat].push(item);});
+  const ordered=catOrder.filter(c=>groups[c]).concat(Object.keys(groups).filter(c=>!catOrder.includes(c)));
+  const catLab={agua:'Água',alimento:'Alimento',energia:'Energia',saude:'Saúde',higiene:'Higiene',pet:'Pet',outros:'Outros'};
+  const catIco={agua:'💧',alimento:'🥫',energia:'🔦',saude:'🩹',higiene:'🧼',pet:'🐾',outros:'📦'};
+  const today=new Date().toLocaleDateString('pt-BR');
+
+  function dTo(e){if(!e)return null;return Math.round((new Date(e+'T00:00:00')-new Date(new Date().toDateString()))/86400000);}
+  function eLabel(e){if(!e)return'—';const d=new Date(e+'T00:00:00'),days=dTo(e),fmt=d.toLocaleDateString('pt-BR');if(days<0)return`${fmt} ⚠ VENCIDO`;if(days===0)return`${fmt} (HOJE)`;if(days<=30)return`${fmt} (${days}d)`;return fmt;}
+  function eCls(e){const d=dTo(e);if(d===null)return'';if(d<=0)return'urgent';if(d<=30)return'urgent';if(d<=90)return'warn';return'ok';}
+
+  const rows=ordered.map(cat=>{
+    const hdr=`<tr class="ch"><td colspan="5">${catIco[cat]||''} ${catLab[cat]||cat}</td></tr>`;
+    return hdr+groups[cat].map(item=>`<tr><td>${esc(item.name)}</td><td class="num">${item.qty}</td><td>${esc(item.unit)}</td><td class="${eCls(item.expiry)}">${eLabel(item.expiry)}</td><td class="obs">${esc(item.notes||'')}</td></tr>`).join('');
+  }).join('');
+
+  const html=`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Estoque 72h — ${today}</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;font-size:11px;color:#111;padding:16px}
+h1{font-size:15px;font-weight:bold;margin-bottom:3px}.meta{font-size:10px;color:#555;margin-bottom:12px}
+table{width:100%;border-collapse:collapse}th{background:#222;color:#fff;text-align:left;padding:5px 8px;font-size:10px;text-transform:uppercase;letter-spacing:.05em}
+td{padding:5px 8px;border-bottom:1px solid #ddd;vertical-align:top}tr.ch td{background:#eee;font-weight:bold;padding:6px 8px;border-bottom:1px solid #ccc}
+td.num{text-align:right;white-space:nowrap}td.ok{color:#1a5c1a}td.warn{color:#7a4800;font-weight:bold}td.urgent{color:#8c1e14;font-weight:bold}td.obs{font-size:10px;color:#666}
+.footer{margin-top:16px;font-size:9px;color:#888;border-top:1px solid #ccc;padding-top:6px}@media print{body{padding:0}}</style></head><body>
+<h1>🧰 Estoque de Emergência — 72h</h1>
+<div class="meta">Gerado em ${today} · ${items.length} itens</div>
+<table><thead><tr><th style="width:38%">Item</th><th style="width:6%">Qtd</th><th style="width:7%">Un.</th><th style="width:22%">Validade</th><th>Obs</th></tr></thead>
+<tbody>${rows}</tbody></table>
+<div class="footer">Despensa 72h · ${today}</div>
+<script>window.addEventListener('load',function(){window.print();});<\/script></body></html>`;
+
+  try {
+    const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const w=window.open(url,'_blank');
+    if(!w) alert('Popup bloqueado.\nPermita popups e tente novamente.');
+    else setTimeout(()=>URL.revokeObjectURL(url),60000);
+  } catch(err) { alert('Use Ctrl+P / Cmd+P no navegador.'); }
+}
+
+// ═══════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+loadState();
+switchView('guia');
+</script>
+</body>
+</html>
