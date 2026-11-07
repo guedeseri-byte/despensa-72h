@@ -1,1147 +1,1059 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<title>Despensa Familiar</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Despensa 72h</title>
 <link rel="icon" type="image/webp" href="icon.webp">
 <link rel="apple-touch-icon" href="icon.webp">
 <meta name="theme-color" content="#2A3A10">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap">
 <style>
+/* === TOKENS === */
 :root {
-  --bg:#F0EDE4; --bg-card:#FAF8F3; --bg-muted:#E6E2D8;
-  --fg:#1C1A10; --fg-muted:#5C5840; --fg-dim:#9C9870;
-  --accent:#3A5010; --accent-mid:#5A7820; --accent-light:#E8EDD8;
-  --accent-dark:#2A3A0A;
-  --amber:#9A5E08; --amber-bg:#FCF0D0;
-  --red:#922418; --red-bg:#FCEAE8;
-  --green:#246020; --green-bg:#E0F0DC;
-  --border:#CCC8B8; --border-strong:#A8A490;
-  --shadow:0 1px 4px rgba(0,0,0,.10); --shadow-md:0 4px 20px rgba(0,0,0,.14);
-  --bottom-nav-h:60px; --header-h:58px;
-  --cat-agua:#1A5A8A; --cat-agua-bg:#D8ECF8;
-  --cat-alimento:#3A5010; --cat-alimento-bg:#E8EDD8;
-  --cat-energia:#7A5008; --cat-energia-bg:#FBF0CC;
-  --cat-saude:#701848; --cat-saude-bg:#FAE8F0;
-  --cat-higiene:#246080; --cat-higiene-bg:#D8EDF8;
-  --cat-pet:#703818; --cat-pet-bg:#FAEADA;
-  --cat-outros:#3C3820; --cat-outros-bg:#ECEADA;
+  --bg:#F0EDE4; --bg-card:#FAF8F3; --bg-muted:#E8E4D8; --bg-input:#FDFBF6;
+  --fg:#1C1A10; --fg2:#5C5840; --fg3:#9C9870;
+  --accent:#3A5010; --accent-mid:#5A7820; --accent-lite:#E8EDD8; --accent-dark:#2A3A0A;
+  --border:#D4CEB8; --border2:#BEB894;
+  --red:#C03010; --red-bg:#FCE8E0;
+  --amber:#A05010; --amber-bg:#FCF0D8;
+  --green:#2A6010; --green-bg:#E0F0D0;
+  --blue:#204880; --blue-bg:#DCEAF8;
+  --shadow:0 2px 8px rgba(28,26,16,.10);
+  --shadow-lg:0 8px 24px rgba(28,26,16,.16);
+  --hdr-h:56px; --nav-h:60px;
+  color-scheme:light;
 }
-@media (prefers-color-scheme:dark) {
-  :root:not([data-theme="light"]) {
-    --bg:#141710; --bg-card:#1E221A; --bg-muted:#181C14;
-    --fg:#E4E0D0; --fg-muted:#908C70; --fg-dim:#606048;
-    --accent:#90B838; --accent-mid:#A8D040; --accent-light:#1A2808; --accent-dark:#0C1404;
-    --amber:#D8982A; --amber-bg:#281A06; --red:#D84838; --red-bg:#280C08;
-    --green:#58A858; --green-bg:#081C08; --border:#30340A; --border-strong:#50540A;
-    --cat-agua:#58A8D8; --cat-agua-bg:#081A28; --cat-alimento:#90B838; --cat-alimento-bg:#141E06;
-    --cat-energia:#D8A030; --cat-energia-bg:#241806; --cat-saude:#C868A8; --cat-saude-bg:#240816;
-    --cat-higiene:#58A0C8; --cat-higiene-bg:#081624; --cat-pet:#C88858; --cat-pet-bg:#280E06;
-    --cat-outros:#B8B498; --cat-outros-bg:#1A1A12; color-scheme:dark;
-  }
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#141710; --bg-card:#1E221A; --bg-muted:#181C14; --bg-input:#222818;
+  --fg:#E8E6DA; --fg2:#A8A678; --fg3:#686440;
+  --accent:#90B838; --accent-mid:#A8D040; --accent-lite:#1A2808; --accent-dark:#0C1404;
+  --border:#303820; --border2:#484E28;
+  --red:#E05030; --red-bg:#2A1510;
+  --amber:#D09030; --amber-bg:#2A2010;
+  --green:#60A830; --green-bg:#182808;
+  --blue:#5090E0; --blue-bg:#0C1830;
+  --shadow:0 2px 8px rgba(0,0,0,.35);
+  --shadow-lg:0 8px 24px rgba(0,0,0,.50);
+  color-scheme:dark;
+}}
+:root[data-theme=dark]{
+  --bg:#141710; --bg-card:#1E221A; --bg-muted:#181C14; --bg-input:#222818;
+  --fg:#E8E6DA; --fg2:#A8A678; --fg3:#686440;
+  --accent:#90B838; --accent-mid:#A8D040; --accent-lite:#1A2808; --accent-dark:#0C1404;
+  --border:#303820; --border2:#484E28;
+  --red:#E05030; --red-bg:#2A1510;
+  --amber:#D09030; --amber-bg:#2A2010;
+  --green:#60A830; --green-bg:#182808;
+  --blue:#5090E0; --blue-bg:#0C1830;
+  --shadow:0 2px 8px rgba(0,0,0,.35);
+  --shadow-lg:0 8px 24px rgba(0,0,0,.50);
+  color-scheme:dark;
 }
-:root[data-theme="dark"] {
-  --bg:#141710; --bg-card:#1E221A; --bg-muted:#181C14;
-  --fg:#E4E0D0; --fg-muted:#908C70; --fg-dim:#606048;
-  --accent:#90B838; --accent-mid:#A8D040; --accent-light:#1A2808; --accent-dark:#0C1404;
-  --amber:#D8982A; --amber-bg:#281A06; --red:#D84838; --red-bg:#280C08;
-  --green:#58A858; --green-bg:#081C08; --border:#30340A; --border-strong:#50540A;
-  --cat-agua:#58A8D8; --cat-agua-bg:#081A28; --cat-alimento:#90B838; --cat-alimento-bg:#141E06;
-  --cat-energia:#D8A030; --cat-energia-bg:#241806; --cat-saude:#C868A8; --cat-saude-bg:#240816;
-  --cat-higiene:#58A0C8; --cat-higiene-bg:#081624; --cat-pet:#C88858; --cat-pet-bg:#280E06;
-  --cat-outros:#B8B498; --cat-outros-bg:#1A1A12; color-scheme:dark;
-}
-
+/* === RESET === */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
-body {
-  background:var(--bg); color:var(--fg);
-  font-family:'Barlow',sans-serif; font-size:15px; line-height:1.5;
-  display:flex; flex-direction:column; overflow:hidden;
-  padding-left:max(0px,env(safe-area-inset-left,0px));
-  padding-right:max(0px,env(safe-area-inset-right,0px));
+html{height:100%}
+body{
+  font-family:'Barlow',sans-serif;font-size:15px;line-height:1.5;
+  background:var(--bg);color:var(--fg);
+  display:flex;flex-direction:column;min-height:100vh;
+  padding-top:env(safe-area-inset-top,0px);
+  overflow-x:hidden;
 }
-
-/* HEADER */
-.app-header {
-  flex-shrink:0; height:var(--header-h);
-  background:linear-gradient(135deg, var(--accent-dark) 0%, var(--accent) 100%);
-  color:#fff; display:flex; align-items:center; gap:12px;
-  padding:0 max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));
-  box-shadow:0 3px 12px rgba(0,0,0,.35); z-index:20; position:relative;
-}
-.app-header::after {
-  content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);
-}
-.app-header-icon {
-  width:40px; height:40px; border-radius:50%; border:2px solid rgba(255,255,255,.35);
-  object-fit:cover; flex-shrink:0; box-shadow:0 2px 8px rgba(0,0,0,.4);
-}
-.app-header-titles { flex:1; min-width:0; }
-.app-header h1 {
-  font-family:'Barlow Condensed',sans-serif; font-size:21px; font-weight:800;
-  letter-spacing:.06em; text-transform:uppercase; line-height:1.1;
-}
-.app-header-sub {
-  font-size:10px; font-weight:600; letter-spacing:.12em; text-transform:uppercase;
-  color:rgba(255,255,255,.65); margin-top:1px;
-}
-
-/* MAIN */
-.app-main { flex:1; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; }
-.view { display:none; min-height:100%; padding-bottom:80px; }
-.view.active { display:block; }
-
-/* BOTTOM NAV */
-.bottom-nav {
-  flex-shrink:0; height:calc(var(--bottom-nav-h) + env(safe-area-inset-bottom,0px));
-  background:var(--bg-card); border-top:1px solid var(--border);
-  display:flex; padding-bottom:env(safe-area-inset-bottom,0px); z-index:20;
-}
-.nav-btn {
-  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap:3px; cursor:pointer; border:none; background:none; padding:8px 4px;
-  color:var(--fg-muted); font-family:'Barlow',sans-serif; transition:color .15s; position:relative;
-}
-.nav-btn.active { color:var(--accent); }
-.nav-btn.active::after {
-  content:''; position:absolute; top:0; left:20%; right:20%;
-  height:2px; background:var(--accent); border-radius:0 0 2px 2px;
-}
-.nav-icon { font-size:22px; line-height:1; }
-.nav-label { font-size:11px; font-weight:600; letter-spacing:.03em; }
-.nav-badge {
-  position:absolute; top:6px; right:calc(50% - 18px);
-  background:var(--red); color:#fff; border-radius:10px;
-  font-size:10px; font-weight:700; min-width:16px; height:16px;
-  display:flex; align-items:center; justify-content:center; padding:0 4px;
-}
-.nav-badge[hidden]{display:none}
-
-/* READINESS BAND */
-.readiness-band {
+button{background:none;border:none;cursor:pointer;font-family:inherit;font-size:inherit}
+input,select,textarea{font-family:inherit;font-size:inherit}
+img{max-width:100%}
+/* === HEADER === */
+header{
+  position:sticky;top:0;z-index:30;
   background:var(--accent-dark);
-  padding:14px max(16px,env(safe-area-inset-left,0px));
-  border-bottom:3px solid var(--accent-mid);
+  height:var(--hdr-h);
+  display:flex;align-items:center;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  box-shadow:0 2px 8px rgba(0,0,0,.3);
 }
-.readiness-row { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; }
-.readiness-title {
-  font-family:'Barlow Condensed',sans-serif; font-size:11px; font-weight:700;
-  letter-spacing:.12em; text-transform:uppercase; color:rgba(255,255,255,.60);
+.hdr-logo{width:34px;height:34px;border-radius:50%;object-fit:cover;margin-right:10px;border:1.5px solid rgba(255,255,255,.25)}
+.hdr-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:22px;color:#fff;text-transform:uppercase;letter-spacing:.5px;line-height:1}
+.hdr-sub{font-family:'Barlow Condensed',sans-serif;font-weight:400;font-size:12px;color:rgba(255,255,255,.65);letter-spacing:.5px;text-transform:uppercase;display:block;margin-top:1px}
+.hdr-actions{margin-left:auto;display:flex;gap:6px;align-items:center}
+/* === MAIN === */
+main{
+  flex:1;
+  margin-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px));
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
 }
-.readiness-pct {
-  font-family:'Barlow Condensed',sans-serif; font-size:26px; font-weight:800;
-  color:#C8E060; font-variant-numeric:tabular-nums; letter-spacing:-.01em;
+.view{display:none;padding-bottom:24px}
+.view.active{display:block}
+/* === BOTTOM NAV === */
+.bot-nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:30;
+  background:var(--bg-card);
+  border-top:1px solid var(--border);
+  display:flex;
+  height:calc(var(--nav-h) + env(safe-area-inset-bottom,0px));
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  padding-left:env(safe-area-inset-left,0px);
+  padding-right:env(safe-area-inset-right,0px);
 }
-.readiness-track { height:9px; background:rgba(255,255,255,.12); border-radius:5px; overflow:hidden; }
-.readiness-fill {
-  height:100%; border-radius:5px; transition:width .6s ease;
-  background:linear-gradient(90deg,#6A9820,#C8E060);
+.nav-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:2px;color:var(--fg3);transition:color .15s;position:relative;
+  padding:6px 2px;
 }
-.readiness-sub { margin-top:7px; font-size:11px; color:rgba(255,255,255,.55); font-style:italic; }
-
-/* MONTH NAVIGATOR */
-.month-nav {
-  display:flex; border-bottom:2px solid var(--border); background:var(--bg-muted);
-  position:sticky; top:0; z-index:10; overflow-x:auto; scrollbar-width:none;
+.nav-btn.active{color:var(--accent-mid)}
+.nav-icon{font-size:20px;line-height:1}
+.nav-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.nav-badge{
+  position:absolute;top:5px;right:calc(50% - 18px);
+  background:var(--red);color:#fff;
+  font-size:10px;font-weight:700;line-height:1;
+  padding:2px 5px;border-radius:10px;min-width:16px;text-align:center;
 }
-.month-nav::-webkit-scrollbar{display:none}
-.month-nav-btn {
-  flex:1; min-width:52px; border:none; cursor:pointer; padding:8px 4px 6px;
-  font-family:'Barlow Condensed',sans-serif; background:none; color:var(--fg-dim);
-  transition:all .15s; border-bottom:3px solid transparent;
-  display:flex; flex-direction:column; align-items:center; gap:2px; white-space:nowrap;
+/* === FAB === */
+.fab{
+  position:fixed;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 16px);
+  right:max(20px,env(safe-area-inset-right,0px));
+  width:54px;height:54px;border-radius:50%;
+  background:var(--accent-mid);color:#fff;
+  font-size:28px;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--shadow-lg);
+  z-index:20;transition:transform .15s,box-shadow .15s;
 }
-.month-nav-btn.active { color:var(--accent); border-bottom-color:var(--accent); background:var(--accent-light); }
-.month-nav-btn.done { color:var(--green); }
-.month-nav-btn .mn-label { font-size:13px; font-weight:700; letter-spacing:.03em; }
-.month-nav-btn .mn-count { font-size:9px; opacity:.75; font-variant-numeric:tabular-nums; font-family:'Barlow',sans-serif; }
-
-/* MONTH CARD */
-.month-card {
-  margin:14px 16px; border-radius:10px; overflow:hidden;
-  border:1px solid var(--border); background:var(--bg-card);
-  box-shadow:var(--shadow-md);
+.fab:active{transform:scale(.92);box-shadow:var(--shadow)}
+/* === SECTION HEADER === */
+.sec-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px 6px;
 }
-.month-card-head {
-  padding:16px 16px 14px;
-  background:linear-gradient(135deg,var(--accent) 0%,var(--accent-mid) 100%);
-  position:relative; overflow:hidden;
+.sec-title{
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;
+  text-transform:uppercase;letter-spacing:.8px;color:var(--fg3);
 }
-.month-card-head::before {
-  content:''; position:absolute; right:-20px; top:-20px;
-  width:100px; height:100px; border-radius:50%;
-  background:rgba(255,255,255,.06); pointer-events:none;
+.sec-count{font-size:12px;color:var(--fg3)}
+/* === DASHBOARD === */
+.dash-status{
+  margin:12px 16px 10px;
+  border-radius:14px;padding:16px 18px;
+  display:flex;align-items:center;gap:14px;
 }
-.month-eyebrow {
-  font-size:10px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
-  color:rgba(255,255,255,.70); margin-bottom:5px; display:flex; align-items:center; gap:6px;
+.dash-status.good{background:var(--green-bg);border:1px solid var(--green)}
+.dash-status.ok{background:var(--accent-lite);border:1px solid var(--border)}
+.dash-status.warn{background:var(--amber-bg);border:1px solid var(--amber)}
+.dash-status.crit{background:var(--red-bg);border:1px solid var(--red)}
+.dash-status.setup{background:var(--bg-muted);border:1px solid var(--border)}
+.status-icon{font-size:32px;flex-shrink:0}
+.status-text{}
+.status-label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.7px;color:var(--fg2)}
+.status-days{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:38px;line-height:1;color:var(--fg)}
+.status-sub{font-size:12px;color:var(--fg2);margin-top:2px}
+.status-link{color:var(--accent-mid);font-size:13px;font-weight:600;cursor:pointer}
+/* gauge card */
+.gauge-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin:0 16px 10px}
+.gauge-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.gauge-name{display:flex;align-items:center;gap:7px}
+.gauge-icon{font-size:20px}
+.gauge-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:.5px;color:var(--fg2)}
+.gauge-days{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:28px;color:var(--fg);line-height:1}
+.gauge-unit{font-size:12px;color:var(--fg3);margin-left:2px}
+.gauge-track{height:9px;border-radius:5px;background:var(--border);overflow:hidden;margin-bottom:7px}
+.gauge-fill{height:100%;border-radius:5px;transition:width .4s ease}
+.gauge-fill.crit{background:var(--red)}
+.gauge-fill.warn{background:var(--amber)}
+.gauge-fill.ok{background:var(--accent-mid)}
+.gauge-fill.great{background:#3A9020}
+.gauge-meta{font-size:12px;color:var(--fg3);display:flex;justify-content:space-between}
+/* === ESTOQUE === */
+.search-wrap{padding:10px 16px 6px;display:flex;gap:8px;align-items:center}
+.search-input{
+  flex:1;background:var(--bg-input);border:1px solid var(--border);border-radius:9px;
+  padding:8px 12px;color:var(--fg);outline:none;transition:border-color .15s;
 }
-.month-title {
-  font-family:'Barlow Condensed',sans-serif; font-size:26px; font-weight:800;
-  color:#fff; line-height:1.1; margin-bottom:8px; text-transform:uppercase; letter-spacing:.02em;
+.search-input:focus{border-color:var(--accent-mid)}
+.search-input::placeholder{color:var(--fg3)}
+.cat-chips{
+  display:flex;gap:7px;padding:4px 16px 10px;
+  overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;
 }
-.month-desc { font-size:13px; color:rgba(255,255,255,.82); line-height:1.5; margin-bottom:12px; }
-.month-pills { display:flex; gap:8px; flex-wrap:wrap; }
-.month-pill {
-  font-size:11px; font-weight:600; padding:3px 10px; border-radius:4px;
-  background:rgba(0,0,0,.25); border:1px solid rgba(255,255,255,.18); color:rgba(255,255,255,.85);
-  letter-spacing:.02em;
+.cat-chips::-webkit-scrollbar{display:none}
+.chip{
+  flex-shrink:0;padding:5px 11px;border-radius:20px;font-size:13px;font-weight:500;
+  border:1px solid var(--border);background:var(--bg-card);color:var(--fg2);
+  white-space:nowrap;transition:all .12s;
 }
-.month-card-prog { padding:12px 16px; border-top:1px solid var(--border); }
-.month-prog-row { display:flex; align-items:center; gap:10px; }
-.month-prog-track { flex:1; height:8px; background:var(--border); border-radius:4px; overflow:hidden; }
-.month-prog-fill {
-  height:100%; border-radius:4px; transition:width .4s;
-  background:linear-gradient(90deg,var(--accent),var(--accent-mid));
+.chip.active{background:var(--accent-lite);border-color:var(--accent-mid);color:var(--accent-dark);font-weight:600}
+/* item row */
+.item-row{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:10px;margin:0 16px 7px;
+  display:flex;align-items:center;gap:10px;padding:10px 12px;
+  position:relative;overflow:hidden;
 }
-.month-prog-label {
-  font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:700;
-  color:var(--accent); flex-shrink:0; font-variant-numeric:tabular-nums; letter-spacing:.03em;
+.item-row.expired{border-color:var(--red);background:var(--red-bg)}
+.item-row.soon{border-color:var(--amber)}
+.item-icon{width:32px;height:32px;border-radius:8px;background:var(--accent-lite);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.item-info{flex:1;min-width:0}
+.item-name{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item-qty{font-size:12px;color:var(--fg2);margin-top:1px}
+.item-expiry{font-size:12px;white-space:nowrap;text-align:right;flex-shrink:0;padding-left:6px}
+.item-expiry.ok{color:var(--fg3)}
+.item-expiry.soon{color:var(--amber)}
+.item-expiry.crit{color:var(--red);font-weight:600}
+.item-expiry.none{color:var(--fg3)}
+.item-menu-btn{
+  width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+  color:var(--fg3);font-size:18px;flex-shrink:0;transition:background .12s;
 }
-
-.month-complete-banner {
-  margin:0 16px 16px; padding:12px 16px; border-radius:8px;
-  background:var(--green-bg); border:1px solid var(--green);
-  display:flex; align-items:center; justify-content:space-between; gap:10px;
+.item-menu-btn:hover,.item-menu-btn:active{background:var(--bg-muted);color:var(--fg)}
+.item-actions{
+  display:none;position:absolute;right:0;top:0;bottom:0;
+  align-items:center;background:var(--bg-card);
+  border-left:1px solid var(--border);
 }
-.month-complete-text { font-size:13px; font-weight:700; color:var(--green); letter-spacing:.02em; }
-.month-next-btn {
-  background:var(--green); color:#fff; border:none; border-radius:6px;
-  padding:8px 16px; font:700 12px 'Barlow Condensed',sans-serif;
-  letter-spacing:.06em; text-transform:uppercase; cursor:pointer; flex-shrink:0;
+.item-actions.open{display:flex}
+.item-act-btn{
+  display:flex;align-items:center;justify-content:center;
+  padding:0 14px;height:100%;
+  font-size:13px;font-weight:600;gap:5px;transition:background .12s;
 }
-
-/* SECTION LABELS */
-.sec-head { display:flex; align-items:center; gap:8px; padding:12px 16px 5px; position:sticky; top:46px; z-index:5; background:var(--bg); }
-.sec-tag { font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; padding:2px 10px; border-radius:4px; }
-.tag-agua{background:var(--cat-agua-bg);color:var(--cat-agua)}
-.tag-alimento{background:var(--cat-alimento-bg);color:var(--cat-alimento)}
-.tag-energia{background:var(--cat-energia-bg);color:var(--cat-energia)}
-.tag-saude{background:var(--cat-saude-bg);color:var(--cat-saude)}
-.tag-higiene{background:var(--cat-higiene-bg);color:var(--cat-higiene)}
-.tag-pet{background:var(--cat-pet-bg);color:var(--cat-pet)}
-.tag-outros{background:var(--cat-outros-bg);color:var(--cat-outros)}
-.sec-count { font-size:12px; color:var(--fg-dim); }
-
-/* SHOPPING ITEM */
-.shop-item{background:var(--bg-card);border-bottom:1px solid var(--border);transition:background .1s}
-.shop-row{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;cursor:pointer;min-height:56px}
-.shop-row:hover{background:var(--bg-muted)}
-.shop-cb{flex-shrink:0;width:22px;height:22px;margin-top:1px;accent-color:var(--accent);cursor:pointer}
-.shop-info{flex:1;min-width:0}
-.shop-name{font-weight:500;font-size:14px;line-height:1.3}
-.shop-hint{font-size:12px;color:var(--fg-muted);margin-top:2px}
-.shop-qty{font-size:12px;font-weight:700;color:var(--accent);flex-shrink:0;min-width:32px;text-align:right}
-.shop-item.done .shop-name{text-decoration:line-through;color:var(--fg-dim)}
-.shop-item.done{opacity:.65}
-.expiry-row{display:none;padding:0 16px 12px 50px;gap:6px;align-items:center;flex-wrap:wrap}
-.expiry-row.show{display:flex}
-.expiry-label{font-size:12px;color:var(--fg-muted);flex-shrink:0}
-.expiry-input{border:1px solid var(--border);background:var(--bg);color:var(--fg);border-radius:6px;padding:5px 10px;font:500 13px 'Barlow',sans-serif;min-width:0;flex:1}
-.expiry-input:focus{outline:2px solid var(--accent);border-color:transparent}
-.expiry-qty{border:1px solid var(--border);background:var(--bg);color:var(--fg);border-radius:6px;padding:5px 8px;font:600 13px 'Barlow',sans-serif;width:62px;flex-shrink:0;text-align:center}
-.expiry-qty:focus{outline:2px solid var(--accent);border-color:transparent}
-.expiry-btn-add{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:5px 12px;font:600 12px 'Barlow',sans-serif;cursor:pointer;flex-shrink:0;white-space:nowrap}
-.expiry-btn-skip{background:none;color:var(--fg-muted);border:none;font:600 12px 'Barlow',sans-serif;cursor:pointer;padding:5px 4px;flex-shrink:0}
-.add-cat-btn{margin-left:auto;background:none;border:1px solid var(--border);color:var(--fg-muted);border-radius:6px;padding:2px 10px;font:600 13px 'Barlow',sans-serif;cursor:pointer;flex-shrink:0;line-height:1.5}
-.add-cat-btn:hover{background:var(--accent-light);color:var(--accent);border-color:var(--accent)}
-
-/* FAB */
-.fab {
-  position:fixed; bottom:calc(var(--bottom-nav-h) + env(safe-area-inset-bottom,0px) + 16px);
-  right:max(16px,env(safe-area-inset-right,0px));
-  width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;
-  border:none;cursor:pointer;box-shadow:var(--shadow-md);font-size:26px;
-  display:flex;align-items:center;justify-content:center;z-index:15;
-  transition:transform .15s,background .15s;
+.item-act-btn.edit{color:var(--accent-mid)}
+.item-act-btn.del{color:var(--red)}
+.item-act-btn:hover,.item-act-btn:active{background:var(--bg-muted)}
+.empty-state{text-align:center;padding:48px 24px;color:var(--fg2)}
+.empty-state-icon{font-size:48px;margin-bottom:12px}
+.empty-state h3{font-size:17px;font-weight:600;margin-bottom:6px;color:var(--fg)}
+.empty-state p{font-size:14px;color:var(--fg2);margin-bottom:20px}
+.btn-primary-outline{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:10px 20px;border-radius:9px;
+  border:2px solid var(--accent-mid);color:var(--accent-mid);
+  font-weight:600;font-size:14px;transition:all .12s;
 }
-.fab:hover{transform:scale(1.06);background:var(--accent-mid)}
-.fab[hidden]{display:none}
-
-/* STOCK */
-.export-bar{display:flex;gap:8px;padding:10px 16px;background:var(--bg-muted);border-bottom:1px solid var(--border);align-items:center}
-.export-btn{background:none;border:1px solid var(--border-strong);color:var(--fg-muted);border-radius:7px;padding:7px 14px;font:600 13px 'Barlow',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px}
-.export-btn:hover{background:var(--bg-card);color:var(--fg)}
-.sort-label{font-size:12px;color:var(--fg-dim);margin-left:auto}
-.stock-list{padding:8px 0}
-.stock-item{background:var(--bg-card);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;padding:12px 16px;min-height:60px}
-.stock-item:hover{background:var(--bg-muted)}
-.stock-left{flex:1;min-width:0}
-.stock-name{font-weight:500;font-size:14px;line-height:1.3}
-.stock-meta{display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap}
-.stock-qty{font-size:12px;color:var(--fg-muted);font-variant-numeric:tabular-nums}
-.expiry-badge{font-size:11px;font-weight:600;border-radius:4px;padding:2px 8px;flex-shrink:0}
-.expiry-ok{background:var(--green-bg);color:var(--green)}
-.expiry-warn{background:var(--amber-bg);color:var(--amber)}
-.expiry-urgent{background:var(--red-bg);color:var(--red)}
-.expiry-none{background:var(--bg-muted);color:var(--fg-dim)}
-.stock-actions{display:flex;gap:4px;flex-shrink:0}
-.action-btn{background:none;border:1px solid var(--border);color:var(--fg-muted);border-radius:6px;padding:5px 10px;font:600 12px 'Barlow',sans-serif;cursor:pointer;white-space:nowrap}
-.action-btn:hover{background:var(--bg-muted);color:var(--fg)}
-.action-btn.del:hover{background:var(--red-bg);color:var(--red);border-color:var(--red)}
-
-/* ALERTS */
-.alert-group-head{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:14px 16px 6px;color:var(--fg-muted);display:flex;align-items:center;gap:8px}
-.alert-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.dot-red{background:var(--red)}.dot-amber{background:var(--amber)}.dot-green{background:var(--green)}.dot-gray{background:var(--fg-dim)}
-
-/* ROTATION */
-.rotation-card{margin:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;overflow:hidden}
-.rotation-head{background:var(--accent-light);padding:12px 16px;display:flex;align-items:center;gap:8px}
-.rotation-head-title{font-weight:600;font-size:14px;color:var(--accent);flex:1}
-.rotation-reset{font-size:12px;color:var(--fg-muted);background:none;border:none;cursor:pointer;font-family:'Barlow',sans-serif;text-decoration:underline}
-.rot-item{display:flex;align-items:flex-start;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);cursor:pointer}
-.rot-item:last-child{border-bottom:none}
-.rot-item:hover{background:var(--bg-muted)}
-.rot-cb{flex-shrink:0;width:18px;height:18px;margin-top:2px;accent-color:var(--accent)}
-.rot-label{font-size:13px;line-height:1.4}
-.rot-item.done .rot-label{text-decoration:line-through;color:var(--fg-dim)}
-
-/* EMPTY */
-.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;text-align:center;color:var(--fg-muted);gap:10px}
-.empty-icon{font-size:40px}
-.empty-title{font-weight:600;font-size:16px;color:var(--fg)}
-.empty-desc{font-size:13px;max-width:28ch}
-
-/* MODAL */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;display:flex;align-items:flex-end;opacity:0;transition:opacity .2s;pointer-events:none}
-.overlay.open{opacity:1;pointer-events:all}
-.sheet{width:100%;background:var(--bg-card);border-radius:16px 16px 0 0;padding:max(20px,env(safe-area-inset-left,0px));padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));padding-bottom:max(20px,env(safe-area-inset-bottom,0px));transform:translateY(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);max-height:90vh;overflow-y:auto}
-.overlay.open .sheet{transform:none}
-.sheet-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;margin-bottom:16px;color:var(--fg)}
-.form-group{margin-bottom:14px}
-.form-label{display:block;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--fg-muted);margin-bottom:5px}
-.form-input,.form-select{width:100%;border:1px solid var(--border);background:var(--bg);color:var(--fg);border-radius:8px;padding:10px 12px;font:500 15px 'Barlow',sans-serif}
-.form-input:focus,.form-select:focus{outline:2px solid var(--accent);border-color:transparent}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.form-actions{display:flex;gap:10px;margin-top:18px}
-.btn-primary{flex:1;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:12px;font:600 15px 'Barlow',sans-serif;cursor:pointer}
-.btn-primary:hover{background:var(--accent-mid)}
-.btn-secondary{background:none;border:1px solid var(--border);color:var(--fg-muted);border-radius:8px;padding:12px 20px;font:600 15px 'Barlow',sans-serif;cursor:pointer}
-.btn-secondary:hover{background:var(--bg-muted)}
-
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}
+.btn-primary-outline:hover{background:var(--accent-lite)}
+/* === ALERTAS === */
+.alert-row{
+  margin:0 16px 7px;border-radius:10px;
+  display:flex;align-items:center;gap:10px;padding:10px 12px;
+  border:1px solid;cursor:pointer;
+}
+.alert-row.expired{background:var(--red-bg);border-color:var(--red)}
+.alert-row.soon-crit{background:var(--amber-bg);border-color:var(--amber)}
+.alert-row.soon{background:var(--bg-card);border-color:var(--border)}
+.alert-icon{font-size:20px;flex-shrink:0}
+.alert-info{flex:1;min-width:0}
+.alert-name{font-weight:600;font-size:14px}
+.alert-detail{font-size:12px;color:var(--fg2);margin-top:1px}
+.alert-badge{padding:3px 9px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap}
+.alert-badge.expired{background:var(--red);color:#fff}
+.alert-badge.soon-crit{background:var(--amber);color:#fff}
+.alert-badge.soon{background:var(--border);color:var(--fg2)}
+/* === CONFIG === */
+.cfg-section{margin:0 16px 16px}
+.cfg-section-title{
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;
+  text-transform:uppercase;letter-spacing:.7px;color:var(--fg3);
+  margin-bottom:10px;padding-top:16px;
+}
+.cfg-row{
+  background:var(--bg-card);border:1px solid var(--border);border-radius:10px;
+  padding:12px 14px;margin-bottom:8px;
+  display:flex;align-items:center;gap:12px;
+}
+.cfg-label{flex:1;font-size:14px;font-weight:500}
+.cfg-sub{font-size:12px;color:var(--fg3);display:block;margin-top:1px}
+.cfg-num{
+  width:62px;text-align:center;padding:5px 8px;
+  background:var(--bg-input);border:1px solid var(--border);border-radius:7px;
+  color:var(--fg);font-weight:600;outline:none;
+}
+.cfg-num:focus{border-color:var(--accent-mid)}
+.toggle{
+  width:44px;height:26px;border-radius:13px;position:relative;
+  background:var(--border);transition:background .2s;cursor:pointer;flex-shrink:0;
+}
+.toggle.on{background:var(--accent-mid)}
+.toggle::after{
+  content:'';position:absolute;top:3px;left:3px;
+  width:20px;height:20px;border-radius:50%;background:#fff;
+  transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);
+}
+.toggle.on::after{transform:translateX(18px)}
+.cfg-save-btn{
+  width:100%;padding:13px;border-radius:10px;
+  background:var(--accent-mid);color:#fff;
+  font-weight:700;font-size:15px;text-align:center;
+  transition:opacity .15s;margin-top:8px;
+}
+.cfg-save-btn:active{opacity:.8}
+/* === MODAL SHEET === */
+.modal-bg{
+  position:fixed;inset:0;z-index:40;
+  background:rgba(0,0,0,.45);
+  opacity:0;transition:opacity .2s;pointer-events:none;
+}
+.modal-bg.open{opacity:1;pointer-events:all}
+.modal-sheet{
+  position:fixed;bottom:0;left:0;right:0;z-index:50;
+  background:var(--bg-card);border-radius:20px 20px 0 0;
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  transform:translateY(100%);transition:transform .3s cubic-bezier(.32,1,.23,1);
+  max-height:90vh;overflow-y:auto;-webkit-overflow-scrolling:touch;
+}
+.modal-sheet.open{transform:translateY(0)}
+.modal-handle{width:36px;height:4px;border-radius:2px;background:var(--border2);margin:10px auto 0;flex-shrink:0}
+.modal-title{
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;
+  text-transform:uppercase;letter-spacing:.5px;
+  padding:14px 18px 10px;
+}
+.modal-body{padding:0 16px 16px}
+/* === ADD MODE SELECT === */
+.add-mode-btn{
+  display:flex;align-items:center;gap:14px;
+  background:var(--bg-muted);border:1px solid var(--border);border-radius:12px;
+  padding:14px 16px;margin-bottom:10px;width:100%;text-align:left;
+  transition:all .12s;
+}
+.add-mode-btn:hover,.add-mode-btn:active{background:var(--accent-lite);border-color:var(--accent-mid)}
+.add-mode-icon{font-size:26px;flex-shrink:0}
+.add-mode-name{font-weight:600;font-size:15px;display:block}
+.add-mode-desc{font-size:12px;color:var(--fg2)}
+/* === CATALOG === */
+.cat-search{
+  width:100%;padding:9px 12px;
+  background:var(--bg-input);border:1px solid var(--border);border-radius:9px;
+  color:var(--fg);outline:none;margin-bottom:10px;
+}
+.cat-search:focus{border-color:var(--accent-mid)}
+.cat-search::placeholder{color:var(--fg3)}
+.catalog-group-hdr{
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;
+  text-transform:uppercase;letter-spacing:.5px;color:var(--fg3);
+  padding:6px 2px 4px;
+}
+.catalog-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 10px;border-radius:8px;cursor:pointer;
+  transition:background .1s;border:1px solid transparent;
+}
+.catalog-item:hover,.catalog-item:active{background:var(--accent-lite);border-color:var(--accent-mid)}
+.catalog-item-icon{font-size:18px;flex-shrink:0}
+.catalog-item-name{font-size:14px;font-weight:500;flex:1}
+.catalog-item-qty{font-size:12px;color:var(--fg3)}
+/* === FORM === */
+.form-group{margin-bottom:12px}
+.form-label{font-size:13px;font-weight:600;color:var(--fg2);display:block;margin-bottom:4px}
+.form-input{
+  width:100%;padding:9px 12px;
+  background:var(--bg-input);border:1px solid var(--border);border-radius:9px;
+  color:var(--fg);outline:none;transition:border-color .15s;
+}
+.form-input:focus{border-color:var(--accent-mid)}
+.form-row{display:flex;gap:8px}
+.form-row .form-group{flex:1}
+.form-row .form-group.f2{flex:2}
+.form-actions{display:flex;gap:8px;padding-top:4px}
+.btn-primary{
+  flex:1;padding:12px;border-radius:9px;
+  background:var(--accent-mid);color:#fff;
+  font-weight:700;font-size:15px;text-align:center;
+  transition:opacity .15s;
+}
+.btn-primary:active{opacity:.8}
+.btn-secondary{
+  padding:12px 16px;border-radius:9px;
+  background:var(--bg-muted);color:var(--fg2);
+  font-weight:600;font-size:14px;text-align:center;
+  border:1px solid var(--border);transition:all .12s;
+}
+.btn-secondary:hover,.btn-secondary:active{background:var(--border)}
+.btn-danger{flex:1;padding:12px;border-radius:9px;background:var(--red);color:#fff;font-weight:700;font-size:15px}
+.barcode-row{display:flex;gap:7px;align-items:flex-end}
+.barcode-row .form-group{flex:1;margin-bottom:0}
+.barcode-scan-mini{
+  width:40px;height:40px;border-radius:9px;
+  background:var(--bg-muted);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+  flex-shrink:0;cursor:pointer;transition:all .12s;
+}
+.barcode-scan-mini:hover{background:var(--accent-lite);border-color:var(--accent-mid)}
+.hint-text{font-size:11px;color:var(--fg3);margin-top:3px}
+/* === SCANNER OVERLAY === */
+.scanner-wrap{
+  position:fixed;inset:0;z-index:100;background:#000;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+#scan-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.scan-dim{
+  position:absolute;inset:0;
+  background:rgba(0,0,0,.5);
+  -webkit-mask:radial-gradient(ellipse 260px 100px at 50% 42%,transparent 100%,black 100%);
+  mask:radial-gradient(ellipse 260px 100px at 50% 42%,transparent 100%,black 100%);
+}
+.scan-box{
+  position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);
+  width:260px;height:100px;
+  border:2px solid var(--accent-mid);border-radius:8px;
+}
+.scan-line{
+  position:absolute;top:0;left:4px;right:4px;height:2px;
+  background:var(--accent-mid);
+  animation:scanLine 1.8s ease-in-out infinite;border-radius:1px;
+}
+@keyframes scanLine{
+  0%{top:4px;opacity:1}50%{top:calc(100% - 6px);opacity:1}
+  60%{opacity:0}61%{top:4px}70%{opacity:1}100%{top:4px;opacity:1}
+}
+.scan-corner{position:absolute;width:16px;height:16px}
+.scan-corner.tl{top:-2px;left:-2px;border-top:3px solid #fff;border-left:3px solid #fff;border-radius:4px 0 0 0}
+.scan-corner.tr{top:-2px;right:-2px;border-top:3px solid #fff;border-right:3px solid #fff;border-radius:0 4px 0 0}
+.scan-corner.bl{bottom:-2px;left:-2px;border-bottom:3px solid #fff;border-left:3px solid #fff;border-radius:0 0 0 4px}
+.scan-corner.br{bottom:-2px;right:-2px;border-bottom:3px solid #fff;border-right:3px solid #fff;border-radius:0 0 4px 0}
+.scan-hint-text{
+  position:absolute;bottom:28%;color:#fff;font-size:14px;font-weight:500;
+  text-shadow:0 1px 4px rgba(0,0,0,.8);text-align:center;padding:0 20px;
+}
+.scan-cancel-btn{
+  position:absolute;bottom:max(24px,env(safe-area-inset-bottom,0px));
+  padding:11px 28px;border-radius:30px;
+  background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);
+  color:#fff;font-weight:600;font-size:15px;backdrop-filter:blur(6px);
+}
+/* === CONFIRM === */
+.confirm-body{padding:16px 18px 20px}
+.confirm-text{font-size:15px;color:var(--fg);margin:12px 0 20px;text-align:center}
+.confirm-actions{display:flex;gap:8px}
+/* === LOADING / TOAST === */
+.loading-spin{
+  display:inline-block;width:18px;height:18px;
+  border:2px solid var(--border);border-top-color:var(--accent-mid);
+  border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{
+  position:fixed;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 12px);
+  left:50%;transform:translateX(-50%) translateY(0);
+  background:var(--fg);color:var(--bg);
+  padding:9px 18px;border-radius:20px;font-size:13px;font-weight:500;
+  z-index:200;white-space:nowrap;
+  transition:opacity .3s,transform .3s;opacity:0;pointer-events:none;
+}
+.toast.show{opacity:1}
+.toast.hide{opacity:0;transform:translateX(-50%) translateY(8px)}
+.loading-box{text-align:center;padding:36px 16px;color:var(--fg2)}
+.modal-back{
+  display:flex;align-items:center;gap:6px;
+  color:var(--accent-mid);font-weight:600;font-size:14px;
+  padding:12px 18px 0;cursor:pointer;
+}
+.modal-back:active{opacity:.7}
+.full-width{width:100%}
+.scan-fallback-row{display:flex;gap:8px;margin-bottom:12px}
 </style>
 </head>
 <body>
 
-<div style="display:flex;flex-direction:column;height:100%;">
-<header class="app-header">
-  <img src="icon.webp" class="app-header-icon" alt="Despensa 72h">
-  <div class="app-header-titles">
-    <h1>Despensa 72h</h1>
-    <div class="app-header-sub">Plano de preparação familiar</div>
+<header>
+  <img src="icon.webp" alt="" class="hdr-logo">
+  <div>
+    <span class="hdr-title">Despensa</span>
+    <span class="hdr-sub">Familiar</span>
   </div>
 </header>
 
-<div class="app-main" id="app-main">
-  <div class="view active" id="view-guia"><div id="guia-content"></div></div>
-  <div class="view" id="view-estoque"><div id="estoque-content"></div></div>
-  <div class="view" id="view-alertas"><div id="alertas-content"></div></div>
-</div>
+<main>
+  <div id="v-dash" class="view active"></div>
+  <div id="v-stock" class="view"></div>
+  <div id="v-alerts" class="view"></div>
+  <div id="v-config" class="view"></div>
+</main>
 
-<nav class="bottom-nav">
-  <button class="nav-btn active" data-view="guia" onclick="switchView('guia')">
-    <span class="nav-icon">🗺️</span><span class="nav-label">Guia</span>
+<nav class="bot-nav">
+  <button class="nav-btn active" data-tab="dash" onclick="go('dash')">
+    <span class="nav-icon">📊</span>
+    <span class="nav-label">Painel</span>
   </button>
-  <button class="nav-btn" data-view="estoque" onclick="switchView('estoque')">
-    <span class="nav-icon">📦</span><span class="nav-label">Estoque</span>
+  <button class="nav-btn" data-tab="stock" onclick="go('stock')">
+    <span class="nav-icon">📦</span>
+    <span class="nav-label">Estoque</span>
   </button>
-  <button class="nav-btn" data-view="alertas" onclick="switchView('alertas')">
-    <span class="nav-icon">🔔</span><span class="nav-label">Alertas</span>
-    <span class="nav-badge" id="badge-alertas" hidden></span>
+  <button class="nav-btn" data-tab="alerts" onclick="go('alerts')">
+    <span class="nav-icon">🔔</span>
+    <span class="nav-label">Alertas</span>
+    <span id="alert-badge" class="nav-badge" hidden>0</span>
+  </button>
+  <button class="nav-btn" data-tab="config" onclick="go('config')">
+    <span class="nav-icon">⚙️</span>
+    <span class="nav-label">Config</span>
   </button>
 </nav>
+
+<!-- Backdrop -->
+<div class="modal-bg" id="modal-bg" onclick="closeAdd()"></div>
+<!-- Add Sheet -->
+<div class="modal-sheet" id="modal-add">
+  <div class="modal-handle"></div>
+  <div id="modal-add-body"></div>
 </div>
-
-<button class="fab" id="fab-btn" onclick="openModal()" aria-label="Adicionar ao estoque" hidden>+</button>
-
-<div class="overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
-  <div class="sheet">
-    <div class="sheet-title" id="modal-title">Adicionar ao estoque</div>
-    <form id="stock-form" onsubmit="submitStockForm(event)">
-      <div class="form-group">
-        <label class="form-label" for="f-name">Nome do item</label>
-        <input class="form-input" id="f-name" type="text" placeholder="Ex: Arroz 1 kg" required autocomplete="off">
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label" for="f-qty">Quantidade</label>
-          <input class="form-input" id="f-qty" type="number" min="0.1" step="0.1" value="1">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="f-unit">Unidade</label>
-          <input class="form-input" id="f-unit" list="units-list" placeholder="un, kg…" autocomplete="off">
-          <datalist id="units-list">
-            <option value="un"><option value="kg"><option value="g"><option value="L">
-            <option value="pct"><option value="cx"><option value="fr"><option value="rl"><option value="sc">
-          </datalist>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="f-cat">Categoria</label>
-        <select class="form-select" id="f-cat">
-          <option value="alimento">🥫 Alimento</option>
-          <option value="agua">💧 Água</option>
-          <option value="saude">🩹 Saúde</option>
-          <option value="higiene">🧼 Higiene</option>
-          <option value="energia">🔦 Energia/Luz</option>
-          <option value="pet">🐾 Pet</option>
-          <option value="outros">📦 Outros</option>
-        </select>
-      </div>
-      <div class="form-group" id="fg-expiry">
-        <label class="form-label" for="f-expiry">Validade</label>
-        <input class="form-input" id="f-expiry" type="date">
-      </div>
-      <div class="form-group" id="fg-notes">
-        <label class="form-label" for="f-notes">Observação (opcional)</label>
-        <input class="form-input" id="f-notes" type="text" placeholder="Marca, onde guardou…" autocomplete="off">
-      </div>
-      <input type="hidden" id="f-edit-id">
-      <div class="form-actions">
-        <button type="button" class="btn-secondary" onclick="closeModal()">Cancelar</button>
-        <button type="submit" class="btn-primary">Salvar</button>
-      </div>
-    </form>
+<!-- Scanner -->
+<div class="scanner-wrap" id="scanner-wrap" hidden>
+  <video id="scan-video" autoplay playsinline muted></video>
+  <div class="scan-dim"></div>
+  <div class="scan-box">
+    <div class="scan-corner tl"></div><div class="scan-corner tr"></div>
+    <div class="scan-corner bl"></div><div class="scan-corner br"></div>
+    <div class="scan-line"></div>
+  </div>
+  <p class="scan-hint-text">Aponte para o código de barras do produto</p>
+  <button class="scan-cancel-btn" onclick="stopScan()">✕ Cancelar</button>
+</div>
+<!-- Confirm -->
+<div class="modal-bg" id="confirm-bg" onclick="closeConfirm()" style="z-index:60"></div>
+<div class="modal-sheet" id="modal-confirm" style="z-index:70">
+  <div class="modal-handle"></div>
+  <div class="confirm-body">
+    <p class="confirm-text" id="confirm-text">Excluir este item?</p>
+    <div class="confirm-actions">
+      <button class="btn-secondary" onclick="closeConfirm()">Cancelar</button>
+      <button class="btn-danger" id="confirm-ok-btn">Excluir</button>
+    </div>
   </div>
 </div>
+<!-- Toast -->
+<div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════════
-// PLANO MENSAL
-// ═══════════════════════════════════════════
-const MONTHS = [
-  {
-    num:1, icon:'🏠', title:'Sobrevivência básica',
-    period:'Mês 1 — esta semana', budget:'~R$180–250', where:'Supermercado comum',
-    desc:'Se falhar luz ou água por 72h, vocês ficam bem. Tudo disponível num único supermercado — dá pra ir hoje.',
-  },
-  {
-    num:2, icon:'💧', title:'Água independente',
-    period:'Mês 2', budget:'~R$130–180', where:'Loja de embalagens + farmácia',
-    desc:'Água mineral acaba em 2 dias. Galões PEAD duram décadas. Hipoclorito trata água de torneira em emergência.',
-  },
-  {
-    num:3, icon:'🩹', title:'Saúde e higiene',
-    period:'Mês 3', budget:'~R$150–220', where:'Farmácia + supermercado',
-    desc:'Kit médico completo e higiene para 7+ dias. Fechar essas lacunas faz diferença em qualquer emergência prolongada.',
-  },
-  {
-    num:4, icon:'🐾', title:'Cão + mochila de saída',
-    period:'Mês 4', budget:'~R$150–200', where:'Pet shop + mercado',
-    desc:'O Pastor Alemão no plano e a mochila de saída montada. Se precisar sair em 10 minutos, tudo está pronto.',
-  },
-  {
-    num:5, icon:'🫙', title:'Reserva de grãos',
-    period:'Mês 5', budget:'~R$80–120', where:'Supermercado + loja de R$1,99',
-    desc:'Método PET a fogo: arroz e feijão em garrafas seladas a vácuo duram anos. Louro repele insetos; chama consome o O₂.',
-  },
-  {
-    num:6, icon:'📋', title:'Mochila e documentos',
-    period:'Mês 6 — rotina', budget:'~R$80–120', where:'Papelaria + loja online',
-    desc:'Documentos importantes protegidos, contatos impressos e itens finais que completam a preparação da família.',
-  },
-];
-
-// ═══════════════════════════════════════════
-// LISTA DE COMPRAS (por mês)
-// ═══════════════════════════════════════════
-const DEFAULT_SHOPPING = [
-  // ── MÊS 1: SOBREVIVÊNCIA BÁSICA ──────────
-  {id:'w3',month:1,name:'Água mineral 5 L',cat:'agua',qty:4,unit:'un',done:false,
-    hint:'Crystal, Bonafont — reserva imediata enquanto galões não chegam'},
-  {id:'f1',month:1,name:'Cream cracker ou biscoito de água e sal',cat:'alimento',qty:4,unit:'pac',done:false,
-    hint:'Nestlé, Vitarella — base de carboidrato, validade 8–12 meses'},
-  {id:'f2',month:1,name:'Atum em lata (em água)',cat:'alimento',qty:8,unit:'un',done:false,
-    hint:'Gomes da Costa, Coqueiro — verificar abre-fácil'},
-  {id:'f3',month:1,name:'Sardinha em lata',cat:'alimento',qty:4,unit:'un',done:false,
-    hint:'Gomes da Costa — levar abridor manual de reserva'},
-  {id:'f4',month:1,name:'Leite UHT 1 L',cat:'alimento',qty:6,unit:'cx',done:false,
-    hint:'Parmalat, Piracanjuba — validade 3–6 meses sem refrigeração'},
-  {id:'f5',month:1,name:'Rapadura (blocos)',cat:'alimento',qty:4,unit:'un',done:false,
-    hint:'Validade 3–5 anos. Energia rápida, substitui mel e barrinha. Feira livre ou mercado nordestino'},
-  {id:'f6',month:1,name:'Paçoca dura (tipo rolha/tablete)',cat:'alimento',qty:12,unit:'un',done:false,
-    hint:'A SECA — não a mole. Validade 6–12 meses. Proteína + carboidrato num pacote que a criança aceita'},
-  {id:'l1',month:1,name:'Lanterna LED (200+ lúmens)',cat:'energia',qty:1,unit:'un',done:false,
-    hint:'Rayovac, Vonder — evitar sem marca'},
-  {id:'l2',month:1,name:'Lanterna de cabeça (headlamp)',cat:'energia',qty:1,unit:'un',done:false,
-    hint:'Vonder, Rayovac — deixa as mãos livres'},
-  {id:'l3',month:1,name:'Pilhas AA — caixa 20 un',cat:'energia',qty:1,unit:'cx',done:false,
-    hint:'Duracell, Rayovac Ultra, Energizer'},
-  {id:'l4',month:1,name:'Power bank 10.000 mAh',cat:'energia',qty:1,unit:'un',done:false,
-    hint:'Multilaser, Intelbras — manter sempre carregado'},
-  {id:'l6',month:1,name:'Rádio AM/FM a pilhas',cat:'energia',qty:1,unit:'un',done:false,
-    hint:'Mondial, Multilaser — essencial para alertas da Defesa Civil sem internet'},
-  {id:'h1',month:1,name:'Curativo adesivo — caixa variada',cat:'saude',qty:1,unit:'cx',done:false,
-    hint:'Curitas 3M, Johnson — tamanhos variados'},
-  {id:'h3',month:1,name:'Álcool 70% gel 500 mL',cat:'saude',qty:2,unit:'fr',done:false,
-    hint:'Farmax, Asseptgel — verificar que é 70%'},
-  {id:'h7',month:1,name:'Paracetamol adulto + infantil em gotas',cat:'saude',qty:1,unit:'cx',done:false,
-    hint:'Verificar dosagem por peso da criança — essencial'},
-  {id:'hy1',month:1,name:'Papel higiênico',cat:'higiene',qty:12,unit:'rl',done:false,
-    hint:'Neve, Personal, Mili'},
-  {id:'hy3',month:1,name:'Lenços umedecidos — pacote grande',cat:'higiene',qty:2,unit:'pct',done:false,
-    hint:'Pampers Sensitive — sem álcool; substitui banho em emergência'},
-
-  // ── MÊS 2: ÁGUA INDEPENDENTE ─────────────
-  {id:'w1',month:2,name:'Galão PEAD 20 L — grau alimentício',cat:'agua',qty:2,unit:'un',done:false,
-    hint:'Balde D\'Água, Protec — loja de embalagens ou Leroy Merlin. Dura décadas, bloqueia luz'},
-  {id:'w2',month:2,name:'Hipoclorito de sódio 2,5% (100 mL)',cat:'agua',qty:1,unit:'fr',done:false,
-    hint:'Hidrosan Plus — farmácia. 2 gotas/L para tratar água de torneira ou chuva'},
-  {id:'f7',month:2,name:'Amendoim torrado salgado',cat:'alimento',qty:2,unit:'pct',done:false,
-    hint:'Validade 1–2 anos fechado. Alto valor calórico — ótimo para armazenar em PET'},
-  {id:'f8',month:2,name:'Frutas em conserva (pêssego, uva, salada)',cat:'alimento',qty:4,unit:'un',done:false,
-    hint:'Del Monte — validade 2–3 anos. Vitaminas sem refrigeração, criança aceita bem'},
-
-  // ── MÊS 3: SAÚDE E HIGIENE ───────────────
-  {id:'h2',month:3,name:'Gaze estéril 10×10 + esparadrapo',cat:'saude',qty:1,unit:'cx',done:false,
-    hint:'Neve, Polar Fix + Micropore 3M'},
-  {id:'h4',month:3,name:'Soro fisiológico 0,9% — ampolas',cat:'saude',qty:1,unit:'cx',done:false,
-    hint:'Farmax — para lavar feridas e olhos'},
-  {id:'h5',month:3,name:'Luvas descartáveis caixa 20 un',cat:'saude',qty:1,unit:'cx',done:false,
-    hint:'Supermax — nitrila se alergia a látex'},
-  {id:'h6',month:3,name:'Termômetro digital',cat:'saude',qty:1,unit:'un',done:false,
-    hint:'G-Tech, Incoterm, Omron'},
-  {id:'h8',month:3,name:'Reidratação oral — sachês',cat:'saude',qty:4,unit:'sc',done:false,
-    hint:'Hidralyte, Pedialyte — essencial em diarreia ou calor extremo'},
-  {id:'h9',month:3,name:'Repelente adulto + versão infantil',cat:'saude',qty:2,unit:'fr',done:false,
-    hint:'Repelex Max adulto · versão infantil sem DEET'},
-  {id:'hy2',month:3,name:'Sabonete em barra — sem fragrância (4 un)',cat:'higiene',qty:4,unit:'un',done:false,
-    hint:'Dove sem perfume, Granado — tolerado por pele sensível'},
-  {id:'hy4',month:3,name:'Escova de dentes extra + pasta reserva',cat:'higiene',qty:1,unit:'cx',done:false,
-    hint:'1 escova embalada na mochila de saída'},
-  {id:'hy5',month:3,name:'Absorvente feminino — reserva 7 dias',cat:'higiene',qty:1,unit:'cx',done:false,
-    hint:'Estresse pode antecipar — manter reserva fora do ciclo'},
-  {id:'hy6',month:3,name:'Sacos de lixo 100 L + 30 L',cat:'higiene',qty:2,unit:'rl',done:false,
-    hint:'Gestão de resíduos evita pragas em emergência'},
-
-  // ── MÊS 4: CÃO + MOCHILA DE SAÍDA ────────
-  {id:'p1',month:4,name:'Ração — reserva 7 a 10 dias (Pastor Alemão)',cat:'pet',qty:1,unit:'cx',done:false,
-    hint:'~400–600 g/dia → 4–6 kg reserva. Pote hermético após abrir'},
-  {id:'p2',month:4,name:'Coleira reforçada + TAG gravável',cat:'pet',qty:1,unit:'un',done:false,
-    hint:'Pastor precisa coleira resistente. TAG com nome e telefone gravados a laser'},
-  {id:'p3',month:4,name:'Pote inox 2–3 L para ração e água',cat:'pet',qty:2,unit:'un',done:false,
-    hint:'NÃO dobrável — pastor quebra silicone. Inox é durável e higiênico'},
-  {id:'p4',month:4,name:'Guia/correia nylon reforçada 2 m',cat:'pet',qty:1,unit:'un',done:false,
-    hint:'Para cão >40 kg. Uma reserva na mochila de saída'},
-  {id:'l5',month:4,name:'Vela de parafina + caixa de fósforos',cat:'energia',qty:1,unit:'cx',done:false,
-    hint:'Backup barato — só com ventilação, nunca sem supervisão'},
-
-  // ── MÊS 5: RESERVA DE GRÃOS ──────────────
-  {id:'g1',month:5,name:'Arroz branco 5 kg (para envasar)',cat:'alimento',qty:2,unit:'pct',done:false,
-    hint:'Comprar extra — será armazenado em garrafas PET a vácuo com método da vela'},
-  {id:'g2',month:5,name:'Feijão carioca ou preto 1 kg (para envasar)',cat:'alimento',qty:3,unit:'pct',done:false,
-    hint:'Comprar extra — envasar em PET a vácuo. Validade se extende de 1 para 3–5 anos'},
-  {id:'v1',month:5,name:'Folha de louro seca (repelente natural)',cat:'alimento',qty:1,unit:'pct',done:false,
-    hint:'2–3 folhas por garrafa PET antes de selar — impede insetos nos grãos'},
-  {id:'v2',month:5,name:'Vela fina para o método vácuo',cat:'outros',qty:1,unit:'cx',done:false,
-    hint:'Acender DENTRO da garrafa PET cheia de grão e tampar imediatamente — consome O₂, cria vácuo. Garrafa comprime = sucesso'},
-  {id:'v3',month:5,name:'Funil plástico pequeno',cat:'outros',qty:1,unit:'un',done:false,
-    hint:'Facilita encher PETs sem desperdiçar. Pode improvisar cortando uma garrafa'},
-
-  // ── MÊS 6: MOCHILA E DOCUMENTOS ──────────
-  {id:'d1',month:6,name:'Pasta impermeável/ziploc para documentos',cat:'outros',qty:1,unit:'un',done:false,
-    hint:'RG, CPF, certidões, apólices de seguro — cópias plastificadas. Papelaria ou AliExpress'},
-  {id:'d2',month:6,name:'Lista impressa: contatos de emergência',cat:'outros',qty:1,unit:'un',done:false,
-    hint:'Defesa Civil local, vizinhos, familiar de referência, médico. Funciona sem bateria — plastificar'},
-  {id:'d3',month:6,name:'Apito de emergência',cat:'saude',qty:2,unit:'un',done:false,
-    hint:'Fox 40, Storm — sinalização em desastre. Um por mochila (adulto e criança)'},
-  {id:'d4',month:6,name:'Cobertor térmico de emergência (mylar)',cat:'outros',qty:2,unit:'un',done:false,
-    hint:'Prata/dourado, dobra no tamanho de um baralho. Farmácia, lojas de camping, AliExpress'},
-  {id:'d5',month:6,name:'Extintor pó ABC 1 kg',cat:'outros',qty:1,unit:'un',done:false,
-    hint:'Recomendado Defesa Civil — para o carro e um de reserva em casa. Revenda de extintores'},
-];
-
-const CAT_LABEL = {agua:'Água',alimento:'Alimento',energia:'Energia/Luz',saude:'Saúde',higiene:'Higiene',pet:'Pet',outros:'Outros'};
-const CAT_ICON  = {agua:'💧',alimento:'🥫',energia:'🔦',saude:'🩹',higiene:'🧼',pet:'🐾',outros:'📦'};
-
-// ═══════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════
-let state = {
-  view:'guia', shopping:[], stock:[], rotation:[], currentMonth:1, _shopAddMode:false,
+/* ============================================================
+   CONSTANTS
+   ============================================================ */
+const CATS = {
+  agua:    {label:'Água',      icon:'💧'},
+  graos:   {label:'Grãos',     icon:'🌾'},
+  proteina:{label:'Proteínas', icon:'🥩'},
+  conserva:{label:'Conservas', icon:'🥫'},
+  bebidas: {label:'Bebidas',   icon:'🧃'},
+  saude:   {label:'Saúde',     icon:'🩹'},
+  higiene: {label:'Higiene',   icon:'🧼'},
+  energia: {label:'Energia',   icon:'🔦'},
+  pet:     {label:'Pet',       icon:'🐾'},
+  outros:  {label:'Outros',    icon:'📦'},
 };
+const FOOD_CATS = ['graos','proteina','conserva','bebidas'];
+const CAT_UNITS = {
+  agua:    ['un','L','galão'],
+  graos:   ['kg','pct','g'],
+  proteina:['un','kg','pct','g'],
+  conserva:['un','caixa','kg'],
+  bebidas: ['un','cx','L','kg'],
+  saude:   ['un','cx','fr','sc'],
+  higiene: ['un','pct','cx','rl'],
+  energia: ['un','cx'],
+  pet:     ['un','sc','kg'],
+  outros:  ['un','cx','pct'],
+};
+const CATALOG = [
+  {id:'c001',name:'Água mineral 500mL',cat:'agua',unit:'un',qty:6,portionDays:0.17},
+  {id:'c002',name:'Água mineral 1,5L',cat:'agua',unit:'un',qty:4,portionDays:0.5},
+  {id:'c003',name:'Água mineral 5L',cat:'agua',unit:'un',qty:3,portionDays:1.67},
+  {id:'c004',name:'Galão PEAD 20L',cat:'agua',unit:'galão',qty:1,portionDays:6.67},
+  {id:'c005',name:'Hipoclorito 2,5% (purificador)',cat:'agua',unit:'fr',qty:1,portionDays:0},
+  {id:'c010',name:'Arroz branco 1kg',cat:'graos',unit:'kg',qty:5,portionDays:5},
+  {id:'c011',name:'Feijão carioca 1kg',cat:'graos',unit:'kg',qty:3,portionDays:5},
+  {id:'c012',name:'Feijão preto 1kg',cat:'graos',unit:'kg',qty:2,portionDays:5},
+  {id:'c013',name:'Macarrão 500g',cat:'graos',unit:'pct',qty:4,portionDays:2.5},
+  {id:'c014',name:'Farinha de trigo 1kg',cat:'graos',unit:'kg',qty:2,portionDays:4},
+  {id:'c015',name:'Aveia em flocos 500g',cat:'graos',unit:'pct',qty:2,portionDays:3},
+  {id:'c016',name:'Fubá 1kg',cat:'graos',unit:'kg',qty:1,portionDays:4},
+  {id:'c017',name:'Lentilha 500g',cat:'graos',unit:'pct',qty:2,portionDays:3},
+  {id:'c020',name:'Atum em lata 170g',cat:'proteina',unit:'un',qty:8,portionDays:1.7},
+  {id:'c021',name:'Sardinha em lata 125g',cat:'proteina',unit:'un',qty:6,portionDays:1.25},
+  {id:'c022',name:'Frango em lata 170g',cat:'proteina',unit:'un',qty:4,portionDays:1.7},
+  {id:'c023',name:'Amendoim torrado 200g',cat:'proteina',unit:'pct',qty:3,portionDays:1},
+  {id:'c024',name:'Paçoca dura (rolha)',cat:'proteina',unit:'un',qty:12,portionDays:0.3},
+  {id:'c025',name:'Pasta de amendoim 450g',cat:'proteina',unit:'un',qty:2,portionDays:2},
+  {id:'c030',name:'Extrato de tomate 340g',cat:'conserva',unit:'un',qty:4,portionDays:2},
+  {id:'c031',name:'Milho enlatado 170g',cat:'conserva',unit:'un',qty:4,portionDays:0.5},
+  {id:'c032',name:'Ervilha enlatada 170g',cat:'conserva',unit:'un',qty:4,portionDays:0.5},
+  {id:'c033',name:'Frutas em conserva 400g',cat:'conserva',unit:'un',qty:3,portionDays:1},
+  {id:'c034',name:'Palmito em conserva 300g',cat:'conserva',unit:'un',qty:2,portionDays:1},
+  {id:'c035',name:'Molho de tomate 340g',cat:'conserva',unit:'un',qty:4,portionDays:1},
+  {id:'c040',name:'Leite UHT 1L',cat:'bebidas',unit:'cx',qty:6,portionDays:2},
+  {id:'c041',name:'Leite em pó 400g',cat:'bebidas',unit:'cx',qty:2,portionDays:4},
+  {id:'c042',name:'Achocolatado UHT 200mL',cat:'bebidas',unit:'un',qty:4,portionDays:0.5},
+  {id:'c043',name:'Rapadura bloco 500g',cat:'bebidas',unit:'un',qty:2,portionDays:2},
+  {id:'c044',name:'Mel 500g',cat:'bebidas',unit:'un',qty:1,portionDays:3},
+  {id:'c050',name:'Curativo adesivo variado',cat:'saude',unit:'cx',qty:1,portionDays:0},
+  {id:'c051',name:'Álcool 70% gel 500mL',cat:'saude',unit:'fr',qty:2,portionDays:0},
+  {id:'c052',name:'Paracetamol adulto',cat:'saude',unit:'cx',qty:1,portionDays:0},
+  {id:'c053',name:'Paracetamol infantil gotas',cat:'saude',unit:'fr',qty:1,portionDays:0},
+  {id:'c054',name:'Soro fisiológico 0,9%',cat:'saude',unit:'cx',qty:1,portionDays:0},
+  {id:'c055',name:'Reidratação oral sachê',cat:'saude',unit:'sc',qty:4,portionDays:0},
+  {id:'c056',name:'Repelente adulto',cat:'saude',unit:'fr',qty:1,portionDays:0},
+  {id:'c057',name:'Termômetro digital',cat:'saude',unit:'un',qty:1,portionDays:0},
+  {id:'c058',name:'Luvas descartáveis cx 20un',cat:'saude',unit:'cx',qty:1,portionDays:0},
+  {id:'c059',name:'Apito de emergência',cat:'saude',unit:'un',qty:2,portionDays:0},
+  {id:'c060',name:'Papel higiênico 12 rolos',cat:'higiene',unit:'pct',qty:2,portionDays:0},
+  {id:'c061',name:'Sabonete em barra 4un',cat:'higiene',unit:'pct',qty:2,portionDays:0},
+  {id:'c062',name:'Lenços umedecidos grande',cat:'higiene',unit:'pct',qty:2,portionDays:0},
+  {id:'c063',name:'Absorvente feminino caixa',cat:'higiene',unit:'cx',qty:1,portionDays:0},
+  {id:'c064',name:'Sacos de lixo 100L rolo',cat:'higiene',unit:'rl',qty:2,portionDays:0},
+  {id:'c065',name:'Sabão em pó 1kg',cat:'higiene',unit:'cx',qty:1,portionDays:0},
+  {id:'c070',name:'Lanterna LED 200+ lm',cat:'energia',unit:'un',qty:1,portionDays:0},
+  {id:'c071',name:'Lanterna de cabeça',cat:'energia',unit:'un',qty:1,portionDays:0},
+  {id:'c072',name:'Pilhas AA cx 20un',cat:'energia',unit:'cx',qty:1,portionDays:0},
+  {id:'c073',name:'Power bank 10.000 mAh',cat:'energia',unit:'un',qty:1,portionDays:0},
+  {id:'c074',name:'Rádio AM/FM a pilhas',cat:'energia',unit:'un',qty:1,portionDays:0},
+  {id:'c075',name:'Vela parafina + caixa fósforos',cat:'energia',unit:'cx',qty:1,portionDays:0},
+  {id:'c080',name:'Ração cão grande 15kg',cat:'pet',unit:'sc',qty:1,portionDays:25},
+  {id:'c081',name:'Ração cão grande 3kg',cat:'pet',unit:'sc',qty:1,portionDays:5},
+  {id:'c082',name:'Ração cão pequeno 3kg',cat:'pet',unit:'sc',qty:1,portionDays:10},
+  {id:'c083',name:'Ração gato 3kg',cat:'pet',unit:'sc',qty:1,portionDays:12},
+  {id:'c084',name:'Pote inox cão grande',cat:'pet',unit:'un',qty:2,portionDays:0},
+  {id:'c090',name:'Cobertor térmico mylar',cat:'outros',unit:'un',qty:2,portionDays:0},
+  {id:'c091',name:'Extintor pó ABC 1kg',cat:'outros',unit:'un',qty:1,portionDays:0},
+  {id:'c092',name:'Pasta impermeável documentos',cat:'outros',unit:'un',qty:1,portionDays:0},
+];
+const DEFAULT_CFG = {adults:1,children:0,elderly:0,hasPet:false,targetDays:15,alertDays:30,_ok:false};
 
-function loadState() {
-  try {
-    const s = localStorage.getItem('despensa72h_v1');
-    if (s) {
-      const p = JSON.parse(s);
-      state.shopping    = p.shopping    || DEFAULT_SHOPPING.map(i=>({...i}));
-      state.stock       = p.stock       || [];
-      state.rotation    = p.rotation    || defaultRotation();
-      state.currentMonth = p.currentMonth || getActiveMonth();
-    } else {
-      state.shopping = DEFAULT_SHOPPING.map(i=>({...i}));
-      state.stock    = [];
-      state.rotation = defaultRotation();
-      state.currentMonth = 1;
-    }
-  } catch(e) {
-    state.shopping = DEFAULT_SHOPPING.map(i=>({...i}));
-    state.stock    = [];
-    state.rotation = defaultRotation();
-    state.currentMonth = 1;
+/* ============================================================
+   STATE
+   ============================================================ */
+let S = {stock:[], config:{...DEFAULT_CFG}};
+let currentTab = 'dash';
+let addMode = 'select';
+let formData = {};
+let editingId = null;
+let stockSearch = '';
+let catFilterVal = '';
+let openMenuId = null;
+let scanStream = null;
+let scanTimer = null;
+let scanStopped = false;
+
+function load(){
+  try{
+    const st=localStorage.getItem('dp_stock');
+    const cf=localStorage.getItem('dp_cfg');
+    if(st)S.stock=JSON.parse(st);
+    if(cf)S.config={...DEFAULT_CFG,...JSON.parse(cf)};
+  }catch(e){}
+}
+function save(){
+  try{
+    localStorage.setItem('dp_stock',JSON.stringify(S.stock));
+    localStorage.setItem('dp_cfg',JSON.stringify(S.config));
+  }catch(e){}
+}
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+function go(tab){
+  currentTab=tab;
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+  const map={dash:'v-dash',stock:'v-stock',alerts:'v-alerts',config:'v-config'};
+  const v=document.getElementById(map[tab]);
+  if(v)v.classList.add('active');
+  render();
+}
+function render(){ rDash();rStock();rAlerts();rConfig();updateBadge(); }
+
+/* ============================================================
+   UTILS
+   ============================================================ */
+function today(){return new Date().toISOString().slice(0,10);}
+function dLeft(exp){
+  if(!exp)return Infinity;
+  return Math.floor((new Date(exp+'T00:00:00')-new Date(today()+'T00:00:00'))/86400000);
+}
+function isExp(exp){return exp&&dLeft(exp)<0;}
+function isSoon(exp){const d=dLeft(exp);return isFinite(d)&&d>=0&&d<=(S.config.alertDays||30);}
+function fDate(str){if(!str)return'Sem validade';const[y,m,d]=str.split('-');return`${d}/${m}/${y}`;}
+function fDaysLeft(exp){
+  if(!exp)return'';
+  const d=dLeft(exp);
+  if(d<0)return`venceu há ${-d}d`;
+  if(d===0)return'vence hoje';
+  if(d===1)return'amanhã';
+  if(d<=30)return`${d} dias`;
+  return fDate(exp);
+}
+function uid(){return'i'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast show';
+  setTimeout(()=>t.className='toast hide',2300);
+}
+function portRate(cat,unit){
+  const r={agua:{L:1/3,mL:1/3000,un:0.5,galão:20/3,cx:0.5},graos:{kg:5,g:0.005,pct:2.5,un:1},proteina:{un:1.5,kg:10,g:0.01,pct:2},conserva:{un:0.5,kg:4,caixa:2,pct:1},bebidas:{un:0.5,cx:2,L:1,kg:3},pet:{un:0,sc:5,kg:4}};
+  return(r[cat]||{})[unit]||0;
+}
+
+/* ============================================================
+   DASHBOARD CALCS
+   ============================================================ */
+function eff(){const c=S.config;return Math.max(0.5,(c.adults||1)+(c.children||0)*0.6+(c.elderly||0)*0.8);}
+function wDays(){
+  const t=S.stock.filter(i=>i.cat==='agua'&&!isExp(i.expiry)).reduce((s,i)=>s+(i.portionDays||0)*(i.qty||0),0);
+  return t/eff();
+}
+function fDays(){
+  const t=S.stock.filter(i=>FOOD_CATS.includes(i.cat)&&!isExp(i.expiry)).reduce((s,i)=>s+(i.portionDays||0)*(i.qty||0),0);
+  return t/eff();
+}
+function petDays(){
+  return S.stock.filter(i=>i.cat==='pet'&&!isExp(i.expiry)).reduce((s,i)=>s+(i.portionDays||0)*(i.qty||0),0);
+}
+function alertCount(){return S.stock.filter(i=>isExp(i.expiry)||isSoon(i.expiry)).length;}
+function updateBadge(){
+  const n=alertCount(),b=document.getElementById('alert-badge');
+  if(n>0){b.textContent=n>9?'9+':n;b.hidden=false;}else b.hidden=true;
+}
+
+/* ============================================================
+   DASHBOARD VIEW
+   ============================================================ */
+function rDash(){
+  const el=document.getElementById('v-dash');if(!el)return;
+  const c=S.config,target=c.targetDays||15,w=wDays(),f=fDays(),pr=Math.min(w,f);
+  let status;
+  if(!c._ok){
+    status=`<div class="dash-status setup"><div class="status-icon">⚙️</div><div class="status-text"><span class="status-label">Configure sua família</span><div style="font-size:13px;color:var(--fg2);margin-top:4px">Informe quantas pessoas moram na casa para calcular dias de reserva.</div><span class="status-link" onclick="go('config')" style="display:inline-block;margin-top:8px">⚙️ Configurar agora →</span></div></div>`;
+  }else{
+    const cls=pr>=target?'good':pr>=7?'ok':pr>=3?'warn':'crit';
+    const icon=pr>=target?'✅':pr>=7?'⚡':pr>=3?'⚠️':'🆘';
+    const lim=w<=f?'Água':'Alimentos';
+    const limIcon=w<=f?'💧':'🍽️';
+    status=`<div class="dash-status ${cls}"><div class="status-icon">${icon}</div><div class="status-text"><span class="status-label">Prontidão estimada</span><div class="status-days">${pr<1&&pr>0?'<&nbsp;1':Math.floor(pr)} dias</div><div style="font-size:12px;color:var(--fg2);margin-top:2px">Limitado por ${limIcon} ${lim}</div></div></div>`;
   }
-}
-
-function saveState() {
-  try {
-    localStorage.setItem('despensa72h_v1', JSON.stringify({
-      shopping:state.shopping, stock:state.stock,
-      rotation:state.rotation, currentMonth:state.currentMonth,
-    }));
-  } catch(e){}
-}
-
-function defaultRotation() {
-  return [
-    {id:'r1',label:'Conferir validade e integridade dos alimentos',done:false},
-    {id:'r2',label:'Repor o que foi consumido',done:false},
-    {id:'r3',label:'Verificar galões: tampa, vazamento e data',done:false},
-    {id:'r4',label:'Conferir carga das lanternas e power banks',done:false},
-    {id:'r5',label:'Testar rádio e conferir pilhas',done:false},
-    {id:'r6',label:'Conferir kit de primeiros socorros e validades',done:false},
-    {id:'r7',label:'Verificar ração, guia e itens do cão',done:false},
-    {id:'r8',label:'Conferir documentos, contatos e mochila de saída',done:false},
-  ];
-}
-
-// ═══════════════════════════════════════════
-// NAV
-// ═══════════════════════════════════════════
-function switchView(v) {
-  state.view = v;
-  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
-  document.getElementById('view-' + v).classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.view === v));
-  document.getElementById('fab-btn').hidden = v !== 'estoque';
-  renderView(v);
-  document.getElementById('app-main').scrollTop = 0;
-}
-function renderView(v) {
-  if (v==='guia') renderGuia();
-  else if (v==='estoque') renderEstoque();
-  else if (v==='alertas') renderAlertas();
-  updateBadges();
-}
-
-// ═══════════════════════════════════════════
-// GUIA
-// ═══════════════════════════════════════════
-function getActiveMonth() {
-  for (let n=1; n<=6; n++) {
-    if (state.shopping.filter(i=>i.month===n).some(i=>!i.done)) return n;
-  }
-  return 6;
-}
-
-function readiness() {
-  const total = state.shopping.length;
-  return total ? Math.round(state.shopping.filter(i=>i.done).length / total * 100) : 0;
-}
-
-function readinessSub() {
-  const r = readiness();
-  if (r===0)   return 'Comece pelo Mês 1 — dá pra fazer hoje';
-  if (r<25)    return 'Bom começo — continue com o Mês 1';
-  if (r<50)    return 'Em andamento — siga para o Mês 2 e 3';
-  if (r<75)    return 'Mais da metade — família cada vez mais segura';
-  if (r<100)   return 'Falta pouco — revise os meses restantes';
-  return '🎉 Plano completo! Mantenha a rotação mensal.';
-}
-
-function setMonth(n) {
-  state.currentMonth = n;
-  saveState();
-  renderGuia();
-  document.getElementById('app-main').scrollTop = 0;
-}
-
-function renderGuia() {
-  const container = document.getElementById('guia-content');
-  const m = state.currentMonth;
-  const mData = MONTHS[m-1];
-
-  const mItems = state.shopping.filter(i=>i.month===m);
-  const doneCount  = mItems.filter(i=>i.done).length;
-  const totalCount = mItems.length;
-  const pct        = totalCount>0 ? Math.round(doneCount/totalCount*100) : 0;
-  const complete   = doneCount===totalCount && totalCount>0;
-  const r = readiness();
-
-  // Readiness band
-  const rHtml = `
-  <div class="readiness-band">
-    <div class="readiness-row">
-      <span class="readiness-title">Prontidão 72h</span>
-      <span class="readiness-pct">${r}%</span>
-    </div>
-    <div class="readiness-track"><div class="readiness-fill" style="width:${r}%"></div></div>
-    <div class="readiness-sub">${readinessSub()}</div>
-  </div>`;
-
-  // Month navigator
-  const navHtml = `
-  <div class="month-nav">
-    ${MONTHS.map(mo => {
-      const moItems = state.shopping.filter(i=>i.month===mo.num);
-      const moDone  = moItems.filter(i=>i.done).length;
-      const isActive = mo.num===m;
-      const isDone   = moDone===moItems.length && moItems.length>0;
-      return `<button class="month-nav-btn ${isActive?'active':isDone?'done':''}" onclick="setMonth(${mo.num})">
-        <span class="mn-label">${mo.icon} M${mo.num}${isDone&&!isActive?' ✓':''}</span>
-        <span class="mn-count">${moDone}/${moItems.length}</span>
-      </button>`;
-    }).join('')}
-  </div>`;
-
-  // Month card
-  const cardHtml = `
-  <div class="month-card">
-    <div class="month-card-head">
-      <div class="month-eyebrow"><span>${mData.icon}</span><span>${mData.period}</span></div>
-      <div class="month-title">${mData.title}</div>
-      <div class="month-desc">${mData.desc}</div>
-      <div class="month-pills">
-        <span class="month-pill">💰 ${mData.budget}</span>
-        <span class="month-pill">📍 ${mData.where}</span>
-      </div>
-    </div>
-    <div class="month-card-prog">
-      <div class="month-prog-row">
-        <div class="month-prog-track"><div class="month-prog-fill" style="width:${pct}%"></div></div>
-        <span class="month-prog-label">${doneCount}/${totalCount} itens</span>
-      </div>
-    </div>
-  </div>
-  ${complete ? `
-  <div class="month-complete-banner">
-    <span class="month-complete-text">✅ Mês ${m} concluído!</span>
-    ${m<6
-      ? `<button class="month-next-btn" onclick="setMonth(${m+1})">Ir para Mês ${m+1} →</button>`
-      : `<span class="month-complete-text">🎉 Plano completo!</span>`}
-  </div>` : ''}`;
-
-  // Item list
-  const cats = ['agua','alimento','energia','saude','higiene','pet','outros'];
-  const activeCats = cats.filter(c => mItems.some(i=>i.cat===c));
-  let itemsHtml = '';
-
-  activeCats.forEach(cat => {
-    const catItems = mItems.filter(i=>i.cat===cat);
-    if (!catItems.length) return;
-    itemsHtml += `<div class="sec-head">
-      <span class="sec-tag tag-${cat}">${CAT_ICON[cat]} ${CAT_LABEL[cat]}</span>
-      <span class="sec-count">${catItems.filter(i=>!i.done).length} restantes</span>
-      <button class="add-cat-btn" onclick="openAddShopItem('${cat}')" title="Adicionar item em ${CAT_LABEL[cat]}">+</button>
-    </div>`;
-    catItems.forEach(item => {
-      itemsHtml += `<div class="shop-item ${item.done?'done':''}" id="si-${item.id}">
-        <div class="shop-row" onclick="toggleShopItem('${item.id}')">
-          <input type="checkbox" class="shop-cb" ${item.done?'checked':''}
-            onclick="event.stopPropagation();toggleShopItem('${item.id}')" aria-label="${item.name}">
-          <div class="shop-info">
-            <div class="shop-name">${item.name}</div>
-            ${item.hint ? `<div class="shop-hint">${item.hint}</div>` : ''}
-          </div>
-          <span class="shop-qty">${item.qty} ${item.unit}</span>
-        </div>
-        <div class="expiry-row ${item.done&&!item.stockAdded?'show':''}" id="er-${item.id}">
-          <span class="expiry-label">Qtd:</span>
-          <input type="number" class="expiry-qty" id="eq-${item.id}" value="${item.qty}" min="0.1" step="0.1" title="Quanto você comprou">
-          <span class="expiry-label">${item.unit} &nbsp;·&nbsp; Val:</span>
-          <input type="date" class="expiry-input" id="ed-${item.id}"
-            min="${new Date().toISOString().split('T')[0]}">
-          <button class="expiry-btn-add" onclick="addToStockFromShop('${item.id}')">+ Estoque</button>
-          <button class="expiry-btn-skip" onclick="dismissExpiryRow('${item.id}')">Pular</button>
-        </div>
-      </div>`;
-    });
-  });
-
-  itemsHtml += `<div style="padding:16px;">
-    <button class="btn-secondary" style="width:100%;" onclick="openAddShopItem(null)">+ Adicionar item a este mês</button>
-  </div>`;
-
-  container.innerHTML = rHtml + navHtml + cardHtml + itemsHtml;
-}
-
-function toggleShopItem(id) {
-  const item = state.shopping.find(i=>i.id===id);
-  if (!item) return;
-  item.done = !item.done;
-  if (!item.done) item.stockAdded = false;
-  saveState(); renderGuia();
-}
-
-function dismissExpiryRow(id) {
-  const item = state.shopping.find(i=>i.id===id);
-  if (item) item.stockAdded = true;
-  saveState();
-  const row = document.getElementById('er-'+id);
-  if (row) row.classList.remove('show');
-}
-
-function addToStockFromShop(id) {
-  const item = state.shopping.find(i=>i.id===id);
-  if (!item) return;
-  const dateInput = document.getElementById('ed-'+id);
-  const qtyInput  = document.getElementById('eq-'+id);
-  const qty = qtyInput ? (parseFloat(qtyInput.value) || item.qty) : item.qty;
-  state.stock.push({
-    id:'stk_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),
-    name: item.name.replace(/ \(.*?\)$/,'').replace(/ —.*$/,'').trim(),
-    cat:item.cat, qty, unit:item.unit,
-    expiry: dateInput ? dateInput.value : '',
-    addedDate: new Date().toISOString().split('T')[0], notes:'',
-  });
-  if (item) item.stockAdded = true;
-  saveState();
-  const row = document.getElementById('er-'+id);
-  if (row) {
-    row.innerHTML = '<span style="font-size:12px;color:var(--accent);padding:0 0 10px 0;">✓ Adicionado ao estoque</span>';
-    row.classList.add('show');
-    setTimeout(() => row.classList.remove('show'), 2000);
-  }
-  updateBadges();
-}
-
-function openAddShopItem(cat) {
-  state._shopAddMode = true;
-  document.getElementById('modal-title').textContent = 'Novo item — Mês ' + state.currentMonth;
-  document.getElementById('stock-form').reset();
-  document.getElementById('f-edit-id').value = '';
-  document.getElementById('f-cat').value = cat || 'alimento';
-  document.getElementById('f-qty').value = 1;
-  document.getElementById('f-unit').value = 'un';
-  document.getElementById('fg-expiry').hidden = true;
-  document.getElementById('fg-notes').hidden = true;
-  document.getElementById('modal-overlay').classList.add('open');
-  setTimeout(() => document.getElementById('f-name').focus(), 300);
-}
-
-// ═══════════════════════════════════════════
-// ESTOQUE
-// ═══════════════════════════════════════════
-function renderEstoque() {
-  const container = document.getElementById('estoque-content');
-  const items = [...state.stock].sort((a,b) => {
-    if (!a.expiry&&!b.expiry) return 0;
-    if (!a.expiry) return 1;
-    if (!b.expiry) return -1;
-    return a.expiry.localeCompare(b.expiry);
-  });
-
-  const toolbar = `<div class="export-bar">
-    <button class="export-btn" onclick="openModal()">➕ Adicionar item</button>
-    <button class="export-btn" onclick="exportToPDF()" ${items.length===0?'disabled style="opacity:.4;cursor:default;"':''}>📄 Exportar PDF</button>
-    <span class="sort-label">${items.length} ${items.length===1?'item':'itens'}</span>
-  </div>`;
-
-  if (!items.length) {
-    container.innerHTML = toolbar + `<div class="empty-state">
-      <div class="empty-icon">📦</div>
-      <div class="empty-title">Estoque vazio</div>
-      <div class="empty-desc">No Guia, marque os itens comprados e registre a validade.</div>
-    </div>`;
-    return;
-  }
-
-  let html = toolbar + `<div class="stock-list">`;
-  items.forEach(item => {
-    const info = getExpiryInfo(item.expiry);
-    html += `<div class="stock-item">
-      <div class="stock-left">
-        <div class="stock-name">${esc(item.name)}</div>
-        <div class="stock-meta">
-          <span class="stock-qty">${item.qty} ${item.unit}</span>
-          <span class="sec-tag tag-${item.cat}" style="font-size:10px;padding:1px 7px;">${CAT_ICON[item.cat]||'📦'} ${CAT_LABEL[item.cat]||'Outros'}</span>
-          <span class="expiry-badge ${info.cls}">${info.label}</span>
-        </div>
-        ${item.notes ? `<div style="font-size:12px;color:var(--fg-dim);margin-top:3px;">${esc(item.notes)}</div>` : ''}
-      </div>
-      <div class="stock-actions">
-        <button class="action-btn" onclick="editStockItem('${item.id}')">✏️</button>
-        <button class="action-btn del" onclick="deleteStockItem('${item.id}')">🗑</button>
-      </div>
-    </div>`;
-  });
-  html += '</div>';
-  container.innerHTML = html;
-}
-
-function getExpiryInfo(expiry) {
-  if (!expiry) return {label:'Sem validade',cls:'expiry-none'};
-  const today = new Date(); today.setHours(0,0,0,0);
-  const exp   = new Date(expiry+'T00:00:00');
-  const days  = Math.round((exp-today)/86400000);
-  if (days<0)   return {label:`Venceu há ${Math.abs(days)}d`,cls:'expiry-urgent'};
-  if (days===0) return {label:'Vence hoje',cls:'expiry-urgent'};
-  if (days<=30) return {label:`${days}d restantes`,cls:'expiry-urgent'};
-  if (days<=90) return {label:`${days}d restantes`,cls:'expiry-warn'};
-  return {label:`~${Math.floor(days/30)} meses`,cls:'expiry-ok'};
-}
-
-function editStockItem(id) {
-  const item = state.stock.find(i=>i.id===id);
-  if (!item) return;
-  document.getElementById('modal-title').textContent = 'Editar item';
-  document.getElementById('fg-expiry').hidden = false;
-  document.getElementById('fg-notes').hidden  = false;
-  document.getElementById('f-name').value   = item.name;
-  document.getElementById('f-qty').value    = item.qty;
-  document.getElementById('f-unit').value   = item.unit;
-  document.getElementById('f-cat').value    = item.cat;
-  document.getElementById('f-expiry').value = item.expiry||'';
-  document.getElementById('f-notes').value  = item.notes||'';
-  document.getElementById('f-edit-id').value = id;
-  document.getElementById('modal-overlay').classList.add('open');
-  setTimeout(() => document.getElementById('f-name').focus(), 300);
-}
-
-function deleteStockItem(id) {
-  if (!confirm('Remover item do estoque?')) return;
-  state.stock = state.stock.filter(i=>i.id!==id);
-  saveState(); renderEstoque(); updateBadges();
-}
-
-// ═══════════════════════════════════════════
-// ALERTAS
-// ═══════════════════════════════════════════
-function renderAlertas() {
-  const container = document.getElementById('alertas-content');
-  const today = new Date(); today.setHours(0,0,0,0);
-  const expired=[],urgent=[],warn=[],ok=[],none=[];
-  state.stock.forEach(item => {
-    if (!item.expiry) { none.push(item); return; }
-    const days = Math.round((new Date(item.expiry+'T00:00:00')-today)/86400000);
-    if (days<0)      expired.push({...item,days});
-    else if(days<=30) urgent.push({...item,days});
-    else if(days<=90) warn.push({...item,days});
-    else              ok.push({...item,days});
-  });
-
-  let html='';
-  function renderGroup(title,items,dotClass,labelFn) {
-    if (!items.length) return '';
-    let g=`<div class="alert-group-head"><span class="alert-dot ${dotClass}"></span>${title} (${items.length})</div>`;
-    items.sort((a,b)=>(a.days||0)-(b.days||0)).forEach(item=>{
-      const info=getExpiryInfo(item.expiry);
-      g+=`<div class="stock-item">
-        <div class="stock-left">
-          <div class="stock-name">${esc(item.name)}</div>
-          <div class="stock-meta"><span class="stock-qty">${item.qty} ${item.unit}</span><span class="expiry-badge ${info.cls}">${labelFn(item)}</span></div>
-        </div>
-        <div class="stock-actions">
-          <button class="action-btn del" onclick="deleteStockItem('${item.id}')" style="font-size:11px;padding:4px 8px;">Consumido</button>
-        </div>
-      </div>`;
-    });
-    return g;
-  }
-
-  html += renderGroup('Vencidos',expired,'dot-gray',i=>`Venceu há ${Math.abs(i.days)}d`);
-  html += renderGroup('Vence em até 30 dias',urgent,'dot-red',i=>`${i.days}d restantes`);
-  html += renderGroup('Vence em 31–90 dias',warn,'dot-amber',i=>`${i.days}d`);
-
-  if (!expired.length&&!urgent.length&&!warn.length) {
-    html+=`<div class="empty-state">
-      <div class="empty-icon">✅</div>
-      <div class="empty-title">Nenhum alerta</div>
-      <div class="empty-desc">${state.stock.length===0?'Adicione itens ao estoque para monitorar vencimentos.':'Todos os itens estão OK por mais de 90 dias.'}</div>
-    </div>`;
-  }
-
-  if (ok.length) {
-    html+=`<div class="alert-group-head"><span class="alert-dot dot-green"></span>OK — mais de 90 dias (${ok.length})</div>`;
-    ok.forEach(item=>{
-      html+=`<div class="stock-item"><div class="stock-left">
-        <div class="stock-name" style="color:var(--fg-muted)">${esc(item.name)}</div>
-        <div class="stock-meta"><span class="expiry-badge expiry-ok">~${Math.floor(item.days/30)} meses</span></div>
-      </div></div>`;
-    });
-  }
-
-  const rotDone = state.rotation.filter(r=>r.done).length;
-  html+=`<div class="rotation-card">
-    <div class="rotation-head">
-      <span style="font-size:16px;">🔄</span>
-      <span class="rotation-head-title">Rotina mensal · ${rotDone}/${state.rotation.length}</span>
-      <button class="rotation-reset" onclick="resetRotation()">Reiniciar</button>
-    </div>
-    ${state.rotation.map(r=>`
-      <div class="rot-item ${r.done?'done':''}" onclick="toggleRotation('${r.id}')">
-        <input type="checkbox" class="rot-cb" ${r.done?'checked':''} onclick="event.stopPropagation();toggleRotation('${r.id}')">
-        <span class="rot-label">${r.label}</span>
-      </div>`).join('')}
-  </div>`;
-
-  container.innerHTML = html;
-}
-
-function toggleRotation(id) {
-  const r=state.rotation.find(x=>x.id===id);
-  if(r) r.done=!r.done;
-  saveState(); renderAlertas();
-}
-function resetRotation() {
-  state.rotation.forEach(r=>r.done=false);
-  saveState(); renderAlertas();
-}
-
-// ═══════════════════════════════════════════
-// MODAL
-// ═══════════════════════════════════════════
-function openModal(prefill) {
-  state._shopAddMode = false;
-  document.getElementById('fg-expiry').hidden = false;
-  document.getElementById('fg-notes').hidden  = false;
-  if (prefill) {
-    document.getElementById('modal-title').textContent = 'Adicionar ao estoque';
-    document.getElementById('f-name').value  = prefill.name||'';
-    document.getElementById('f-qty').value   = prefill.qty||1;
-    document.getElementById('f-unit').value  = prefill.unit||'un';
-    document.getElementById('f-cat').value   = prefill.cat||'alimento';
-    document.getElementById('f-expiry').value = '';
-    document.getElementById('f-notes').value  = '';
-    document.getElementById('f-edit-id').value = '';
-  } else if (!document.getElementById('f-edit-id').value) {
-    document.getElementById('modal-title').textContent = 'Adicionar ao estoque';
-    document.getElementById('stock-form').reset();
-    document.getElementById('f-edit-id').value = '';
-  }
-  document.getElementById('modal-overlay').classList.add('open');
-  setTimeout(()=>document.getElementById('f-name').focus(),300);
-}
-
-function closeModal() {
-  state._shopAddMode = false;
-  document.getElementById('fg-expiry').hidden = false;
-  document.getElementById('fg-notes').hidden  = false;
-  document.getElementById('modal-overlay').classList.remove('open');
-}
-
-function handleOverlayClick(e) {
-  if (e.target===document.getElementById('modal-overlay')) closeModal();
-}
-
-function submitStockForm(e) {
-  e.preventDefault();
-  const name = document.getElementById('f-name').value.trim();
-  if (!name) return;
-
-  if (state._shopAddMode) {
-    state.shopping.push({
-      id:'custom_'+Date.now(), month:state.currentMonth, name,
-      cat:document.getElementById('f-cat').value,
-      qty:parseFloat(document.getElementById('f-qty').value)||1,
-      unit:document.getElementById('f-unit').value.trim()||'un',
-      done:false, hint:'',
-    });
-    saveState(); closeModal(); renderGuia();
-    return;
-  }
-
-  const editId = document.getElementById('f-edit-id').value;
-  const data = {
-    name,
-    qty:   parseFloat(document.getElementById('f-qty').value)||1,
-    unit:  document.getElementById('f-unit').value.trim()||'un',
-    cat:   document.getElementById('f-cat').value,
-    expiry:document.getElementById('f-expiry').value,
-    notes: document.getElementById('f-notes').value.trim(),
+  const gauge=(title,icon,days,meta)=>{
+    const pct=Math.min(days/target*100,100);
+    const cls=days<3?'crit':days<7?'warn':days<target?'ok':'great';
+    const lbl=days<3?'⚠️ Crítico':days<7?'⚠️ Baixo':days<target?'✓ Estável':'✓ Meta atingida';
+    return`<div class="gauge-card"><div class="gauge-top"><div class="gauge-name"><span class="gauge-icon">${icon}</span><span class="gauge-title">${title}</span></div><div><span class="gauge-days">${days<1&&days>0?'<1':Math.floor(days)}</span><span class="gauge-unit">dias</span></div></div><div class="gauge-track"><div class="gauge-fill ${cls}" style="width:${pct}%"></div></div><div class="gauge-meta"><span>${lbl}</span><span>${meta}</span></div></div>`;
   };
-  if (editId) {
-    const item=state.stock.find(i=>i.id===editId);
-    if(item) Object.assign(item,data);
-  } else {
-    state.stock.push({
-      id:'stk_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),
-      addedDate:new Date().toISOString().split('T')[0], ...data
+  const nW=S.stock.filter(i=>i.cat==='agua'&&!isExp(i.expiry)).length;
+  const nF=S.stock.filter(i=>FOOD_CATS.includes(i.cat)&&!isExp(i.expiry)).length;
+  const ac=alertCount();
+  const alertCard=ac>0?`<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin:0 16px 10px;display:flex;align-items:center;gap:12px;cursor:pointer" onclick="go('alerts')"><span style="font-size:24px">🔔</span><div style="flex:1"><div style="font-weight:600;font-size:14px">${ac} item${ac!==1?'s':''} ${ac===1?'precisa':'precisam'} de atenção</div><div style="font-size:12px;color:var(--fg2)">Vencidos ou próximos do vencimento</div></div><span style="color:var(--fg3);font-size:18px">›</span></div>`:'';
+  const petCard=c.hasPet&&S.stock.some(i=>i.cat==='pet')?gauge('Pet','🐾',petDays(),`${S.stock.filter(i=>i.cat==='pet'&&!isExp(i.expiry)).length} item(s)`):'';
+  const peopleStr=`${c.adults||1}A${c.children?` ${c.children}C`:''}${c.elderly?` ${c.elderly}I':''}·Meta ${target}d`;
+  el.innerHTML=status+(c._ok?`<div style="text-align:center;padding:2px 16px 10px"><span style="font-size:12px;color:var(--fg3)">${c.adults||1} adulto${(c.adults||1)!==1?'s':''}${c.children?` · ${c.children} criança${c.children!==1?'s':''}` :''}${c.elderly?` · ${c.elderly} idoso${c.elderly!==1?'s':''}` :''} · Meta: ${target} dias</span></div>`:'')+gauge('Água','💧',w,`${nW} item(s)`)+gauge('Alimentos','🍽️',f,`${nF} item(s)`)+petCard+alertCard+`<div style="text-align:center;padding:16px 16px 0"><button class="btn-primary-outline" onclick="go('stock')">📦 Ver estoque</button></div>`;
+}
+
+/* ============================================================
+   ESTOQUE VIEW
+   ============================================================ */
+function rStock(){
+  const el=document.getElementById('v-stock');if(!el)return;
+  const chips=['', ...Object.keys(CATS)].map(k=>{
+    const active=catFilterVal===k;
+    const label=k===''?'Todos':`${CATS[k].icon} ${CATS[k].label}`;
+    return`<button class="chip ${active?'active':''}" onclick="setCatFilter('${k}')">${label}</button>`;
+  }).join('');
+  let items=S.stock.filter(i=>{
+    const ms=!stockSearch||i.name.toLowerCase().includes(stockSearch.toLowerCase());
+    const mc=!catFilterVal||i.cat===catFilterVal;
+    return ms&&mc;
+  });
+  items.sort((a,b)=>{
+    const ae=isExp(a.expiry),be=isExp(b.expiry);
+    if(ae&&!be)return-1;if(!ae&&be)return 1;
+    if(a.expiry&&b.expiry)return a.expiry.localeCompare(b.expiry);
+    if(a.expiry&&!b.expiry)return-1;if(!a.expiry&&b.expiry)return 1;
+    return a.name.localeCompare(b.name);
+  });
+  const hdr=`<div class="search-wrap"><input class="search-input" placeholder="🔍 Buscar produto..." oninput="onStockSearch(this.value)" value="${esc(stockSearch)}"></div><div class="cat-chips">${chips}</div>`;
+  if(S.stock.length===0){
+    el.innerHTML=hdr+`<div class="empty-state"><div class="empty-state-icon">📦</div><h3>Estoque vazio</h3><p>Comece registrando o que você tem em casa</p><button class="btn-primary-outline" onclick="openAdd()">+ Adicionar item</button></div>`;
+    return;
+  }
+  const grouped={};
+  items.forEach(i=>{if(!grouped[i.cat])grouped[i.cat]=[];grouped[i.cat].push(i);});
+  let html=hdr;
+  if(!items.length){html+=`<div style="text-align:center;padding:32px;color:var(--fg2)">Nenhum item encontrado</div>`;}
+  else{
+    Object.keys(grouped).forEach(cat=>{
+      const c=CATS[cat]||{icon:'📦',label:cat};
+      const rows=grouped[cat];
+      html+=`<div class="sec-hdr"><span class="sec-title">${c.icon} ${c.label}</span><span class="sec-count">${rows.length} item${rows.length!==1?'s':''}</span></div>`;
+      rows.forEach(item=>{
+        const exp=isExp(item.expiry),soon=isSoon(item.expiry);
+        const cls=exp?'expired':soon?'soon':'';
+        const expCls=exp?'crit':soon&&dLeft(item.expiry)<=7?'crit':soon?'soon':'ok';
+        const expTxt=item.expiry?fDaysLeft(item.expiry):'Sem validade';
+        const actOpen=openMenuId===item.id;
+        html+=`<div class="item-row ${cls}" id="row-${item.id}"><div class="item-icon">${c.icon}</div><div class="item-info"><div class="item-name">${esc(item.name)}</div><div class="item-qty">${item.qty} ${item.unit}</div></div><div class="item-expiry ${expCls}">${expTxt}</div><button class="item-menu-btn" onclick="toggleMenu('${item.id}',event)">⋮</button><div class="item-actions ${actOpen?'open':''}"><button class="item-act-btn edit" onclick="editItem('${item.id}')">✏️ Editar</button><button class="item-act-btn del" onclick="confirmDel('${item.id}')">🗑️</button></div></div>`;
+      });
     });
   }
-  saveState(); closeModal(); renderEstoque(); updateBadges();
+  el.innerHTML=html;
+}
+function onStockSearch(v){stockSearch=v;rStock();}
+function setCatFilter(v){catFilterVal=v;rStock();}
+function toggleMenu(id,e){e.stopPropagation();openMenuId=openMenuId===id?null:id;rStock();}
+document.addEventListener('click',()=>{if(openMenuId){openMenuId=null;rStock();}});
+
+/* ============================================================
+   ALERTAS VIEW
+   ============================================================ */
+function rAlerts(){
+  const el=document.getElementById('v-alerts');if(!el)return;
+  const exp=S.stock.filter(i=>isExp(i.expiry)).sort((a,b)=>a.expiry.localeCompare(b.expiry));
+  const sc=S.stock.filter(i=>!isExp(i.expiry)&&isSoon(i.expiry)&&dLeft(i.expiry)<=7).sort((a,b)=>a.expiry.localeCompare(b.expiry));
+  const sn=S.stock.filter(i=>!isExp(i.expiry)&&isSoon(i.expiry)&&dLeft(i.expiry)>7).sort((a,b)=>a.expiry.localeCompare(b.expiry));
+  if(!exp.length&&!sc.length&&!sn.length){
+    el.innerHTML=`<div class="empty-state"><div class="empty-state-icon">✅</div><h3>Tudo em ordem</h3><p>Nenhum item vencido ou próximo do vencimento</p></div>`;
+    return;
+  }
+  const row=(item,type)=>{
+    const c=CATS[item.cat]||{icon:'📦'};
+    const d=dLeft(item.expiry);
+    const badge=type==='exp'?`<span class="alert-badge expired">Vencido</span>`:type==='sc'?`<span class="alert-badge soon-crit">${d}d</span>`:`<span class="alert-badge soon">${fDaysLeft(item.expiry)}</span>`;
+    return`<div class="alert-row ${type==='exp'?'expired':type==='sc'?'soon-crit':'soon'}" onclick="editItem('${item.id}')"><span class="alert-icon">${c.icon}</span><div class="alert-info"><div class="alert-name">${esc(item.name)}</div><div class="alert-detail">${item.qty} ${item.unit} · ${fDate(item.expiry)}</div></div>${badge}</div>`;
+  };
+  let html='';
+  if(exp.length)html+=`<div class="sec-hdr"><span class="sec-title" style="color:var(--red)">🆘 Vencidos</span><span class="sec-count">${exp.length}</span></div>`+exp.map(i=>row(i,'exp')).join('');
+  if(sc.length)html+=`<div class="sec-hdr"><span class="sec-title" style="color:var(--amber)">⚠️ Vence em até 7 dias</span><span class="sec-count">${sc.length}</span></div>`+sc.map(i=>row(i,'sc')).join('');
+  if(sn.length)html+=`<div class="sec-hdr"><span class="sec-title">🕐 Próximos do vencimento</span><span class="sec-count">${sn.length}</span></div>`+sn.map(i=>row(i,'sn')).join('');
+  el.innerHTML=html;
 }
 
-// ═══════════════════════════════════════════
-// BADGES
-// ═══════════════════════════════════════════
-function updateBadges() {
-  const today=new Date(); today.setHours(0,0,0,0);
-  const count=state.stock.filter(item=>{
-    if(!item.expiry) return false;
-    return Math.round((new Date(item.expiry+'T00:00:00')-today)/86400000)<=30;
-  }).length;
-  const badge=document.getElementById('badge-alertas');
-  badge.textContent=count; badge.hidden=count===0;
+/* ============================================================
+   CONFIG VIEW
+   ============================================================ */
+function rConfig(){
+  const el=document.getElementById('v-config');if(!el)return;
+  const c=S.config;
+  el.innerHTML=`<div class="cfg-section"><div class="cfg-section-title">Pessoas na casa</div>
+    <div class="cfg-row"><div class="cfg-label">Adultos (≥13 anos)<span class="cfg-sub">Consumo padrão</span></div><input class="cfg-num" type="number" min="0" max="20" value="${c.adults||1}" oninput="S.config.adults=+this.value"></div>
+    <div class="cfg-row"><div class="cfg-label">Crianças (&lt;13 anos)<span class="cfg-sub">60% do consumo adulto</span></div><input class="cfg-num" type="number" min="0" max="20" value="${c.children||0}" oninput="S.config.children=+this.value"></div>
+    <div class="cfg-row"><div class="cfg-label">Idosos (&gt;65 anos)<span class="cfg-sub">80% do consumo adulto</span></div><input class="cfg-num" type="number" min="0" max="20" value="${c.elderly||0}" oninput="S.config.elderly=+this.value"></div>
+    <div class="cfg-row"><div class="cfg-label">Tem animais de estimação?<span class="cfg-sub">Exibe painel de ração</span></div><div class="toggle ${c.hasPet?'on':''}" onclick="togglePet()" id="pet-toggle"></div></div>
+    </div><div class="cfg-section"><div class="cfg-section-title">Metas e alertas</div>
+    <div class="cfg-row"><div class="cfg-label">Meta de dias de reserva<span class="cfg-sub">Padrão: 15 dias</span></div><input class="cfg-num" type="number" min="3" max="365" value="${c.targetDays||15}" oninput="S.config.targetDays=+this.value"></div>
+    <div class="cfg-row"><div class="cfg-label">Alertar X dias antes do vencimento<span class="cfg-sub">Padrão: 30 dias</span></div><input class="cfg-num" type="number" min="3" max="180" value="${c.alertDays||30}" oninput="S.config.alertDays=+this.value"></div>
+    </div><div class="cfg-section"><button class="cfg-save-btn" onclick="saveCfg()">✓ Salvar configuração</button></div>
+    <div style="text-align:center;padding:8px 16px 24px"><span style="font-size:12px;color:var(--fg3)">Despensa Familiar · v2.0</span></div>`;
+}
+function togglePet(){S.config.hasPet=!S.config.hasPet;const t=document.getElementById('pet-toggle');if(t)t.className='toggle '+(S.config.hasPet?'on':'');}
+function saveCfg(){S.config._ok=true;save();showToast('Configuração salva');render();}
+
+/* ============================================================
+   ADD FLOW
+   ============================================================ */
+function openAdd(predata){
+  if(predata){formData={...predata};addMode='form';}
+  else{formData={};addMode='select';}
+  editingId=null;
+  rModal();
+  document.getElementById('modal-bg').classList.add('open');
+  document.getElementById('modal-add').classList.add('open');
+}
+function closeAdd(){
+  document.getElementById('modal-bg').classList.remove('open');
+  document.getElementById('modal-add').classList.remove('open');
+  setTimeout(()=>{addMode='select';formData={};editingId=null;},300);
+}
+function setMode(m){addMode=m;rModal();}
+
+function rModal(){
+  const body=document.getElementById('modal-add-body');if(!body)return;
+  if(addMode==='select'){
+    body.innerHTML=`<div class="modal-title">Adicionar item</div><div class="modal-body">
+      <button class="add-mode-btn" onclick="tryStartScan()"><span class="add-mode-icon">📷</span><div><span class="add-mode-name">Escanear código de barras</span><span class="add-mode-desc">Busca o produto automaticamente</span></div></button>
+      <button class="add-mode-btn" onclick="setMode('catalog')"><span class="add-mode-icon">📋</span><div><span class="add-mode-name">Buscar no catálogo</span><span class="add-mode-desc">Itens sugeridos para emergência</span></div></button>
+      <button class="add-mode-btn" onclick="openForm({})"><span class="add-mode-icon">✏️</span><div><span class="add-mode-name">Adicionar manualmente</span><span class="add-mode-desc">Preencha nome e dados do item</span></div></button>
+    </div>`;
+  }else if(addMode==='catalog'){
+    body.innerHTML=`<div style="display:flex;align-items:center"><div class="modal-back" onclick="setMode('select')">‹ Voltar</div><div class="modal-title" style="padding-left:4px">Catálogo</div></div><div class="modal-body"><input class="cat-search" placeholder="🔍 Buscar..." oninput="rCatalog(this.value)" id="cat-search-in"><div id="catalog-list">${buildCatalogList('')}</div></div>`;
+  }else if(addMode==='form'){
+    body.innerHTML=`<div style="display:flex;align-items:center"><div class="modal-back" onclick="setMode('select')">‹ Voltar</div><div class="modal-title" style="padding-left:4px">${editingId?'Editar item':'Novo item'}</div></div><div class="modal-body">${buildForm()}</div>`;
+    document.getElementById('item-form').addEventListener('submit',e=>{e.preventDefault();submitForm();});
+  }else if(addMode==='scan-fallback'){
+    body.innerHTML=`<div style="display:flex;align-items:center"><div class="modal-back" onclick="setMode('select')">‹ Voltar</div><div class="modal-title" style="padding-left:4px">Código de barras</div></div><div class="modal-body"><p style="font-size:14px;color:var(--fg2);margin-bottom:12px">Scanner não disponível neste navegador. Digite o EAN abaixo ou adicione manualmente.</p><div class="scan-fallback-row"><input class="form-input" type="text" id="manual-ean" placeholder="EAN-13 (ex: 7891000...)" style="flex:1"><button class="btn-primary" style="flex:0;white-space:nowrap;padding:9px 14px" onclick="lookupManualEAN()">Buscar</button></div><div id="off-status" style="font-size:13px;color:var(--fg2);margin-bottom:12px"></div><div style="border-top:1px solid var(--border);padding-top:12px"><button class="btn-secondary full-width" onclick="openForm({barcode:document.getElementById('manual-ean')?.value||''})">✏️ Adicionar manualmente</button></div></div>`;
+  }else if(addMode==='loading'){
+    body.innerHTML=`<div class="loading-box"><span class="loading-spin"></span>Buscando produto...</div>`;
+  }
 }
 
-// ═══════════════════════════════════════════
-// EXPORT / PDF
-// ═══════════════════════════════════════════
-function exportToPDF() {
-  const items=[...state.stock].sort((a,b)=>{
-    if(!a.expiry&&!b.expiry) return 0;
-    if(!a.expiry) return 1; if(!b.expiry) return -1;
-    return a.expiry.localeCompare(b.expiry);
-  });
-  if(!items.length) return;
-
-  const catOrder=['agua','alimento','saude','higiene','energia','pet','outros'];
-  const groups={};
-  items.forEach(item=>{if(!groups[item.cat])groups[item.cat]=[];groups[item.cat].push(item);});
-  const ordered=catOrder.filter(c=>groups[c]).concat(Object.keys(groups).filter(c=>!catOrder.includes(c)));
-  const catLab={agua:'Água',alimento:'Alimento',energia:'Energia',saude:'Saúde',higiene:'Higiene',pet:'Pet',outros:'Outros'};
-  const catIco={agua:'💧',alimento:'🥫',energia:'🔦',saude:'🩹',higiene:'🧼',pet:'🐾',outros:'📦'};
-  const today=new Date().toLocaleDateString('pt-BR');
-
-  function dTo(e){if(!e)return null;return Math.round((new Date(e+'T00:00:00')-new Date(new Date().toDateString()))/86400000);}
-  function eLabel(e){if(!e)return'—';const d=new Date(e+'T00:00:00'),days=dTo(e),fmt=d.toLocaleDateString('pt-BR');if(days<0)return`${fmt} ⚠ VENCIDO`;if(days===0)return`${fmt} (HOJE)`;if(days<=30)return`${fmt} (${days}d)`;return fmt;}
-  function eCls(e){const d=dTo(e);if(d===null)return'';if(d<=0)return'urgent';if(d<=30)return'urgent';if(d<=90)return'warn';return'ok';}
-
-  const rows=ordered.map(cat=>{
-    const hdr=`<tr class="ch"><td colspan="5">${catIco[cat]||''} ${catLab[cat]||cat}</td></tr>`;
-    return hdr+groups[cat].map(item=>`<tr><td>${esc(item.name)}</td><td class="num">${item.qty}</td><td>${esc(item.unit)}</td><td class="${eCls(item.expiry)}">${eLabel(item.expiry)}</td><td class="obs">${esc(item.notes||'')}</td></tr>`).join('');
+function buildCatalogList(q){
+  const f=q.toLowerCase().trim();
+  const g={};
+  CATALOG.forEach(i=>{if(f&&!i.name.toLowerCase().includes(f))return;if(!g[i.cat])g[i.cat]=[];g[i.cat].push(i);});
+  if(!Object.keys(g).length)return`<div style="text-align:center;padding:24px;color:var(--fg3)">Nenhum item encontrado</div>`;
+  return Object.entries(g).map(([cat,items])=>{
+    const c=CATS[cat]||{icon:'📦',label:cat};
+    return`<div><div class="catalog-group-hdr">${c.icon} ${c.label}</div>`+items.map(i=>`<div class="catalog-item" onclick="pickCatalog('${i.id}')"><span class="catalog-item-icon">${c.icon}</span><span class="catalog-item-name">${esc(i.name)}</span><span class="catalog-item-qty">sugestão: ${i.qty} ${i.unit}</span></div>`).join('')+`</div>`;
   }).join('');
-
-  const html=`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Estoque 72h — ${today}</title>
-<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;font-size:11px;color:#111;padding:16px}
-h1{font-size:15px;font-weight:bold;margin-bottom:3px}.meta{font-size:10px;color:#555;margin-bottom:12px}
-table{width:100%;border-collapse:collapse}th{background:#222;color:#fff;text-align:left;padding:5px 8px;font-size:10px;text-transform:uppercase;letter-spacing:.05em}
-td{padding:5px 8px;border-bottom:1px solid #ddd;vertical-align:top}tr.ch td{background:#eee;font-weight:bold;padding:6px 8px;border-bottom:1px solid #ccc}
-td.num{text-align:right;white-space:nowrap}td.ok{color:#1a5c1a}td.warn{color:#7a4800;font-weight:bold}td.urgent{color:#8c1e14;font-weight:bold}td.obs{font-size:10px;color:#666}
-.footer{margin-top:16px;font-size:9px;color:#888;border-top:1px solid #ccc;padding-top:6px}@media print{body{padding:0}}</style></head><body>
-<h1>🧰 Estoque de Emergência — 72h</h1>
-<div class="meta">Gerado em ${today} · ${items.length} itens</div>
-<table><thead><tr><th style="width:38%">Item</th><th style="width:6%">Qtd</th><th style="width:7%">Un.</th><th style="width:22%">Validade</th><th>Obs</th></tr></thead>
-<tbody>${rows}</tbody></table>
-<div class="footer">Despensa 72h · ${today}</div>
-<script>window.addEventListener('load',function(){window.print();});<\/script></body></html>`;
-
-  try {
-    const blob=new Blob([html],{type:'text/html;charset=utf-8'});
-    const url=URL.createObjectURL(blob);
-    const w=window.open(url,'_blank');
-    if(!w) alert('Popup bloqueado.\nPermita popups e tente novamente.');
-    else setTimeout(()=>URL.revokeObjectURL(url),60000);
-  } catch(err) { alert('Use Ctrl+P / Cmd+P no navegador.'); }
+}
+function rCatalog(q){const el=document.getElementById('catalog-list');if(el)el.innerHTML=buildCatalogList(q);}
+function pickCatalog(id){
+  const item=CATALOG.find(c=>c.id===id);if(!item)return;
+  formData={name:item.name,cat:item.cat,qty:item.qty,unit:item.unit,portionDays:item.portionDays,_fromCatalog:true};
+  addMode='form';rModal();
 }
 
-// ═══════════════════════════════════════════
-// UTILS
-// ═══════════════════════════════════════════
-function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function buildForm(){
+  const fd=formData;
+  const catOpts=Object.entries(CATS).map(([k,v])=>`<option value="${k}" ${fd.cat===k?'selected':''}>${v.icon} ${v.label}</option>`).join('');
+  const curCat=fd.cat||'outros';
+  const unitOpts=(CAT_UNITS[curCat]||['un']).map(u=>`<option value="${u}" ${fd.unit===u?'selected':''}>${u}</option>`).join('');
+  return`<form id="item-form" novalidate>
+    <div class="form-group"><label class="form-label">Nome do produto *</label><input name="name" type="text" class="form-input" required value="${esc(fd.name||'')}" placeholder="ex: Arroz branco 1kg" maxlength="80" autocomplete="off"></div>
+    <div class="form-row"><div class="form-group f2"><label class="form-label">Categoria</label><select name="cat" class="form-input" id="form-cat" onchange="onCatChange(this.value)">${catOpts}</select></div><div class="form-group"><label class="form-label">Qtd</label><input name="qty" type="number" class="form-input" min="0.01" step="0.01" value="${fd.qty||1}" required></div><div class="form-group"><label class="form-label">Unid.</label><select name="unit" class="form-input" id="form-unit">${unitOpts}</select></div></div>
+    <div class="form-group"><label class="form-label">Data de validade</label><input name="expiry" type="date" class="form-input" value="${fd.expiry||''}"><span class="hint-text">Deixe vazio para itens sem vencimento</span></div>
+    <div class="form-group"><label class="form-label">Código de barras</label><div class="barcode-row"><div class="form-group"><input name="barcode" type="text" class="form-input" value="${esc(fd.barcode||'')}" placeholder="EAN-13 (opcional)"></div><button type="button" class="barcode-scan-mini" title="Escanear" onclick="startMiniScan()">📷</button></div></div>
+    <div class="form-group"><label class="form-label">Observações</label><input name="notes" type="text" class="form-input" value="${esc(fd.notes||'')}" placeholder="opcional"></div>
+    <div class="form-actions"><button type="button" class="btn-secondary" onclick="closeAdd()">Cancelar</button><button type="submit" class="btn-primary">${editingId?'Salvar':'Adicionar'}</button></div>
+  </form>`;
+}
+function onCatChange(cat){const sel=document.getElementById('form-unit');if(!sel)return;sel.innerHTML=(CAT_UNITS[cat]||['un']).map(u=>`<option value="${u}">${u}</option>`).join('');}
+function submitForm(){
+  const f=document.getElementById('item-form');if(!f)return;
+  const name=f.querySelector('[name=name]').value.trim();
+  if(!name){showToast('Preencha o nome do produto');return;}
+  const cat=f.querySelector('[name=cat]').value;
+  const qty=parseFloat(f.querySelector('[name=qty]').value)||1;
+  const unit=f.querySelector('[name=unit]').value;
+  const expiry=f.querySelector('[name=expiry]').value;
+  const barcode=f.querySelector('[name=barcode]').value.trim();
+  const notes=f.querySelector('[name=notes]').value.trim();
+  const pd=formData._fromCatalog&&formData.portionDays!==undefined?formData.portionDays:portRate(cat,unit);
+  const item={id:editingId||uid(),name,cat,qty,unit,expiry,barcode,notes,portionDays:pd,addedDate:today()};
+  if(editingId){S.stock=S.stock.map(i=>i.id===editingId?{...i,...item}:i);showToast('Item atualizado');}
+  else{S.stock.push(item);showToast('Item adicionado');}
+  save();closeAdd();
+  setTimeout(()=>render(),350);
+  editingId=null;formData={};
+}
+function editItem(id){
+  const item=S.stock.find(i=>i.id===id);if(!item)return;
+  editingId=id;formData={...item};addMode='form';
+  rModal();
+  document.getElementById('modal-bg').classList.add('open');
+  document.getElementById('modal-add').classList.add('open');
+  openMenuId=null;
+}
+function confirmDel(id){
+  openMenuId=null;
+  const item=S.stock.find(i=>i.id===id);if(!item)return;
+  document.getElementById('confirm-text').textContent=`Excluir "${item.name}"?`;
+  document.getElementById('confirm-ok-btn').onclick=()=>deleteItem(id);
+  document.getElementById('confirm-bg').classList.add('open');
+  document.getElementById('modal-confirm').classList.add('open');
+}
+function deleteItem(id){S.stock=S.stock.filter(i=>i.id!==id);save();closeConfirm();render();showToast('Item excluído');}
+function closeConfirm(){document.getElementById('confirm-bg').classList.remove('open');document.getElementById('modal-confirm').classList.remove('open');}
 
-// ═══════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════
-loadState();
-switchView('guia');
+/* ============================================================
+   BARCODE SCANNER
+   ============================================================ */
+async function tryStartScan(){
+  if(!('BarcodeDetector' in window)){setMode('scan-fallback');return;}
+  try{
+    scanStopped=false;
+    scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}}});
+    const video=document.getElementById('scan-video');
+    video.srcObject=scanStream;
+    await video.play();
+    const det=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128','code_39','qr_code']});
+    document.getElementById('scanner-wrap').hidden=false;
+    scanTimer=setInterval(async()=>{
+      if(scanStopped||video.readyState<2)return;
+      try{const bc=await det.detect(video);if(bc.length>0)onBarcodeFound(bc[0].rawValue);}catch(e){}
+    },200);
+  }catch(e){
+    if(e.name==='NotAllowedError')showToast('Permissão de câmera negada');
+    else showToast('Câmera não disponível');
+    setMode('scan-fallback');
+  }
+}
+function stopScan(keepModal){
+  scanStopped=true;
+  if(scanTimer){clearInterval(scanTimer);scanTimer=null;}
+  if(scanStream){scanStream.getTracks().forEach(t=>t.stop());scanStream=null;}
+  document.getElementById('scanner-wrap').hidden=true;
+  if(!keepModal)setMode('select');
+}
+async function onBarcodeFound(barcode){
+  if(scanStopped)return;
+  stopScan(true);
+  setMode('loading');
+  if(navigator.vibrate)navigator.vibrate(50);
+  const product=await lookupOFF(barcode);
+  if(product&&product.name){
+    formData={name:product.name.substring(0,70),cat:product.cat||'outros',barcode,notes:product.brand?`Marca: ${product.brand}`:''};
+    showToast('Produto encontrado!');
+  }else{
+    formData={barcode};
+    showToast('Produto não encontrado. Preencha manualmente.');
+  }
+  addMode='form';rModal();
+}
+async function lookupOFF(barcode){
+  try{
+    const ctrl=new AbortController();
+    const tid=setTimeout(()=>ctrl.abort(),6000);
+    const r=await fetch(`https://world.openfoodfacts.org/api/v2/product/${barcode}?fields=product_name,product_name_pt,brands,categories_tags`,{signal:ctrl.signal});
+    clearTimeout(tid);
+    if(!r.ok)return null;
+    const data=await r.json();
+    if(data.status!==1)return null;
+    const p=data.product;
+    return{name:(p.product_name_pt||p.product_name||'').trim(),brand:(p.brands||'').split(',')[0].trim(),cat:mapOFFCat(p.categories_tags||[])};
+  }catch(e){return null;}
+}
+function mapOFFCat(tags){
+  const t=tags.join(' ').toLowerCase();
+  if(/water|agua|eau/.test(t))return'agua';
+  if(/dairy|milk|leite|cream|cheese/.test(t))return'bebidas';
+  if(/cereal|rice|pasta|bread|grain|flour|arroz|macarr/.test(t))return'graos';
+  if(/fish|seafood|meat|tuna|sardine|chicken|atum|peixe/.test(t))return'proteina';
+  if(/canned|conserve|preserved/.test(t))return'conserva';
+  if(/hygiene|cleaning|beauty|soap/.test(t))return'higiene';
+  if(/pharma|medicine|health|drug/.test(t))return'saude';
+  if(/pet|dog|cat|animal/.test(t))return'pet';
+  return'outros';
+}
+async function lookupManualEAN(){
+  const input=document.getElementById('manual-ean');
+  const status=document.getElementById('off-status');
+  if(!input||!input.value.trim())return;
+  const ean=input.value.trim();
+  if(status)status.innerHTML='<span class="loading-spin"></span>Buscando...';
+  const p=await lookupOFF(ean);
+  if(p&&p.name){
+    if(status)status.textContent=`✓ ${p.name}`;
+    formData={name:p.name.substring(0,70),cat:p.cat||'outros',barcode:ean,notes:p.brand?`Marca: ${p.brand}`:''};
+    setTimeout(()=>{addMode='form';rModal();},700);
+  }else{
+    if(status)status.textContent='Produto não encontrado. Adicione manualmente.';
+    formData={barcode:ean};
+  }
+}
+function startMiniScan(){
+  closeAdd();
+  setTimeout(async()=>{
+    document.getElementById('modal-bg').classList.add('open');
+    document.getElementById('modal-add').classList.add('open');
+    addMode='loading';rModal();
+    await tryStartScan();
+  },350);
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+load();
+go('dash');
+// FAB is added to stock view after render
+document.getElementById('v-stock').insertAdjacentHTML('beforeend','<button class="fab" onclick="openAdd()">+</button>');
 </script>
 </body>
 </html>
