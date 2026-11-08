@@ -401,7 +401,7 @@ function load(){
   try{
     const s=localStorage.getItem(KEY_S);
     if(s)S.stock=JSON.parse(s)||[];
-    else{S.stock=migrate();imported=S.stock.length;}
+    if(!S.stock.length){S.stock=migrate();imported=S.stock.length;}
     const c=localStorage.getItem(KEY_C);
     if(c)S.cfg={...DEF,...JSON.parse(c)};
     else{
@@ -723,7 +723,9 @@ function vFamily(R){
   <div class="sec"><h2>Relatório e backup</h2></div><div class="card cfg">
     <button class="cfg-r" onclick="openPdf()"><div class="cfg-l"><b>Gerar relatório em PDF</b><span>Estoque, o que falta e guia para controlar no papel, sem celular</span></div>${ic('file')}</button>
     <button class="cfg-r" onclick="exportBackup()"><div class="cfg-l"><b>Exportar backup</b><span>Arquivo com todos os dados — guarde ou passe para outro celular</span></div>${ic('down')}</button>
-    <label class="cfg-r"><div class="cfg-l"><b>Importar backup</b><span>Restaura os dados de um arquivo exportado</span></div>${ic('up')}<input type="file" accept=".json,application/json" hidden onchange="importBackup(this)"></label></div>
+    <label class="cfg-r"><div class="cfg-l"><b>Importar backup</b><span>Restaura os dados de um arquivo exportado</span></div>${ic('up')}<input type="file" accept=".json,application/json" hidden onchange="importBackup(this)"></label>
+    <button class="cfg-r" onclick="recoverOld()"><div class="cfg-l"><b>Recuperar itens das versões anteriores</b><span>${(()=>{const n=oldMissing().length;return n?`${n} ${plural(n,'item encontrado','itens encontrados')} que não estão no estoque atual`:'Nenhum item antigo faltando neste aparelho';})()}</span></div>${ic('down')}</button></div>
+  <p class="note" style="margin-top:10px">Estoque atual neste aparelho: <b style="color:var(--fg)">${S.stock.length} ${plural(S.stock.length,'item','itens')}</b>. No iPhone, o app instalado na tela de início e o Safari guardam dados separados.</p>
   <div class="sec"><h2>Como calculamos</h2></div><div class="card how"><ul>
     <li><b>Água:</b> 3 L por pessoa por dia (beber e cozinhar).</li>
     <li><b>Comida:</b> 2.000 kcal por pessoa por dia, estimadas pelo tipo e peso de cada item.</li>
@@ -1115,6 +1117,13 @@ function importBackup(inp){
   const r=new FileReader();
   r.onload=()=>{try{const d=JSON.parse(r.result);if(!d||!Array.isArray(d.stock))throw 0;pendingImport=d;sheetMode='import';drawSheet();openSheet();}catch(e){toast('Esse arquivo não é um backup do Protocolo Vermelho');}};
   r.readAsText(f);
+}
+const itemKey=i=>norm(i.name)+'|'+(i.expiry||'')+'|'+(+i.qty||1)+'|'+(i.unit==='pac'?'pct':(i.unit||'un'));
+function oldMissing(){const have=new Set(S.stock.map(itemKey));return migrate().filter(i=>!have.has(itemKey(i)));}
+function recoverOld(){
+  const add=oldMissing();
+  if(!add.length){toast('Nenhum item antigo faltando neste aparelho');return;}
+  S.stock=S.stock.concat(add);save();render();toast(`${add.length} ${plural(add.length,'item recuperado','itens recuperados')}`);
 }
 function applyImport(){
   try{localStorage.setItem('pv_prev',JSON.stringify({stock:S.stock,cfg:S.cfg,at:Date.now()}));}catch(e){}
