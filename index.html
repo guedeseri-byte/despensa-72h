@@ -224,6 +224,8 @@ label.cfg-r{cursor:pointer}
 select.inp{background-image:linear-gradient(45deg,transparent 50%,var(--fg3) 50%),linear-gradient(135deg,var(--fg3) 50%,transparent 50%);background-position:calc(100% - 17px) 50%,calc(100% - 12px) 50%;background-size:5px 5px;background-repeat:no-repeat;padding-right:30px}
 .inp:focus{border-color:var(--red)}
 .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:10px}
+.two.eq{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+[hidden]{display:none!important}
 .withbtn{display:flex;gap:8px}
 .ibtn{width:48px;flex-shrink:0;border-radius:11px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;color:var(--fg)}
 .hint{font-size:12px;color:var(--fg3);margin-top:5px}
@@ -317,22 +319,36 @@ const CATS={
 };
 const CAT_ORDER=['agua','alimento','higiene','saude','energia','ferramentas','pet','outros'];
 const UNITS={
-  agua:['garrafa 500 mL','garrafa 1,5 L','garrafa 5 L','galão 10 L','galão 20 L','L'],
-  alimento:['kg','g','pct 500 g','pct 1 kg','pct 5 kg','lata','pct','un','L','cx 1 L'],
-  higiene:['un','rolo','pct 4 rolos','pct 12 rolos','barra','tubo','pct','cx'],
-  pet:['kg','sc 1 kg','sc 3 kg','sc 10 kg','sc 15 kg','g','un','pct'],
+  agua:['garrafa','galão','L'],
+  alimento:['pct','kg','lata','cx','pote','garrafa','un','g','L'],
+  higiene:['pct','un','rolo','barra','tubo','frasco','cx'],
+  pet:['sc','pct','kg','lata','un'],
   saude:['un','cx','fr','sc','pct'],energia:['un','cx','pct'],ferramentas:['un','cx','pct','rolo'],outros:['un','cx','pct'],
 };
 const VOL={'garrafa 500 mL':.5,'garrafa 1,5 L':1.5,'garrafa 5 L':5,'galão 10 L':10,'galão 20 L':20,'L':1,'mL':.001};
 const MASS={'kg':1,'g':.001,'pct 500 g':.5,'pct 1 kg':1,'pct 5 kg':5,'L':1,'mL':.001,'cx 1 L':1,'sc 1 kg':1,'sc 3 kg':3,'sc 10 kg':10,'sc 15 kg':15};
 const PIECES={'rolo':1,'rl':1,'pct 4 rolos':4,'pct 12 rolos':12};
 const NEED={water:3,kcal:2000,dog:{P:.15,M:.3,G:.5},cat:.07};
+/* conteúdo de cada embalagem: size + su */
+const SU_F={g:.001,kg:1,mL:.001,L:1,un:1};
+const SU_OPTS={agua:['L','mL'],alimento:['kg','g','L','mL'],higiene:['un','g','mL'],pet:['kg','g']};
+const SU_LBL={g:'g',kg:'kg',mL:'mL',L:'L',un:'unidades'};
+const MEASURE=new Set(['kg','g','L','mL']);
+const hasSizeRow=(cat,unit)=>!!SU_OPTS[cat]&&!MEASURE.has(unit);
+function sizeOf(i){const s=+i.size;if(!(s>0)||!SU_F[i.su])return null;return{v:s*SU_F[i.su],t:i.su==='un'?'p':'m'};}
+function parseSizeU(txt){
+  const m=String(txt||'').match(/(\d+(?:[.,]\d+)?)\s*(kg|g|ml|l|rolos?|unidades|un)\b/i);if(!m)return null;
+  const v=parseFloat(m[1].replace(',','.')),u=m[2].toLowerCase();
+  return{size:v,su:u==='ml'?'mL':u==='l'?'L':/^(rol|un)/.test(u)?'un':u};
+}
+function splitUnit(u){const m=String(u||'').match(/^(\S+)\s+(\d+(?:[.,]\d+)?\s*(?:kg|g|ml|l|rolos?))$/i);if(!m)return null;const s=parseSizeU(m[2]);return s?{unit:m[1],...s}:null;}
+function normItem(i){if(!(+i.size>0)){const s=splitUnit(i.unit);if(s)return{...i,unit:s.unit,size:s.size,su:s.su};}return i;}
 
-const DENS=[[/oleo|azeite|gordura/,8200],[/acucar/,3870],[/condensado/,3200],[/leite em po/,4960],[/leite|iogurte/,620],[/arroz/,3600],[/feij/,3300],[/macarr|espaguete|massa/,3700],[/farinha|fuba|polenta|tapioca|flocao/,3600],[/aveia|granola/,3900],[/lentilha|grao.de.bico|ervilha seca/,3500],[/amendoim|castanha|nozes/,5900],[/\bmel\b/,3040],[/chocolate/,5300],[/biscoito|bolacha|cracker/,4300],[/suco/,450],[/louro|\bsal\b|cafe|tempero|\bcha\b|vinagre/,0]];
+const DENS=[[/atum/,1300],[/sardinha/,1800],[/salsicha/,2300],[/apresuntado|carne em lata|fiambre|almondega/,2400],[/feijoada/,1200],[/milho|ervilha em conserva|seleta/,700],[/fruta|pessego|abacaxi|figo/,750],[/extrato|molho/,700],[/barra de cereal|barrinha/,3900],[/pacoca/,4900],[/rapadura/,3500],[/achocolatado/,3900],[/pasta de amendoim/,5900],[/oleo|azeite|gordura/,8200],[/acucar/,3870],[/condensado/,3200],[/leite em po/,4960],[/leite|iogurte/,620],[/arroz/,3600],[/feij/,3300],[/macarr|espaguete|massa/,3700],[/farinha|fuba|polenta|tapioca|flocao/,3600],[/aveia|granola/,3900],[/lentilha|grao.de.bico|ervilha seca/,3500],[/amendoim|castanha|nozes/,5900],[/\bmel\b/,3040],[/chocolate/,5300],[/biscoito|bolacha|cracker/,4300],[/suco/,450],[/louro|\bsal\b|cafe|tempero|\bcha\b|vinagre/,0]];
 const PERUN=[[/pasta de amendoim/,2950],[/atum/,190],[/sardinha/,250],[/salsicha/,300],[/apresuntado|carne em lata|fiambre|almondega/,600],[/feijoada/,900],[/milho|ervilha|seleta/,140],[/fruta|pessego|abacaxi|figo/,300],[/pacoca/,105],[/rapadura/,350],[/cracker|biscoito|bolacha/,1700],[/amendoim/,1000],[/barra de cereal|barrinha/,90],[/leite em po/,1980],[/leite/,600],[/achocolatado/,1600],[/extrato|molho/,150],[/\bmel\b/,1500],[/louro|\bsal\b|cafe|tempero|\bcha\b/,0]];
 
 const HYG=[
-  {k:'papel',l:'Papel higiênico',r:/papel hig/,need:.25,u:'rolos',add:['Papel higiênico','pct 12 rolos'],why:'1 rolo a cada 4 dias por pessoa'},
+  {k:'papel',l:'Papel higiênico',r:/papel hig/,need:.25,u:'rolos',add:['Papel higiênico','pct'],why:'1 rolo a cada 4 dias por pessoa'},
   {k:'sab',l:'Sabonete',r:/sabonete|sabao liquido|sabao em barra/,need:.05,u:'unid.',add:['Sabonete em barra','barra'],why:'1 sabonete a cada 20 dias por pessoa'},
   {k:'dent',l:'Creme dental',r:/creme dental|pasta (de dente|dental|reserva)|dentifr/,need:.025,u:'tubos',add:['Creme dental 90 g','tubo'],why:'1 tubo a cada 40 dias por pessoa'},
 ];
@@ -344,13 +360,13 @@ const ESS={
 const PURIF=/hipoclor|cloro|pastilha|filtro|purific|sanitaria/;
 
 const CATALOG_RAW={
-  agua:[['Água mineral 1,5 L','garrafa 1,5 L'],['Água mineral 500 mL','garrafa 500 mL'],['Água mineral 5 L','garrafa 5 L'],['Galão de água 20 L','galão 20 L'],['Galão de água 10 L','galão 10 L'],['Hipoclorito 2,5% (purificar água)','un']],
-  alimento:[['Arroz','kg'],['Feijão','kg'],['Macarrão','pct 500 g'],['Farinha de mandioca','kg'],['Farinha de trigo','kg'],['Fubá','kg'],['Aveia em flocos','pct 500 g'],['Lentilha','pct 500 g'],['Açúcar','kg'],['Óleo de soja','L'],['Leite UHT','cx 1 L'],['Leite em pó 400 g','lata',1980],['Atum em lata','lata',190],['Sardinha em lata','lata',250],['Carne em lata (apresuntado)','lata',600],['Salsicha em lata','lata',300],['Milho em conserva','lata',140],['Ervilha em conserva','lata',120],['Frutas em calda','lata',300],['Extrato de tomate','un',150],['Biscoito cream cracker 400 g','pct',1700],['Barra de cereal','un',90],['Pasta de amendoim 500 g','un',2950],['Amendoim torrado','pct 500 g'],['Rapadura','un',350],['Paçoca','un',105],['Mel 500 g','un',1520],['Achocolatado em pó 400 g','un',1600],['Café','pct 500 g'],['Sal','kg']],
-  higiene:[['Papel higiênico','pct 12 rolos'],['Sabonete em barra','barra'],['Creme dental 90 g','tubo'],['Escova de dentes','un'],['Absorvente','pct'],['Fralda','pct'],['Lenço umedecido','pct'],['Desodorante','un'],['Sacos de lixo','rolo'],['Shampoo','un']],
+  agua:[['Água mineral 1,5 L','garrafa'],['Água mineral 500 mL','garrafa'],['Água mineral 5 L','garrafa'],['Galão de água 20 L','galão'],['Galão de água 10 L','galão'],['Hipoclorito 2,5% (purificar água)','un']],
+  alimento:[['Arroz','pct'],['Feijão','pct'],['Macarrão','pct'],['Farinha de mandioca','pct'],['Farinha de trigo','pct'],['Fubá','pct'],['Aveia em flocos','pct'],['Lentilha','pct'],['Açúcar','pct'],['Óleo de soja','garrafa'],['Leite UHT','cx'],['Leite em pó 400 g','lata',1980],['Atum em lata','lata',190],['Sardinha em lata','lata',250],['Carne em lata (apresuntado)','lata',600],['Salsicha em lata','lata',300],['Milho em conserva','lata',140],['Ervilha em conserva','lata',120],['Frutas em calda','lata',300],['Extrato de tomate','un',150],['Biscoito cream cracker 400 g','pct',1700],['Barra de cereal','un',90],['Pasta de amendoim 500 g','un',2950],['Amendoim torrado','pct'],['Rapadura','un',350],['Paçoca','un',105],['Mel 500 g','pote',1520],['Achocolatado em pó 400 g','pote',1600],['Café','pct'],['Sal','pct']],
+  higiene:[['Papel higiênico','pct'],['Sabonete em barra','barra'],['Creme dental 90 g','tubo'],['Escova de dentes','un'],['Absorvente','pct'],['Fralda','pct'],['Lenço umedecido','pct'],['Desodorante','un'],['Sacos de lixo','rolo'],['Shampoo','un']],
   saude:[['Remédio de uso contínuo','cx'],['Repelente','fr'],['Protetor solar','un'],['Máscara PFF2','un'],['Antialérgico','cx'],['Antiácido','cx']],
   energia:[['Lanterna de cabeça','un'],['Pilhas AAA','pct'],['Carregador veicular USB','un'],['Lampião recarregável','un']],
   ferramentas:[['Corda 10 m','un'],['Lona plástica','un'],['Kit de costura','un'],['Bússola','un'],['Saco estanque','un']],
-  pet:[['Ração para cão','sc 10 kg'],['Ração para gato','sc 3 kg'],['Sachê úmido','un'],['Areia higiênica','pct'],['Pote / bebedouro','un'],['Guia e coleira reserva','un'],['Remédio veterinário','un']],
+  pet:[['Ração para cão','sc'],['Ração para gato','sc'],['Sachê úmido','un'],['Areia higiênica','pct'],['Pote / bebedouro','un'],['Guia e coleira reserva','un'],['Remédio veterinário','un']],
   outros:[],
 };
 const CATALOG=[];
@@ -379,7 +395,7 @@ function migrate(){
       ts:i.ts||Date.parse(i.addedDate||'')||Date.now()};
     if(i.portionDays!=null)it.portionDays=i.portionDays;
     const key=norm(it.name)+'|'+it.expiry+'|'+it.qty+'|'+it.unit;
-    if(seen.has(key))return;seen.add(key);out.push(it);
+    if(seen.has(key))return;seen.add(key);out.push(normItem(it));
   };
   try{const v2=JSON.parse(localStorage.getItem('dp_stock')||'null');if(Array.isArray(v2))v2.forEach(push);}catch(e){}
   try{
@@ -400,7 +416,7 @@ function load(){
   let imported=0;
   try{
     const s=localStorage.getItem(KEY_S);
-    if(s)S.stock=JSON.parse(s)||[];
+    if(s)S.stock=(JSON.parse(s)||[]).map(normItem);
     if(!S.stock.length){S.stock=migrate();imported=S.stock.length;}
     const c=localStorage.getItem(KEY_C);
     if(c)S.cfg={...DEF,...JSON.parse(c)};
@@ -427,6 +443,7 @@ function whenTxt(ts){if(!ts)return'—';const d=new Date(ts),t=d.toLocaleTimeStr
 const look=(tab,n,def)=>{for(const[r,v]of tab)if(r.test(n))return v;return def;};
 function parseSize(name){const m=String(name).match(/(\d+(?:[.,]\d+)?)\s*(kg|g|l|ml)\b/i);if(!m)return 0;const v=parseFloat(m[1].replace(',','.'));const u=m[2].toLowerCase();return(u==='g'||u==='ml')?v/1000:v;}
 function liters(i){
+  const z=sizeOf(i);if(z&&z.t==='m')return i.qty*z.v;
   if(VOL[i.unit])return i.qty*VOL[i.unit];
   const n=norm(i.name);
   if(PURIF.test(n))return 0;
@@ -436,7 +453,8 @@ function liters(i){
   return i.qty*1.5;
 }
 function kcal(i){
-  const n=norm(i.name),q=i.qty||0;
+  const n=norm(i.name),q=i.qty||0,z=sizeOf(i);
+  if(z&&z.t==='m')return q*z.v*look(DENS,n,3000);
   if(MASS[i.unit])return q*MASS[i.unit]*look(DENS,n,3000);
   if(i.k!=null)return q*i.k;
   const s=parseSize(i.name);if(s)return q*s*look(DENS,n,3000);
@@ -445,13 +463,14 @@ function kcal(i){
   return q*look(PERUN,n,u==='lata'?220:/^(pct|pac)/.test(u)?1200:u==='cx'?600:250);
 }
 function pieces(i){
+  const z=sizeOf(i);if(z&&z.t==='p')return i.qty*z.v;
   if(PIECES[i.unit])return i.qty*PIECES[i.unit];
   const m=String(i.name).match(/(\d+)\s*(rolos|unidades|un)\b/i);
   if(m&&/^(pct|pac|cx|fardo)/i.test(i.unit))return i.qty*+m[1];
   return i.qty;
 }
-const isPetFood=i=>/racao|petisco|sache|alimento/.test(norm(i.name))||!!MASS[i.unit];
-function petKg(i){if(MASS[i.unit])return{kg:i.qty*MASS[i.unit],est:false};const s=parseSize(i.name);if(s)return{kg:i.qty*s,est:false};return{kg:i.qty*3,est:true};}
+const isPetFood=i=>/racao|petisco|sache|alimento/.test(norm(i.name))||!!MASS[i.unit]||sizeOf(i)?.t==='m';
+function petKg(i){const z=sizeOf(i);if(z&&z.t==='m')return{kg:i.qty*z.v,est:false};if(MASS[i.unit])return{kg:i.qty*MASS[i.unit],est:false};const s=parseSize(i.name);if(s)return{kg:i.qty*s,est:false};return{kg:i.qty*3,est:true};}
 const eff=c=>Math.max(.5,c.adults+c.children*.6+c.elderly*.8);
 const heads=c=>Math.max(1,c.adults+c.children+c.elderly);
 
@@ -531,8 +550,8 @@ function shopping(R,full){
   if(k>0){const kg=k/KCAL_KG;out.push({cat:'alimento',l:'Comida não perecível',q:`${fN(k/1000,0)} mil kcal`,h:`≈ ${fN(kg*2/3,1)} kg de arroz + ${fN(kg/3,1)} kg de feijão, ou equivalente`,act:"openAdd('alimento','catalog')"});}
   R.higiene.tracks.forEach(t=>{const m=trackGap(t,R);if(m>0)out.push({cat:'higiene',l:t.l,q:`${m} ${t.u}`,h:t.why,act:`addPreset('${t.add[0]}','higiene','${t.add[1]}')`});});
   if(R.pet){const p=R.pet,d=Math.max(0,+(p.dn*T-p.dk).toFixed(3)),c=Math.max(0,+(p.cn*T-p.ck).toFixed(3));
-    if(d>0)out.push({cat:'pet',l:'Ração para cão',q:`${fN(d,1)} kg`,act:"addPreset('Ração para cão','pet','sc 10 kg')"});
-    if(c>0)out.push({cat:'pet',l:'Ração para gato',q:`${fN(c,1)} kg`,act:"addPreset('Ração para gato','pet','sc 3 kg')"});}
+    if(d>0)out.push({cat:'pet',l:'Ração para cão',q:`${fN(d,1)} kg`,act:"addPreset('Ração para cão','pet','sc')"});
+    if(c>0)out.push({cat:'pet',l:'Ração para gato',q:`${fN(c,1)} kg`,act:"addPreset('Ração para gato','pet','sc')"});}
   ['saude','energia','ferramentas'].forEach(cat=>{
     const miss=R[cat].list.filter(e=>!e.has);if(!miss.length)return;
     if(full)miss.forEach(e=>out.push({cat,l:e.l,q:'1',h:CATS[cat].l}));
@@ -617,7 +636,12 @@ function famLine(c){
   if(c.cats)p.push(`${c.cats} ${plural(c.cats,'gato','gatos')}`);
   return p.join(' · ')||'Ninguém cadastrado';
 }
-function qtyTxt(i){let t=`${fN(i.qty)} ${i.unit}`;if(i.cat==='agua'&&i.unit!=='L'){const l=liters(i);if(l)t+=` · ${fN(l)} L`;}return t;}
+function amtTxt(v,su){if(su==='g'&&v>=1000)return`${fN(v/1000,2)} kg`;if(su==='mL'&&v>=1000)return`${fN(v/1000,2)} L`;return`${fN(v,2)} ${su==='un'?'un':su}`;}
+function qtyTxt(i){
+  let t=`${fN(i.qty)} ${i.unit}`;
+  if(sizeOf(i)){t+=` de ${amtTxt(+i.size,i.su)}`;if(i.qty!==1)t+=` = ${amtTxt(i.qty*i.size,i.su)}`;return t;}
+  if(i.cat==='agua'&&i.unit!=='L'){const l=liters(i);if(l)t+=` · ${fN(l)} L`;}return t;
+}
 
 /* ---- Categoria (detalhe) ---- */
 function vCat(R){
@@ -742,7 +766,8 @@ function setCfg(k,d,min,max){S.cfg[k]=Math.max(min,Math.min(max,(S.cfg[k]||0)+d)
 function openSheet(){$('#scrim').classList.add('on');$('#sheet').classList.add('on');}
 function closeSheet(){$('#scrim').classList.remove('on');$('#sheet').classList.remove('on');sheetMode=null;}
 function openAdd(cat,mode){presetCat=cat||'';editingId=null;delArmed=false;formData={cat:presetCat||''};catQ='';sheetMode=mode||'menu';if(sheetMode==='form'&&!formData.cat)formData.cat='alimento';drawSheet();openSheet();}
-function addPreset(name,cat,unit){editingId=null;delArmed=false;formData={name,cat,unit,qty:''};sheetMode='form';drawSheet();openSheet();}
+function presetData(name,cat,unit){const f={name,cat,unit,qty:''},sp=splitUnit(unit);if(sp)Object.assign(f,sp);else if(hasSizeRow(cat,unit)){const s=parseSizeU(name);if(s&&(SU_OPTS[cat]||[]).includes(s.su))Object.assign(f,s);}return f;}
+function addPreset(name,cat,unit){editingId=null;delArmed=false;formData=presetData(name,cat,unit);sheetMode='form';drawSheet();openSheet();}
 function editItem(id){const it=S.stock.find(i=>i.id===id);if(!it)return;editingId=id;delArmed=false;formData={...it};sheetMode='form';drawSheet();openSheet();}
 function setSheet(m){if(sheetMode==='form')readForm();sheetMode=m;drawSheet();$('#sheet').scrollTop=0;}
 function shHead(title,back){return`<div class="sh-h">${back?`<button class="back" onclick="setSheet('${back}')" aria-label="Voltar">${ic('chevL')}</button>`:''}<h3>${title}</h3><button class="back" onclick="closeSheet()" aria-label="Fechar" style="margin-right:-10px">${ic('x')}</button></div>`;}
@@ -761,7 +786,7 @@ function drawSheet(){
     b.innerHTML=shHead('Buscando produto')+`<div class="empty"><span class="spin" style="border-color:#3A3333;border-top-color:var(--red)"></span>Consultando o código ${esc(formData.barcode||'')}…</div>`;
   }else if(sheetMode==='form'){
     b.innerHTML=shHead(editingId?'Editar item':'Novo item',editingId?'':'menu')+formHtml();
-    updCalc();
+    updSize();
   }else if(sheetMode==='pdf'){
     let body;
     if(pdf.err)body=`<div class="pdf-ok">${ic('alert','color:var(--red)')}<p>Não consegui gerar o PDF. Na primeira vez é preciso estar com internet para baixar o gerador.</p><button class="btn p" style="width:100%" onclick="openPdf()">Tentar de novo</button></div>`;
@@ -784,15 +809,16 @@ function catalogHtml(){
   if(presetCat&&!q)h+=`<button class="lnk" style="margin:14px 0 4px" onclick="presetCat='';$('#cl').innerHTML=catalogHtml()">Ver catálogo completo${ic('chevR')}</button>`;
   return h;
 }
-function pickCat(ix){const e=CATALOG[ix];formData={name:e.n,cat:e.c,unit:e.u,qty:''};if(e.k!=null)formData.k=e.k;setSheet('form');setTimeout(()=>{const q=$('#f-qty');if(q)q.focus();},320);}
+function pickCat(ix){const e=CATALOG[ix];formData=presetData(e.n,e.c,e.u);if(e.k!=null)formData.k=e.k;setSheet('form');setTimeout(()=>{const q=$('#f-qty');if(q)q.focus();},320);}
 function unitOpts(cat,cur){const l=[...(UNITS[cat]||UNITS.outros)];if(cur&&!l.includes(cur))l.unshift(cur);return l.map(u=>`<option ${u===cur?'selected':''}>${esc(u)}</option>`).join('');}
 function formHtml(){
   const f=formData,cat=f.cat||'alimento';
   return`<form id="f" onsubmit="event.preventDefault();submitItem()" novalidate>
    <div class="fld"><label for="f-name">Produto</label><input class="inp" id="f-name" value="${esc(f.name||'')}" placeholder="ex.: Arroz tipo 1" maxlength="80" autocomplete="off" oninput="updCalc()"></div>
-   <div class="fld"><label for="f-cat">Categoria</label><select class="inp" id="f-cat" onchange="$('#f-unit').innerHTML=unitOpts(this.value,'');updCalc()">${CAT_ORDER.map(k=>`<option value="${k}" ${k===cat?'selected':''}>${CATS[k].l}</option>`).join('')}</select></div>
-   <div class="two"><div class="fld"><label for="f-qty">Quantidade</label><input class="inp" id="f-qty" type="number" inputmode="decimal" min="0" step="any" value="${f.qty===''||f.qty==null?'':f.qty}" placeholder="0" oninput="updCalc()"></div>
-   <div class="fld"><label for="f-unit">Unidade</label><select class="inp" id="f-unit" onchange="updCalc()">${unitOpts(cat,f.unit)}</select></div></div>
+   <div class="fld"><label for="f-cat">Categoria</label><select class="inp" id="f-cat" onchange="$('#f-unit').innerHTML=unitOpts(this.value,'');$('#f-su').innerHTML=suOpts(this.value,'');updSize()">${CAT_ORDER.map(k=>`<option value="${k}" ${k===cat?'selected':''}>${CATS[k].l}</option>`).join('')}</select></div>
+   <div class="two"><div class="fld"><label for="f-qty" id="f-qtyl">Quantidade</label><input class="inp" id="f-qty" type="number" inputmode="decimal" min="0" step="any" value="${f.qty===''||f.qty==null?'':f.qty}" placeholder="0" oninput="updCalc()"></div>
+   <div class="fld"><label for="f-unit">Embalagem</label><select class="inp" id="f-unit" onchange="updSize()">${unitOpts(cat,f.unit)}</select></div></div>
+   <div class="fld" id="f-szw"><label for="f-size" id="f-szl">Conteúdo de cada</label><div class="two eq"><input class="inp" id="f-size" type="number" inputmode="decimal" min="0" step="any" value="${+f.size>0?f.size:''}" placeholder="ex.: 1" oninput="updCalc()"><select class="inp" id="f-su" aria-label="Unidade do conteúdo" onchange="updCalc()">${suOpts(cat,f.su)}</select></div><div class="hint" id="f-szh"></div></div>
    <div class="calc" id="calc"></div>
    <div class="fld"><label for="f-exp">Validade</label><div class="withbtn"><input class="inp" id="f-exp" type="date" value="${f.expiry||''}"><button type="button" class="ibtn" onclick="openLupa()" aria-label="Ler validade com a câmera">${ic('cam')}</button></div><div class="hint">Toque na câmera para ler a data da embalagem. Deixe vazio se não vence.</div></div>
    <div class="fld"><label for="f-bc">Código de barras</label><div class="withbtn"><input class="inp" id="f-bc" inputmode="numeric" value="${esc(f.barcode||'')}" placeholder="opcional"><button type="button" class="ibtn" onclick="openScan()" aria-label="Escanear código de barras">${ic('scan')}</button></div></div>
@@ -803,18 +829,36 @@ function formHtml(){
 }
 function readForm(){
   if(!$('#f'))return;
-  Object.assign(formData,{name:$('#f-name').value.trim(),cat:$('#f-cat').value,qty:$('#f-qty').value,unit:$('#f-unit').value,expiry:$('#f-exp').value,barcode:$('#f-bc').value.trim(),notes:$('#f-notes').value.trim()});
+  Object.assign(formData,{name:$('#f-name').value.trim(),cat:$('#f-cat').value,qty:$('#f-qty').value,unit:$('#f-unit').value,size:$('#f-size').value,su:$('#f-su').value,expiry:$('#f-exp').value,barcode:$('#f-bc').value.trim(),notes:$('#f-notes').value.trim()});
+}
+function suOpts(cat,cur){const l=SU_OPTS[cat]||['kg'];return l.map(u=>`<option value="${u}" ${u===cur?'selected':''}>${SU_LBL[u]}</option>`).join('');}
+const SZ_HINT={agua:'Volume de cada garrafa ou galão. Ex.: 6 garrafas de 1,5 L.',alimento:'Peso escrito no pacote. Ex.: 3 pacotes de 1 kg.',higiene:'Ex.: pacote com 12 rolos, ou tubo de 90 g.',pet:'Peso do saco. Ex.: 1 saco de 10 kg.'};
+const UN_W={pct:['pacote','pacotes'],lata:['lata','latas'],cx:['caixa','caixas'],garrafa:['garrafa','garrafas'],'galão':['galão','galões'],sc:['saco','sacos'],pote:['pote','potes'],un:['unidade','unidades'],rolo:['rolo','rolos'],barra:['barra','barras'],tubo:['tubo','tubos'],frasco:['frasco','frascos']};
+function updSize(){
+  const cat=$('#f-cat').value,unit=$('#f-unit').value,on=hasSizeRow(cat,unit);
+  $('#f-szw').hidden=!on;
+  const w=UN_W[unit]||[unit,unit];
+  $('#f-qtyl').textContent=on?`Quant${/^(garrafa|lata|caixa|barra|unidade)/.test(w[0])?'as':'os'} ${w[1]}`:'Quantidade';
+  $('#f-szl').textContent=`Conteúdo de cada ${w[0]}`;
+  $('#f-szh').textContent=SZ_HINT[cat]||'';
+  updCalc();
+}
+const numIn=s=>parseFloat(String(s||'').replace(',','.'));
+function formItem(){
+  const cat=$('#f-cat').value,unit=$('#f-unit').value,it={name:$('#f-name').value,cat,qty:numIn($('#f-qty').value),unit,k:formData.k};
+  const sz=numIn($('#f-size').value);if(hasSizeRow(cat,unit)&&sz>0){it.size=sz;it.su=$('#f-su').value;}
+  return it;
 }
 function updCalc(){
   const el=$('#calc');if(!el)return;
-  const q=parseFloat(($('#f-qty').value||'').replace(',','.'));
+  const it=formItem(),q=it.qty;
   if(!(q>0)){el.textContent='';return;}
-  const it={name:$('#f-name').value,cat:$('#f-cat').value,qty:q,unit:$('#f-unit').value,k:formData.k};
   const c=S.cfg,E=eff(c),H=heads(c);let t='';
   if(it.cat==='agua'){const l=liters(it);if(l)t=`= ${fN(l)} L · cerca de ${fD(l/(NEED.water*E))} dias de água para a família`;}
   else if(it.cat==='alimento'){const k=kcal(it);if(k)t=`≈ ${fN(k,0)} kcal · cerca de ${fD(k/(NEED.kcal*E))} dias de comida para a família`;}
   else if(it.cat==='higiene'){const h=HYG.find(x=>x.r.test(norm(it.name)));if(h){const p=pieces(it);t=`= ${fN(p)} ${h.u} · cerca de ${fD(p/(h.need*H))} dias`;}}
   else if(it.cat==='pet'&&(c.dogs||c.cats)&&isPetFood(it)){const r=petKg(it);const need=/gato|felin/.test(norm(it.name))?c.cats*NEED.cat:c.dogs*(NEED.dog[c.dogSize]||.3);if(need)t=`${r.est?'≈':'='} ${fN(r.kg)} kg · cerca de ${fD(r.kg/need)} dias de ração`;}
+  if(t&&hasSizeRow(it.cat,it.unit)&&!it.size&&it.k==null&&['agua','alimento','pet'].includes(it.cat))t+=' · estimado, informe o conteúdo';
   el.textContent=t;
 }
 function submitItem(){
@@ -824,6 +868,8 @@ function submitItem(){
   if(!(q>0)){toast('Informe a quantidade');$('#f-qty').focus();return;}
   const base=editingId?S.stock.find(i=>i.id===editingId)||{}:{};
   const it={...base,id:editingId||uid(),name:f.name,cat:f.cat,qty:q,unit:f.unit,expiry:f.expiry||'',barcode:f.barcode||'',notes:f.notes||'',ts:Date.now()};
+  const sz=numIn(f.size);delete it.size;delete it.su;
+  if(hasSizeRow(f.cat,f.unit)&&sz>0){it.size=sz;it.su=f.su;}
   if(f.k!=null)it.k=f.k;
   if(editingId){it.edited=true;S.stock=S.stock.map(i=>i.id===editingId?it:i);toast('Item atualizado');}
   else{S.stock.push(it);toast('Item adicionado');}
@@ -902,14 +948,16 @@ async function gotCode(code,typed){
   formData.barcode=code;
   const known=S.stock.find(i=>i.barcode===code);
   if(known&&!editingId){
-    formData={...formData,name:formData.name||known.name,cat:known.cat,unit:known.unit,qty:'',barcode:code};if(known.k!=null)formData.k=known.k;
+    formData={...formData,name:formData.name||known.name,cat:known.cat,unit:known.unit,size:known.size,su:known.su,qty:'',barcode:code};if(known.k!=null)formData.k=known.k;
     toast('Produto já cadastrado — informe a quantidade deste lote');
     sheetMode='form';drawSheet();openSheet();cam.busy=false;return;
   }
   if(wasForm&&formData.name){sheetMode='form';drawSheet();openSheet();cam.busy=false;return;}
   sheetMode='loading';drawSheet();openSheet();
   const p=await lookupOFF(code);
-  if(p){formData.name=formData.name||p.name;if(!formData.cat||(!wasForm&&!presetCat))formData.cat=p.cat;if(p.brand&&!formData.notes)formData.notes=`Marca: ${p.brand}`;toast('Produto encontrado');}
+  if(p){formData.name=formData.name||p.name;if(!formData.cat||(!wasForm&&!presetCat))formData.cat=p.cat;if(p.brand&&!formData.notes)formData.notes=`Marca: ${p.brand}`;
+    if(p.sz&&!(+formData.size>0)&&(SU_OPTS[formData.cat]||[]).includes(p.sz.su)){formData.size=p.sz.size;formData.su=p.sz.su;if(!formData.unit||MEASURE.has(formData.unit))formData.unit=UNITS[formData.cat][0];}
+    toast('Produto encontrado');}
   else{formData.cat=formData.cat||presetCat||'alimento';toast('Produto não encontrado na base — preencha o nome');}
   sheetMode='form';drawSheet();cam.busy=false;
 }
@@ -921,7 +969,7 @@ async function lookupOFF(code){
     const d=await r.json();if(d.status!==1||!d.product)return null;
     const p=d.product;let name=(p.product_name_pt||p.product_name||'').trim();if(!name)return null;
     const qn=(p.quantity||'').trim();if(qn&&!norm(name).includes(norm(qn)))name+=` ${qn}`;
-    return{name:name.slice(0,80),brand:(p.brands||'').split(',')[0].trim(),cat:mapOFF(p.categories_tags||[],name)};
+    return{name:name.slice(0,80),brand:(p.brands||'').split(',')[0].trim(),cat:mapOFF(p.categories_tags||[],name),sz:parseSizeU(qn||name)};
   }catch(e){return null;}
 }
 function mapOFF(tags,name){
@@ -1127,7 +1175,7 @@ function recoverOld(){
 }
 function applyImport(){
   try{localStorage.setItem('pv_prev',JSON.stringify({stock:S.stock,cfg:S.cfg,at:Date.now()}));}catch(e){}
-  S.stock=pendingImport.stock;S.cfg={...DEF,...(pendingImport.cfg||{})};pendingImport=null;
+  S.stock=pendingImport.stock.map(normItem);S.cfg={...DEF,...(pendingImport.cfg||{})};pendingImport=null;
   save();closeSheet();render();toast('Backup importado');
 }
 
