@@ -69,7 +69,7 @@ svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke
 .prep-tx{flex:1;min-width:0}
 .prep-tx h3{font-size:19px;font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:6px}
 .prep-tx p{color:var(--fg2);font-size:14px;margin:2px 0 10px}
-.trk{height:8px;border-radius:5px;background:#2E2929;overflow:hidden}
+.trk{display:block;width:100%;flex-shrink:0;height:8px;border-radius:5px;background:#2E2929;overflow:hidden}
 .trk i{display:block;height:100%;border-radius:5px}
 .meta{display:flex;align-items:center;gap:6px;color:var(--fg3);font-size:12.5px;margin-top:9px}
 .meta svg.i{width:16px;height:16px}
@@ -96,7 +96,21 @@ svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke
 .cat-name{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cat-val{font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:700;font-size:27px;line-height:1}
 .cat-val small{font-size:15px;font-weight:600;color:var(--fg2);margin-left:3px}
-.cat-sub{font-size:12px;color:var(--fg3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cat-sub{font-size:12px;color:var(--fg3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:-4px}
+.cat-miss{font-size:13px;font-weight:600}
+.need{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);width:100%;text-align:left}
+.need:last-child{border-bottom:0}
+.need-tx{flex:1;min-width:0}
+.need-tx b{display:block;font-weight:600;font-size:14.5px}
+.need-tx span{display:block;font-size:12.5px;color:var(--fg3)}
+.need-q{font-weight:700;white-space:nowrap;text-align:right}
+button.cfg-r{width:100%;text-align:left;color:var(--fg)}
+label.cfg-r{cursor:pointer}
+.cfg-r>svg.i{color:var(--fg3)}
+.pdf-ok{text-align:center;padding:10px 0 4px}
+.pdf-ok>svg.i{width:44px;height:44px;color:var(--green);margin-bottom:8px}
+.pdf-ok p{color:var(--fg2);font-size:14px;margin-bottom:14px}
+.col{display:grid;gap:10px}
 
 .act{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-bottom:8px;width:100%;text-align:left}
 .act-ic{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;flex-shrink:0}
@@ -283,6 +297,10 @@ const IC={
   book:'<path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2zM22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/>',
   shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
   x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/>',
+  down:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>',
+  up:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>',
+  share:'<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/>',
 };
 const ic=(n,st='')=>`<svg class="i" viewBox="0 0 24 24" aria-hidden="true"${st?` style="${st}"`:''}>${IC[n]||''}</svg>`;
 
@@ -478,12 +496,49 @@ function catVal(k,R){
   if(CATS[k].t==='days'){const d=R[k].days;return{v:`${fD(d)}<small>${Math.floor(d)===1?'dia':'dias'}</small>`,p:Math.min(d/T,1),col:dCol(d,T)};}
   const r=R[k];return{v:r.have===r.tot?'Completo':`${r.have}<small>/ ${r.tot}</small>`,p:r.pct,col:pCol(r.pct)};
 }
-function catSub(k,R){
-  if(k==='agua')return`${fN(R.agua.L)} L em estoque`;
-  if(k==='alimento')return`${fN(R.alimento.K/1000,0)} mil kcal em estoque`;
-  if(k==='higiene')return R.higiene.lim.days<R.T?`limitado por ${R.higiene.lim.l.toLowerCase()}`:'todos os itens ok';
-  if(k==='pet')return`${fN(R.pet.dk+R.pet.ck)} kg de ração`;
-  const miss=R[k].list.find(e=>!e.has);return miss?`falta: ${miss.l.toLowerCase()}`:'todos os essenciais';
+const KCAL_KG=3500;
+function gap(k,R){
+  const T=R.T,f=v=>Math.max(0,+v.toFixed(3));
+  if(k==='agua')return f(T*R.agua.Ld-R.agua.L);
+  if(k==='alimento')return f(T*R.alimento.Kd-R.alimento.K);
+  if(k==='pet'){const p=R.pet;return f(p.dn*T-p.dk)+f(p.cn*T-p.ck);}
+  return 0;
+}
+const trackGap=(t,R)=>Math.max(0,Math.ceil(+(t.need*R.H*R.T-t.have).toFixed(3)));
+const SHORT={papel:'rolos de papel',sab:'sabonetes',dent:'cremes dentais'};
+function catMiss(k,R){
+  const T=R.T;
+  if(CATS[k].t==='days'){
+    const d=R[k].days;
+    if(d>=T-1e-6){const s={agua:`${fN(R.agua.L)} L em estoque`,alimento:`${fN(R.alimento.K/1000,0)} mil kcal em estoque`,higiene:'papel, sabonete e creme dental ok',pet:R.pet?`${fN(R.pet.dk+R.pet.ck)} kg de ração`:''}[k];return{m:'Meta atingida',col:'var(--green)',s};}
+    const n=Math.ceil(T-d);let s='';
+    if(k==='agua')s=`+${fN(Math.ceil(gap(k,R)))} L de água`;
+    else if(k==='alimento')s=`+${fN(gap(k,R)/KCAL_KG,1)} kg de comida`;
+    else if(k==='pet')s=`+${fN(gap(k,R),1)} kg de ração`;
+    else if(k==='higiene'){const t=R.higiene.lim;s=`+${trackGap(t,R)} ${SHORT[t.k]}`;}
+    return{m:`Faltam ${n} ${plural(n,'dia','dias')}`,col:dCol(d,T),s};
+  }
+  const r=R[k],n=r.tot-r.have;
+  if(!n)return{m:'Todos os essenciais',col:'var(--green)',s:`${r.tot} de ${r.tot} itens`};
+  return{m:`Faltam ${n} ${plural(n,'item','itens')}`,col:pCol(r.pct),s:`ex.: ${r.list.find(e=>!e.has).l.toLowerCase()}`};
+}
+function shopping(R,full){
+  const T=R.T,out=[];
+  const w=gap('agua',R);
+  if(w>0)out.push({cat:'agua',l:'Água potável',q:`${fN(Math.ceil(w))} L`,h:`≈ ${Math.ceil(w/20)} ${plural(Math.ceil(w/20),'galão','galões')} de 20 L ou ${Math.ceil(w/5)} garrafas de 5 L`,act:"addPreset('Galão de água 20 L','agua','galão 20 L')"});
+  if(!R.agua.pur)out.push({cat:'agua',l:'Hipoclorito 2,5% (purificar água)',q:'1 frasco',act:"addPreset('Hipoclorito 2,5% (purificar água)','agua','un')"});
+  const k=gap('alimento',R);
+  if(k>0){const kg=k/KCAL_KG;out.push({cat:'alimento',l:'Comida não perecível',q:`${fN(k/1000,0)} mil kcal`,h:`≈ ${fN(kg*2/3,1)} kg de arroz + ${fN(kg/3,1)} kg de feijão, ou equivalente`,act:"openAdd('alimento','catalog')"});}
+  R.higiene.tracks.forEach(t=>{const m=trackGap(t,R);if(m>0)out.push({cat:'higiene',l:t.l,q:`${m} ${t.u}`,h:t.why,act:`addPreset('${t.add[0]}','higiene','${t.add[1]}')`});});
+  if(R.pet){const p=R.pet,d=Math.max(0,+(p.dn*T-p.dk).toFixed(3)),c=Math.max(0,+(p.cn*T-p.ck).toFixed(3));
+    if(d>0)out.push({cat:'pet',l:'Ração para cão',q:`${fN(d,1)} kg`,act:"addPreset('Ração para cão','pet','sc 10 kg')"});
+    if(c>0)out.push({cat:'pet',l:'Ração para gato',q:`${fN(c,1)} kg`,act:"addPreset('Ração para gato','pet','sc 3 kg')"});}
+  ['saude','energia','ferramentas'].forEach(cat=>{
+    const miss=R[cat].list.filter(e=>!e.has);if(!miss.length)return;
+    if(full)miss.forEach(e=>out.push({cat,l:e.l,q:'1',h:CATS[cat].l}));
+    else out.push({cat,l:`${CATS[cat].l}: faltam ${miss.length} ${plural(miss.length,'item','itens')}`,q:'ver',h:miss.slice(0,3).map(e=>e.l.toLowerCase()).join(', ')+(miss.length>3?'…':''),act:`go('cat','${cat}')`});
+  });
+  return out;
 }
 const visibleCats=R=>['agua','alimento','higiene','saude','energia','ferramentas'].concat(R.pet?['pet']:[]);
 
@@ -536,12 +591,16 @@ function vHome(R){
     <button class="card" onclick="openScan()">${ic('scan','color:var(--red)')}Escanear</button>
     <button class="card" onclick="openAdd('','catalog')">${ic('rows','color:var(--yellow)')}Catálogo</button>
     <button class="card" onclick="openAdd('','form')">${ic('pen','color:var(--blue)')}Manual</button>
-    <button class="card" onclick="go('alerts')">${ic('bell','color:var(--orange)')}Validades</button></div>`;
+    <button class="card" onclick="openPdf()">${ic('file','color:var(--orange)')}Relatório</button></div>`;
   h+=`<div class="fam"><div class="fam-img"></div><div class="fam-tag">${ic('home')}Plano familiar</div><div class="fam-body"><h3>${esc(famTitle)}</h3><p>${famTxt}</p><button class="btn-red" onclick="go('family')">${ic('users')}${c._ok?'Ajustar família':'Configurar família'}</button></div></div>`;
   h+=`<div class="sec"><h2>Quanto tempo vocês aguentam</h2></div><div class="cats">`;
-  visibleCats(R).forEach(k=>{const v=catVal(k,R);
-    h+=`<button class="card cat" onclick="go('cat','${k}')"><div class="cat-top"><span class="cat-ic">${ic(CATS[k].ic,`color:${CATS[k].c}`)}</span><span class="cat-name">${CATS[k].l}</span></div><div class="cat-val">${v.v}</div><div class="trk"><i style="width:${v.p*100}%;background:${v.col}"></i></div><div class="cat-sub">${esc(catSub(k,R))}</div></button>`;});
-  h+=`</div><div class="sec"><h2>Atividades recentes</h2><button class="lnk" onclick="go('stock')">Ver estoque${ic('chevR')}</button></div>`;
+  visibleCats(R).forEach(k=>{const v=catVal(k,R),mi=catMiss(k,R);
+    h+=`<button class="card cat" onclick="go('cat','${k}')"><div class="cat-top"><span class="cat-ic">${ic(CATS[k].ic,`color:${CATS[k].c}`)}</span><span class="cat-name">${CATS[k].l}</span></div><div class="cat-val">${v.v}</div><div class="trk"><i style="width:${v.p*100}%;background:${v.col}"></i></div><div class="cat-miss" style="color:${mi.col}">${mi.m}</div><div class="cat-sub">${esc(mi.s)}</div></button>`;});
+  const sh=shopping(R,false);
+  h+=`</div><div class="sec"><h2>Para chegar a ${T} dias</h2><button class="lnk" onclick="openPdf()">${ic('file')}PDF</button></div>`;
+  h+=sh.length?`<div class="card">${sh.map(x=>`<button class="need" onclick="${x.act}"><span class="cat-ic">${ic(CATS[x.cat].ic,`color:${CATS[x.cat].c}`)}</span><span class="need-tx"><b>${esc(x.l)}</b>${x.h?`<span>${esc(x.h)}</span>`:''}</span><span class="need-q">${x.q==='ver'?ic('chevR','color:var(--fg3)'):esc(x.q)}</span></button>`).join('')}</div>`
+    :`<div class="card empty" style="padding:22px">${ic('check','color:var(--green)')}<h3>Nada falta</h3><p style="margin:0">A reserva cobre a meta de ${T} dias em todas as categorias.</p></div>`;
+  h+=`<div class="sec"><h2>Atividades recentes</h2><button class="lnk" onclick="go('stock')">Ver estoque${ic('chevR')}</button></div>`;
   const exp=S.stock.filter(i=>isExp(i.expiry)).sort((a,b)=>a.expiry.localeCompare(b.expiry)).slice(0,2);
   const rec=[...S.stock].sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,4);
   if(!S.stock.length)h+=`<div class="card empty">${ic('box')}<h3>Nenhum item ainda</h3><p>Escaneie um produto ou use o catálogo para registrar o que vocês têm em casa.</p><button class="btn-red" onclick="openAdd()">${ic('plus')}Adicionar item</button></div>`;
@@ -661,6 +720,10 @@ function vFamily(R){
     <div class="cfg-r"><div class="cfg-l"><b>Meta de autonomia</b><span>dias sem abastecimento · Defesa Civil recomenda no mínimo 3</span></div>${stepper('target',3,180)}</div>
     <div class="cfg-r"><div class="cfg-l"><b>Avisar vencimento</b><span>dias de antecedência</span></div>${stepper('alert',5,120,5)}</div></div>
   <div style="margin-top:16px"><button class="btn p" style="width:100%" onclick="S.cfg._ok=true;save();go('home')">Salvar e ver o painel</button></div>
+  <div class="sec"><h2>Relatório e backup</h2></div><div class="card cfg">
+    <button class="cfg-r" onclick="openPdf()"><div class="cfg-l"><b>Gerar relatório em PDF</b><span>Estoque, o que falta e guia para controlar no papel, sem celular</span></div>${ic('file')}</button>
+    <button class="cfg-r" onclick="exportBackup()"><div class="cfg-l"><b>Exportar backup</b><span>Arquivo com todos os dados — guarde ou passe para outro celular</span></div>${ic('down')}</button>
+    <label class="cfg-r"><div class="cfg-l"><b>Importar backup</b><span>Restaura os dados de um arquivo exportado</span></div>${ic('up')}<input type="file" accept=".json,application/json" hidden onchange="importBackup(this)"></label></div>
   <div class="sec"><h2>Como calculamos</h2></div><div class="card how"><ul>
     <li><b>Água:</b> 3 L por pessoa por dia (beber e cozinhar).</li>
     <li><b>Comida:</b> 2.000 kcal por pessoa por dia, estimadas pelo tipo e peso de cada item.</li>
@@ -697,6 +760,16 @@ function drawSheet(){
   }else if(sheetMode==='form'){
     b.innerHTML=shHead(editingId?'Editar item':'Novo item',editingId?'':'menu')+formHtml();
     updCalc();
+  }else if(sheetMode==='pdf'){
+    let body;
+    if(pdf.err)body=`<div class="pdf-ok">${ic('alert','color:var(--red)')}<p>Não consegui gerar o PDF. Na primeira vez é preciso estar com internet para baixar o gerador.</p><button class="btn p" style="width:100%" onclick="openPdf()">Tentar de novo</button></div>`;
+    else if(!pdf.file)body=`<div class="empty"><span class="spin" style="border-color:#3A3333;border-top-color:var(--red)"></span>Montando o relatório…</div>`;
+    else{const canShare=!!(navigator.canShare&&navigator.canShare({files:[pdf.file]}));
+      body=`<div class="pdf-ok">${ic('file')}<p><b style="color:var(--fg)">${esc(pdf.file.name)}</b><br>${pdf.pages} páginas · estoque, o que falta, guia sem celular e fichas para preencher à mão.</p><div class="col">${canShare?`<button class="btn p" onclick="shareFile(pdf.file)">${ic('share','width:18px;height:18px;vertical-align:-4px;margin-right:6px')}Compartilhar ou salvar</button>`:''}<button class="btn ${canShare?'s':'p'}" onclick="saveFile(pdf.file)">${ic('down','width:18px;height:18px;vertical-align:-4px;margin-right:6px')}Abrir / baixar PDF</button></div><p class="note">Imprima e guarde junto da reserva, num saco plástico. Gere de novo sempre que o estoque mudar.</p></div>`;}
+    b.innerHTML=shHead('Relatório em PDF')+body;
+  }else if(sheetMode==='import'){
+    const d=pendingImport,when=d.exported?new Date(d.exported).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}):'data desconhecida';
+    b.innerHTML=shHead('Importar backup')+`<p style="color:var(--fg2);font-size:14.5px;margin-bottom:16px">Backup de <b style="color:var(--fg)">${esc(when)}</b> com <b style="color:var(--fg)">${d.stock.length} itens</b>.<br>Isso substitui os ${S.stock.length} itens e a configuração da família deste aparelho.</p><div class="btns"><button class="btn s" onclick="closeSheet()">Cancelar</button><button class="btn p" onclick="applyImport()">Substituir dados</button></div>`;
   }
 }
 function catalogHtml(){
@@ -923,6 +996,130 @@ function pickDate(raw){
   if(!out.length){const r4=/(?:^|[^\d\/.\-])(\d{1,2}) ?[\/.\-] ?(\d{2})(?![\d\/.\-])/g;while((m=r4.exec(t)))add(m[2],m[1]);}
   if(!out.length)return null;
   out.sort();return out[out.length-1];
+}
+
+/* ================= FILES: PDF + BACKUP ================= */
+const JSPDF_URL='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+const AT_URL='https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js';
+const pdf={file:null,err:false,pages:0,run:0};
+let pendingImport=null;
+function saveFile(f){const u=URL.createObjectURL(f),a=document.createElement('a');a.href=u;a.download=f.name;a.rel='noopener';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000);}
+function shareFile(f){navigator.share({files:[f],title:f.name}).catch(e=>{if(e&&e.name!=='AbortError')saveFile(f);});}
+function openPdf(){
+  const run=++pdf.run;pdf.file=null;pdf.err=false;sheetMode='pdf';drawSheet();openSheet();
+  makePdf().then(r=>{if(run!==pdf.run)return;pdf.file=r.file;pdf.pages=r.pages;if(sheetMode==='pdf')drawSheet();})
+    .catch(()=>{if(run!==pdf.run)return;pdf.err=true;if(sheetMode==='pdf')drawSheet();});
+}
+const pt=s=>String(s??'').replace(/≈/g,'~').replace(/→/g,'->').replace(/[—–]/g,'-').replace(/…/g,'...').replace(/[“”]/g,'"').replace(/[‘’]/g,"'").replace(/[^\n\x20-\x7E\xA0-\xFF]/g,'');
+async function dataURL(u){const b=await(await fetch(u)).blob();return new Promise(ok=>{const r=new FileReader();r.onload=()=>ok(r.result);r.readAsDataURL(b);});}
+async function makePdf(){
+  await loadScript(JSPDF_URL);await loadScript(AT_URL);
+  const {jsPDF}=window.jspdf,doc=new jsPDF({unit:'mm',format:'a4'});
+  const R=stats(),c=S.cfg,T=R.T,W=210,H=297,M=14,CW=W-2*M,RED=[227,38,45],DARK=[24,20,20],INK=[40,36,34];
+  let logo=null;try{logo=await dataURL('logo.png');}catch(e){}
+  const now=new Date(),nowTxt=`${now.toLocaleDateString('pt-BR')} às ${now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}`;
+  let y=0;
+  const band=(title,sub)=>{doc.setFillColor(...DARK);doc.rect(0,0,W,28,'F');doc.setFillColor(...RED);doc.rect(0,28,W,1.4,'F');
+    if(logo)doc.addImage(logo,'PNG',M,4,17,20);
+    doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(16);doc.text(pt(title),M+22,13);
+    doc.setFont('helvetica','normal');doc.setFontSize(9.5);doc.setTextColor(214,204,200);doc.text(pt(sub),M+22,20.5);y=39;};
+  const room=h=>{if(y+h>H-18){doc.addPage();y=18;}};
+  const h2=t=>{room(16);doc.setFillColor(...RED);doc.rect(M,y-4.2,1.6,6,'F');doc.setTextColor(25,20,20);doc.setFont('helvetica','bold');doc.setFontSize(12.5);doc.text(pt(t),M+4,y+.4);y+=7;};
+  const para=(t,o={})=>{const fs=o.s||10;doc.setFont('helvetica',o.b?'bold':'normal');doc.setFontSize(fs);doc.setTextColor(...(o.c||[62,56,53]));
+    doc.splitTextToSize(pt(t),CW-(o.ind||0)).forEach(l=>{room(5.5);doc.text(l,M+(o.ind||0),y);y+=fs*.42+.9;});y+=o.after??2.2;};
+  const table=(head,body,opt={})=>{doc.autoTable({startY:y,head:[head.map(pt)],body:body.map(r=>r.map(pt)),theme:'grid',margin:{left:M,right:M,top:18,bottom:18},
+    styles:{font:'helvetica',fontSize:8.8,cellPadding:1.9,textColor:INK,lineColor:[205,198,194],lineWidth:.15,overflow:'linebreak',valign:'middle'},
+    headStyles:{fillColor:RED,textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[247,244,242]},...opt});y=doc.lastAutoTable.finalY+8;};
+  const days=d=>`${fD(d)} ${Math.floor(d)===1?'dia':'dias'}`;
+
+  /* 1. resumo */
+  band('PROTOCOLO VERMELHO FAMILIAR',`Relatório da reserva de emergência · gerado em ${nowTxt}`);
+  h2('Resumo');
+  para(`Família: ${famLine(c)}${c.dogs?` (porte ${c.dogSize})`:''}. Consumo equivalente a ${fN(R.E)} ${plural(R.E,'adulto','adultos')}.`);
+  para(`Meta de autonomia: ${T} dias sem abastecimento.`);
+  para(`Hoje vocês aguentam cerca de ${days(R.auton)} — limitado por ${CATS[R.limit].l.toLowerCase()}. Preparação geral: ${Math.round(R.prep*100)}%.`,{b:true,c:[25,20,20],s:11});
+  h2('Autonomia por categoria');
+  table(['Categoria','Hoje','Em estoque',`Falta para ${T} dias`],visibleCats(R).map(k=>{
+    const l=CATS[k].l;
+    if(k==='agua'){const g=gap(k,R);return[l,days(R.agua.days),`${fN(R.agua.L)} L`,g>0?`${fN(Math.ceil(g))} L (≈ ${Math.ceil(g/20)} galões de 20 L)`:'Meta atingida'];}
+    if(k==='alimento'){const g=gap(k,R);return[l,days(R.alimento.days),`${fN(R.alimento.K,0)} kcal`,g>0?`${fN(g,0)} kcal (≈ ${fN(g/KCAL_KG,1)} kg de arroz e feijão)`:'Meta atingida'];}
+    if(k==='higiene'){const tr=R.higiene.tracks;return[l,days(R.higiene.days),tr.map(t=>`${fN(t.have)} ${t.u} de ${t.l.toLowerCase()}`).join('\n'),tr.filter(t=>trackGap(t,R)>0).map(t=>`${trackGap(t,R)} ${t.u} de ${t.l.toLowerCase()}`).join('\n')||'Meta atingida'];}
+    if(k==='pet'){const g=gap(k,R);return[l,days(R.pet.days),`${fN(R.pet.dk+R.pet.ck)} kg de ração`,g>0?`${fN(g,1)} kg de ração`:'Meta atingida'];}
+    const r=R[k],miss=r.list.filter(e=>!e.has).map(e=>e.l);
+    return[l,`${r.have} de ${r.tot} essenciais`,'-',miss.length?miss.join(', '):'Completo'];
+  }),{columnStyles:{0:{fontStyle:'bold',cellWidth:27},1:{cellWidth:24},2:{cellWidth:42}}});
+  h2(`Lista de compras para chegar a ${T} dias`);
+  const sh=shopping(R,true);
+  if(sh.length)table(['OK','Item','Quantidade','Observação'],sh.map(x=>['',x.l,x.q,x.h||'']),{columnStyles:{0:{cellWidth:10},1:{cellWidth:62},2:{cellWidth:30}}});
+  else para('Nada falta: a reserva cobre a meta em todas as categorias.');
+  h2('Estoque completo');
+  const st=[...S.stock].sort((a,b)=>CAT_ORDER.indexOf(a.cat)-CAT_ORDER.indexOf(b.cat)||(a.expiry||'9999').localeCompare(b.expiry||'9999'));
+  if(st.length)table(['Categoria','Item','Quantidade','Validade','Situação','Conferido'],st.map(i=>{
+    const d=dLeft(i.expiry);const s=!i.expiry?'sem validade':d<0?'VENCIDO':d<=S.cfg.alert?`vence em ${d} d`:'ok';
+    return[CATS[i.cat]?.l||'Outros',i.name,qtyTxt(i),i.expiry?fDate(i.expiry):'-',s,''];
+  }),{columnStyles:{0:{cellWidth:27},3:{cellWidth:21},4:{cellWidth:24},5:{cellWidth:19}},
+    didParseCell:h=>{if(h.section==='body'&&h.column.index===4&&/VENCIDO|vence em/.test(h.cell.raw)){h.cell.styles.textColor=h.cell.raw==='VENCIDO'?RED:[200,110,20];h.cell.styles.fontStyle='bold';}}});
+  else para('Nenhum item cadastrado ainda.');
+
+  /* 2. guia sem celular */
+  doc.addPage();
+  band('COMO CONTROLAR SEM CELULAR','Guia para usar a reserva só com papel e caneta');
+  para('Se o celular quebrar, ficar sem bateria ou sem sinal, este relatório substitui o app. Imprima, guarde num saco plástico junto da reserva e deixe uma cópia na mochila de emergência.');
+  h2('Os números da sua família (por dia)');
+  const per=[['Água potável',`${fN(R.agua.Ld)} L`,`litros que sobraram ÷ ${fN(R.agua.Ld)}`],
+    ['Comida',`${fN(R.alimento.Kd,0)} kcal (≈ ${fN(R.alimento.Kd/KCAL_KG,2)} kg de arroz e feijão)`,`kg de arroz e feijão ÷ ${fN(R.alimento.Kd/KCAL_KG,2)}`]];
+  HYG.forEach(t=>per.push([t.l,`${fN(t.need*R.H,2)} ${t.u}`,`${t.u} que sobraram ÷ ${fN(t.need*R.H,2)}`]));
+  if(R.pet&&c.dogs)per.push(['Ração dos cães',`${fN(R.pet.dn,2)} kg`,`kg que sobraram ÷ ${fN(R.pet.dn,2)}`]);
+  if(R.pet&&c.cats)per.push(['Ração dos gatos',`${fN(R.pet.cn,2)} kg`,`kg que sobraram ÷ ${fN(R.pet.cn,2)}`]);
+  table(['Recurso','Consumo da família por dia','Dias que ainda restam ='],per,{columnStyles:{0:{fontStyle:'bold',cellWidth:36}}});
+  h2('Passo a passo');
+  ['Inventário: no início da emergência, confira a tabela "Estoque completo" e marque a coluna Conferido.',
+   'Registre tudo: anote cada entrada e saída na Ficha de controle (página seguinte) — data, item, quantidade e quem retirou.',
+   'Fim do dia: preencha o Diário da emergência com quanto sobrou de água e comida. Divida pelo consumo diário da tabela acima para saber quantos dias ainda restam.',
+   'Primeiro que vence, primeiro que sai: use antes o que tem validade mais próxima e o que está na geladeira. Sem energia, o freezer cheio e fechado conserva por cerca de 48 horas (meio cheio, 24 horas).',
+   'Água é prioridade: guarde a água potável para beber e cozinhar. Use água de chuva ou de outras fontes para higiene e descarga.',
+   'Purificação: 2 gotas de hipoclorito de sódio 2,5% por litro, misture e espere 30 minutos. Se a água estiver turva, coe num pano limpo antes. Ferver por 1 minuto também funciona.',
+   'Racionamento: se o estoque não for durar, reduza primeiro as porções de comida, não a água. Adultos precisam de pelo menos 2 L de água por dia para beber.',
+   'Rotação mensal (fora da emergência): troque o que vence em até 30 dias, teste lanternas, rádio e power bank, e gere este relatório de novo.'
+  ].forEach((t,i)=>para(`${i+1}. ${t}`,{after:1,s:9.4}));
+  h2('Contatos de emergência');
+  const ct=[['Defesa Civil','199'],['Corpo de Bombeiros','193'],['SAMU','192'],['Polícia Militar','190'],['Familiar de referência',''],['Vizinho de confiança',''],['Médico / posto de saúde','']];
+  if(c.dogs||c.cats)ct.push(['Veterinário','']);
+  ct.push(['Ponto de encontro da família','']);
+  table(['Serviço','Telefone / informação'],ct,{columnStyles:{0:{fontStyle:'bold',cellWidth:62}},bodyStyles:{minCellHeight:6.6},styles:{font:'helvetica',fontSize:8.8,cellPadding:1.5,textColor:INK,lineColor:[205,198,194],lineWidth:.15},pageBreak:'avoid'});
+
+  /* 3. fichas para preencher à mão */
+  doc.addPage();
+  band('FICHA DE CONTROLE DE ESTOQUE','Anote toda entrada (+) e saída (-) de itens da reserva');
+  table(['Data','Item','Entrada (+)','Saída (-)','Saldo','Validade','Quem'],Array.from({length:30},()=>['','','','','','','']),
+    {bodyStyles:{minCellHeight:7.6},alternateRowStyles:{fillColor:[255,255,255]},columnStyles:{0:{cellWidth:18},1:{cellWidth:52},6:{cellWidth:22}}});
+  doc.addPage();
+  band('DIÁRIO DA EMERGÊNCIA',`Consumo esperado por dia: ${fN(R.agua.Ld)} L de água e ${fN(R.alimento.Kd,0)} kcal de comida`);
+  table(['Dia','Data','Água usada (L)','Água restante (L)','Comida usada','Dias restantes','Observações'],Array.from({length:Math.min(Math.max(T,10),31)},(_,i)=>[String(i+1),'','','','','','']),
+    {bodyStyles:{minCellHeight:7.3},alternateRowStyles:{fillColor:[255,255,255]},columnStyles:{0:{cellWidth:10,halign:'center',fontStyle:'bold'},1:{cellWidth:18}}});
+  para(`Dias restantes = água restante ÷ ${fN(R.agua.Ld)} L. Faça a mesma conta com a comida e considere o menor resultado.`,{s:9});
+
+  const n=doc.getNumberOfPages();
+  for(let i=1;i<=n;i++){doc.setPage(i);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(140,132,128);
+    doc.text(pt(`Protocolo Vermelho Familiar · gerado em ${nowTxt}`),M,H-8);doc.text(`Página ${i} de ${n}`,W-M,H-8,{align:'right'});}
+  const file=new File([doc.output('blob')],`protocolo-vermelho-${todayISO()}.pdf`,{type:'application/pdf'});
+  return{file,pages:n};
+}
+function exportBackup(){
+  const data={app:'protocolo-vermelho',v:3,exported:new Date().toISOString(),cfg:S.cfg,stock:S.stock};
+  const f=new File([JSON.stringify(data)],`protocolo-vermelho-backup-${todayISO()}.json`,{type:'application/json'});
+  if(navigator.canShare&&navigator.canShare({files:[f]}))shareFile(f);else saveFile(f);
+}
+function importBackup(inp){
+  const f=inp.files&&inp.files[0];inp.value='';if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{try{const d=JSON.parse(r.result);if(!d||!Array.isArray(d.stock))throw 0;pendingImport=d;sheetMode='import';drawSheet();openSheet();}catch(e){toast('Esse arquivo não é um backup do Protocolo Vermelho');}};
+  r.readAsText(f);
+}
+function applyImport(){
+  try{localStorage.setItem('pv_prev',JSON.stringify({stock:S.stock,cfg:S.cfg,at:Date.now()}));}catch(e){}
+  S.stock=pendingImport.stock;S.cfg={...DEF,...(pendingImport.cfg||{})};pendingImport=null;
+  save();closeSheet();render();toast('Backup importado');
 }
 
 /* ================= MISC ================= */
