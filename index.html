@@ -150,6 +150,7 @@ label.cfg-r{cursor:pointer}
 .row-tx{flex:1;min-width:0}
 .row-tx b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .row-tx span{display:block;font-size:12.5px;color:var(--fg2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-tx .row-w{white-space:normal;overflow:visible;color:var(--orange);font-weight:600}
 .row-ex{font-size:12.5px;text-align:right;white-space:nowrap;color:var(--fg3)}
 .row.exp{border-color:rgba(227,38,45,.65);background:linear-gradient(180deg,#2B1213,#1E1011)}
 .row.soon{border-color:rgba(240,138,36,.55)}
@@ -230,6 +231,7 @@ select.inp{background-image:linear-gradient(45deg,transparent 50%,var(--fg3) 50%
 .ibtn{width:48px;flex-shrink:0;border-radius:11px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;color:var(--fg)}
 .hint{font-size:12px;color:var(--fg3);margin-top:5px}
 .calc{font-size:13px;color:var(--green);margin:-4px 0 12px;min-height:18px}
+.calc .warn{display:block;color:var(--orange);margin-top:4px}
 .btns{display:flex;gap:10px;margin-top:8px}
 .btn{flex:1;padding:13px;border-radius:12px;font-weight:700;text-align:center}
 .btn.p{background:var(--red);color:#fff}
@@ -344,8 +346,9 @@ function parseSizeU(txt){
 function splitUnit(u){const m=String(u||'').match(/^(\S+)\s+(\d+(?:[.,]\d+)?\s*(?:kg|g|ml|l|rolos?))$/i);if(!m)return null;const s=parseSizeU(m[2]);return s?{unit:m[1],...s}:null;}
 function normItem(i){if(!(+i.size>0)){const s=splitUnit(i.unit);if(s)return{...i,unit:s.unit,size:s.size,su:s.su};}return i;}
 
-const DENS=[[/atum/,1300],[/sardinha/,1800],[/salsicha/,2300],[/apresuntado|carne em lata|fiambre|almondega/,2400],[/feijoada/,1200],[/milho|ervilha em conserva|seleta/,700],[/fruta|pessego|abacaxi|figo/,750],[/extrato|molho/,700],[/barra de cereal|barrinha/,3900],[/pacoca/,4900],[/rapadura/,3500],[/achocolatado/,3900],[/pasta de amendoim/,5900],[/oleo|azeite|gordura/,8200],[/acucar/,3870],[/condensado/,3200],[/leite em po/,4960],[/leite|iogurte/,620],[/arroz/,3600],[/feij/,3300],[/macarr|espaguete|massa/,3700],[/farinha|fuba|polenta|tapioca|flocao/,3600],[/aveia|granola/,3900],[/lentilha|grao.de.bico|ervilha seca/,3500],[/amendoim|castanha|nozes/,5900],[/\bmel\b/,3040],[/chocolate/,5300],[/biscoito|bolacha|cracker/,4300],[/suco/,450],[/louro|\bsal\b|cafe|tempero|\bcha\b|vinagre/,0]];
-const PERUN=[[/pasta de amendoim/,2950],[/atum/,190],[/sardinha/,250],[/salsicha/,300],[/apresuntado|carne em lata|fiambre|almondega/,600],[/feijoada/,900],[/milho|ervilha|seleta/,140],[/fruta|pessego|abacaxi|figo/,300],[/pacoca/,105],[/rapadura/,350],[/cracker|biscoito|bolacha/,1700],[/amendoim/,1000],[/barra de cereal|barrinha/,90],[/leite em po/,1980],[/leite/,600],[/achocolatado/,1600],[/extrato|molho/,150],[/\bmel\b/,1500],[/louro|\bsal\b|cafe|tempero|\bcha\b/,0]];
+const ZERO=[/fermento|bicarbonato|vinagre|tempero|caldo|adocante/,0];
+const DENS=[ZERO,[/^(?!.*sal).*(refinado|cristal|demerara|mascavo)/,3870],[/atum/,1300],[/sardinha/,1800],[/salsicha/,2300],[/apresuntado|carne em lata|fiambre|almondega/,2400],[/feijoada/,1200],[/milho|ervilha em conserva|seleta/,700],[/fruta|pessego|abacaxi|figo/,750],[/extrato|molho/,700],[/barra de cereal|barrinha/,3900],[/pacoca/,4900],[/rapadura/,3500],[/achocolatado/,3900],[/pasta de amendoim/,5900],[/oleo|azeite|gordura/,8200],[/acucar/,3870],[/condensado/,3200],[/leite em po/,4960],[/leite|iogurte/,620],[/arroz/,3600],[/feij/,3300],[/macarr|espaguete|massa/,3700],[/farinha|fuba|polenta|tapioca|flocao/,3600],[/aveia|granola/,3900],[/lentilha|grao.de.bico|ervilha seca/,3500],[/amendoim|castanha|nozes/,5900],[/\bmel\b/,3040],[/chocolate/,5300],[/biscoito|bolacha|cracker/,4300],[/suco/,450],[/louro|\bsal\b|cafe|tempero|\bcha\b|vinagre/,0]];
+const PERUN=[ZERO,[/pasta de amendoim/,2950],[/atum/,190],[/sardinha/,250],[/salsicha/,300],[/apresuntado|carne em lata|fiambre|almondega/,600],[/feijoada/,900],[/milho|ervilha|seleta/,140],[/fruta|pessego|abacaxi|figo/,300],[/pacoca/,105],[/rapadura/,350],[/cracker|biscoito|bolacha/,1700],[/amendoim/,1000],[/barra de cereal|barrinha/,90],[/leite em po/,1980],[/leite/,600],[/achocolatado/,1600],[/extrato|molho/,150],[/\bmel\b/,1500],[/louro|\bsal\b|cafe|tempero|\bcha\b/,0]];
 
 const HYG=[
   {k:'papel',l:'Papel higiênico',r:/papel hig/,need:.25,u:'rolos',add:['Papel higiênico','pct'],why:'1 rolo a cada 4 dias por pessoa'},
@@ -494,7 +497,7 @@ function stats(){
     R.pet={days:Math.min(...ds),dk,ck,dn,cn,est};
   }
   ['saude','energia','ferramentas'].forEach(k=>{
-    const list=ESS[k].map(e=>({l:e[0],add:[e[2],e[3]],has:ok.some(i=>e[1].test(norm(i.name)))}));
+    const list=ESS[k].map(e=>({l:e[0],add:[e[2],e[3]],has:ok.some(i=>(i.cat===k||i.cat==='outros')&&e[1].test(norm(i.name)))}));
     const have=list.filter(e=>e.has).length;
     R[k]={list,have,tot:list.length,pct:have/list.length};
   });
@@ -510,6 +513,7 @@ const pCol=p=>p>=1?'var(--green)':p>=.5?'var(--yellow)':'var(--red)';
 const fN=(n,dig=1)=>(+n).toLocaleString('pt-BR',{maximumFractionDigits:dig});
 const fD=d=>!isFinite(d)?'—':(d>0&&d<1)?'<1':String(Math.floor(d));
 const plural=(n,a,b)=>n===1?a:b;
+const dTx=d=>`${fD(d)} ${isFinite(d)&&d<2?'dia':'dias'}`;
 function catVal(k,R){
   const T=R.T;
   if(CATS[k].t==='days'){const d=R[k].days;return{v:`${fD(d)}<small>${Math.floor(d)===1?'dia':'dias'}</small>`,p:Math.min(d/T,1),col:dCol(d,T)};}
@@ -570,7 +574,7 @@ function render(){
   $('#hdr').innerHTML=S.view==='home'?hdrHome():hdrBar();
   $('#fab').innerHTML=ic('plus');
   $('#fab').hidden=S.view==='family';
-  const n=S.stock.filter(i=>isExp(i.expiry)||isSoon(i.expiry)).length;
+  const n=S.stock.filter(i=>isExp(i.expiry)||isSoon(i.expiry)||sizeWarn(i)).length;
   const tab=S.view==='cat'?'home':S.view;
   $('#nav').innerHTML=[['home','home','Início'],['stock','list','Estoque'],['alerts','bell','Alertas'],['family','users','Família']]
     .map(([v,i,l])=>`<button class="${tab===v?'on':''}" onclick="go('${v}')" aria-label="${l}">${ic(i)}<span>${l}</span>${v==='alerts'&&n?`<span class="badge">${n>9?'9+':n}</span>`:''}</button>`).join('');
@@ -606,6 +610,8 @@ function vHome(R){
       <div class="trk"><i style="width:${Math.min(R.auton/T,1)*100}%;background:${dCol(R.auton,T)}"></i></div>
       <div class="meta">${ic('shield')}Autonomia ${fD(R.auton)} de ${T} dias · limitada por ${CATS[R.limit].l.toLowerCase()}</div>
       <div class="meta">${ic('cal')}Última atualização: ${whenTxt(lastTs)}</div></div></button>`;
+  const lb=c.lastBackup||0;
+  if(S.stock.length>=5&&Date.now()-lb>30*864e5)h+=`<button class="card act" onclick="exportBackup()"><span class="act-ic bad">${ic('down')}</span><span class="act-tx"><b>Faça um backup${lb?'':' (nunca feito)'}</b><span>Os dados ficam só neste celular</span></span>${ic('chevR','color:var(--fg3)')}</button>`;
   h+=`<div class="qa">
     <button class="card" onclick="openScan()">${ic('scan','color:var(--red)')}Escanear</button>
     <button class="card" onclick="openAdd('','catalog')">${ic('rows','color:var(--yellow)')}Catálogo</button>
@@ -637,8 +643,9 @@ function famLine(c){
   return p.join(' · ')||'Ninguém cadastrado';
 }
 function amtTxt(v,su){if(su==='g'&&v>=1000)return`${fN(v/1000,2)} kg`;if(su==='mL'&&v>=1000)return`${fN(v/1000,2)} L`;return`${fN(v,2)} ${su==='un'?'un':su}`;}
+function uw(u,n,cat){if(cat==='saude'&&u==='sc')return n===1?'sachê':'sachês';const w=UN_W[u];return w?w[n===1?0:1]:u;}
 function qtyTxt(i){
-  let t=`${fN(i.qty)} ${i.unit}`;
+  let t=`${fN(i.qty)} ${uw(i.unit,i.qty,i.cat)}`;
   if(sizeOf(i)){t+=` de ${amtTxt(+i.size,i.su)}`;if(i.qty!==1)t+=` = ${amtTxt(i.qty*i.size,i.su)}`;return t;}
   if(i.cat==='agua'&&i.unit!=='L'){const l=liters(i);if(l)t+=` · ${fN(l)} L`;}return t;
 }
@@ -664,14 +671,14 @@ function vCat(R){
     </ul><p class="note">Estimativa calórica pelo tipo e peso de cada item. Para ficar exato, cadastre com a unidade de peso certa (kg, pct 1 kg…).</p></div>`;}
   else if(k==='higiene'){const a=R.higiene;
     h+=head(`${fD(a.days)}<small>dias</small>`,Math.min(a.days/T,1),dCol(a.days,T),`limitado por ${a.lim.l.toLowerCase()} · ${R.H} ${plural(R.H,'pessoa','pessoas')}`)+`</div><div class="sec"><h2>Itens de consumo</h2></div><div class="card">`;
-    a.tracks.forEach(t=>{h+=`<div class="trow"><div class="trow-h"><b>${t.l}</b><span>${fN(t.have)} ${t.u} → <b style="color:${dCol(t.days,T)}">${fD(t.days)} dias</b></span></div><div class="trk"><i style="width:${Math.min(t.days/T,1)*100}%;background:${dCol(t.days,T)}"></i></div><div class="hint">${t.why}${t.have?'':` · <button class="lnk" style="font-size:12.5px" onclick="addPreset('${t.add[0]}','higiene','${t.add[1]}')">+ adicionar</button>`}</div></div>`;});
+    a.tracks.forEach(t=>{h+=`<div class="trow"><div class="trow-h"><b>${t.l}</b><span>${fN(t.have)} ${t.u} → <b style="color:${dCol(t.days,T)}">${dTx(t.days)}</b></span></div><div class="trk"><i style="width:${Math.min(t.days/T,1)*100}%;background:${dCol(t.days,T)}"></i></div><div class="hint">${t.why}${t.have?'':` · <button class="lnk" style="font-size:12.5px" onclick="addPreset('${t.add[0]}','higiene','${t.add[1]}')">+ adicionar</button>`}</div></div>`;});
     h+=`</div>`;}
   else if(k==='pet'){
     if(!R.pet){h+=`<div class="card empty">${ic('paw')}<h3>Nenhum pet cadastrado</h3><p>Informe cães e gatos na aba Família para calcular a ração.</p><button class="btn-red" onclick="go('family')">${ic('users')}Ir para Família</button></div>`;}
     else{const a=R.pet,c=S.cfg;
       h+=head(`${fD(a.days)}<small>dias</small>`,Math.min(a.days/T,1),dCol(a.days,T),`de ração · meta ${T} dias`)+`<ul class="facts">
-      ${c.dogs?li('paw',`Cães: <b>${fN(a.dk)} kg</b> para ${fN(a.dn*1000,0)} g/dia → <b>${fD(a.dk/a.dn)} dias</b>`):''}
-      ${c.cats?li('paw',`Gatos: <b>${fN(a.ck)} kg</b> para ${fN(a.cn*1000,0)} g/dia → <b>${fD(a.ck/a.cn)} dias</b>`):''}
+      ${c.dogs?li('paw',`Cães: <b>${fN(a.dk)} kg</b> para ${fN(a.dn*1000,0)} g/dia → <b>${dTx(a.dk/a.dn)}</b>`):''}
+      ${c.cats?li('paw',`Gatos: <b>${fN(a.ck)} kg</b> para ${fN(a.cn*1000,0)} g/dia → <b>${dTx(a.ck/a.cn)}</b>`):''}
       </ul>${a.est?'<p class="note">Algum saco de ração está sem peso — estimei 3 kg. Edite o item e escolha a unidade com o peso (ex.: sc 10 kg).</p>':''}</div>`;}}
   else if(R[k]&&R[k].list){const a=R[k];
     h+=head(a.have===a.tot?'Completo':`${a.have}<small>/ ${a.tot}</small>`,a.pct,pCol(a.pct),`essenciais de ${C.l.toLowerCase()}`)+`</div><div class="sec"><h2>Essenciais</h2></div><div class="card">`;
@@ -719,8 +726,10 @@ function vAlerts(){
   const ex=S.stock.filter(i=>isExp(i.expiry)).sort(sortByExp);
   const s7=S.stock.filter(i=>!isExp(i.expiry)&&isSoon(i.expiry)&&dLeft(i.expiry)<=7).sort(sortByExp);
   const sN=S.stock.filter(i=>!isExp(i.expiry)&&isSoon(i.expiry)&&dLeft(i.expiry)>7).sort(sortByExp);
-  if(!ex.length&&!s7.length&&!sN.length)return`<div class="card empty" style="margin-top:16px">${ic('check')}<h3>Tudo dentro da validade</h3><p>Nada vence nos próximos ${S.cfg.alert} dias.</p></div>`;
+  const ck=S.stock.filter(i=>sizeWarn(i));
+  if(!ex.length&&!s7.length&&!sN.length&&!ck.length)return`<div class="card empty" style="margin-top:16px">${ic('check')}<h3>Tudo dentro da validade</h3><p>Nada vence nos próximos ${S.cfg.alert} dias.</p></div>`;
   let h='';
+  if(ck.length)h+=`<div class="grp"><span style="color:var(--orange)">Conferir quantidade — a conta pode estar errada</span><span>${ck.length}</span></div>`+ck.map(i=>rowHtml(i).replace('</span></span><span class="row-ex"',`</span><span class="row-w">${esc(sizeWarn(i))}</span></span><span class="row-ex"`)).join('');
   if(ex.length)h+=`<div class="grp"><span style="color:var(--red)">Vencidos — não contam na autonomia</span><span>${ex.length}</span></div>`+ex.map(rowHtml).join('');
   if(s7.length)h+=`<div class="grp"><span style="color:var(--orange)">Vencem em até 7 dias</span><span>${s7.length}</span></div>`+s7.map(rowHtml).join('');
   if(sN.length)h+=`<div class="grp"><span>Vencem em até ${S.cfg.alert} dias</span><span>${sN.length}</span></div>`+sN.map(rowHtml).join('');
@@ -748,7 +757,8 @@ function vFamily(R){
     <button class="cfg-r" onclick="openPdf()"><div class="cfg-l"><b>Gerar relatório em PDF</b><span>Estoque, o que falta e guia para controlar no papel, sem celular</span></div>${ic('file')}</button>
     <button class="cfg-r" onclick="exportBackup()"><div class="cfg-l"><b>Exportar backup</b><span>Arquivo com todos os dados — guarde ou passe para outro celular</span></div>${ic('down')}</button>
     <label class="cfg-r"><div class="cfg-l"><b>Importar backup</b><span>Restaura os dados de um arquivo exportado</span></div>${ic('up')}<input type="file" accept=".json,application/json" hidden onchange="importBackup(this)"></label>
-    <button class="cfg-r" onclick="recoverOld()"><div class="cfg-l"><b>Recuperar itens das versões anteriores</b><span>${(()=>{const n=oldMissing().length;return n?`${n} ${plural(n,'item encontrado','itens encontrados')} que não estão no estoque atual`:'Nenhum item antigo faltando neste aparelho';})()}</span></div>${ic('down')}</button></div>
+    ${(()=>{const n=oldMissing().length;return n?`<button class="cfg-r" onclick="recoverOld()"><div class="cfg-l"><b>Recuperar itens das versões anteriores</b><span>${n} ${plural(n,'item encontrado','itens encontrados')} que não estão no estoque atual</span></div>${ic('down')}</button>`:'';})()}</div>
+  <p class="note" style="margin-top:10px">Último backup: <b style="color:var(--fg)">${c.lastBackup?whenTxt(c.lastBackup):'nunca'}</b>.</p>
   <p class="note" style="margin-top:10px">Estoque atual neste aparelho: <b style="color:var(--fg)">${S.stock.length} ${plural(S.stock.length,'item','itens')}</b>. No iPhone, o app instalado na tela de início e o Safari guardam dados separados.</p>
   <div class="sec"><h2>Como calculamos</h2></div><div class="card how"><ul>
     <li><b>Água:</b> 3 L por pessoa por dia (beber e cozinhar).</li>
@@ -757,7 +767,7 @@ function vFamily(R){
     <li><b>Pet:</b> cão P 150 g, M 300 g, G 500 g; gato 70 g de ração por dia.</li>
     <li><b>Saúde, energia e equipamentos:</b> lista de itens essenciais — conta se existe pelo menos um.</li>
     <li>Itens vencidos não entram na conta.</li></ul></div>
-  <p class="note" style="text-align:center;margin-top:18px">Protocolo Vermelho Familiar · v3 · dados salvos só neste aparelho</p>`;
+  <p class="note" style="text-align:center;margin-top:18px">Protocolo Vermelho Familiar · v4 · dados salvos só neste aparelho</p>`;
   return h;
 }
 function setCfg(k,d,min,max){S.cfg[k]=Math.max(min,Math.min(max,(S.cfg[k]||0)+d));if(k==='adults'&&!S.cfg.adults&&!S.cfg.elderly)S.cfg.adults=1;S.cfg._ok=true;save();render();}
@@ -831,9 +841,19 @@ function readForm(){
   if(!$('#f'))return;
   Object.assign(formData,{name:$('#f-name').value.trim(),cat:$('#f-cat').value,qty:$('#f-qty').value,unit:$('#f-unit').value,size:$('#f-size').value,su:$('#f-su').value,expiry:$('#f-exp').value,barcode:$('#f-bc').value.trim(),notes:$('#f-notes').value.trim()});
 }
+function sizeWarn(i){
+  const w=(UN_W[i.unit]||[i.unit])[0],s=+i.size,su=i.su,q=+i.qty;
+  if((i.unit==='kg'||i.unit==='L')&&q>100)return`${fN(q)} ${i.unit} no total? Talvez seja ${fN(q)} ${i.unit==='kg'?'g':'mL'}.`;
+  if(!sizeOf(i)||su==='un')return'';
+  const lim=i.cat==='agua'?60:i.cat==='pet'?30:25;
+  if((su==='kg'||su==='L')&&s>lim)return`${fN(s)} ${su} em cada ${w}? Talvez seja ${fN(s)} ${su==='kg'?'g':'mL'}.`;
+  if((su==='g'||su==='mL')&&s<=5)return`Só ${fN(s)} ${su} em cada ${w}? Talvez seja ${fN(s)} ${su==='g'?'kg':'L'}.`;
+  return'';
+}
+let warnArmed='';
 function suOpts(cat,cur){const l=SU_OPTS[cat]||['kg'];return l.map(u=>`<option value="${u}" ${u===cur?'selected':''}>${SU_LBL[u]}</option>`).join('');}
 const SZ_HINT={agua:'Volume de cada garrafa ou galão. Ex.: 6 garrafas de 1,5 L.',alimento:'Peso escrito no pacote. Ex.: 3 pacotes de 1 kg.',higiene:'Ex.: pacote com 12 rolos, ou tubo de 90 g.',pet:'Peso do saco. Ex.: 1 saco de 10 kg.'};
-const UN_W={pct:['pacote','pacotes'],lata:['lata','latas'],cx:['caixa','caixas'],garrafa:['garrafa','garrafas'],'galão':['galão','galões'],sc:['saco','sacos'],pote:['pote','potes'],un:['unidade','unidades'],rolo:['rolo','rolos'],barra:['barra','barras'],tubo:['tubo','tubos'],frasco:['frasco','frascos']};
+const UN_W={pct:['pacote','pacotes'],lata:['lata','latas'],cx:['caixa','caixas'],garrafa:['garrafa','garrafas'],'galão':['galão','galões'],sc:['saco','sacos'],pote:['pote','potes'],un:['unidade','unidades'],rolo:['rolo','rolos'],barra:['barra','barras'],tubo:['tubo','tubos'],frasco:['frasco','frascos'],fr:['frasco','frascos']};
 function updSize(){
   const cat=$('#f-cat').value,unit=$('#f-unit').value,on=hasSizeRow(cat,unit);
   $('#f-szw').hidden=!on;
@@ -854,18 +874,22 @@ function updCalc(){
   const it=formItem(),q=it.qty;
   if(!(q>0)){el.textContent='';return;}
   const c=S.cfg,E=eff(c),H=heads(c);let t='';
-  if(it.cat==='agua'){const l=liters(it);if(l)t=`= ${fN(l)} L · cerca de ${fD(l/(NEED.water*E))} dias de água para a família`;}
-  else if(it.cat==='alimento'){const k=kcal(it);if(k)t=`≈ ${fN(k,0)} kcal · cerca de ${fD(k/(NEED.kcal*E))} dias de comida para a família`;}
-  else if(it.cat==='higiene'){const h=HYG.find(x=>x.r.test(norm(it.name)));if(h){const p=pieces(it);t=`= ${fN(p)} ${h.u} · cerca de ${fD(p/(h.need*H))} dias`;}}
-  else if(it.cat==='pet'&&(c.dogs||c.cats)&&isPetFood(it)){const r=petKg(it);const need=/gato|felin/.test(norm(it.name))?c.cats*NEED.cat:c.dogs*(NEED.dog[c.dogSize]||.3);if(need)t=`${r.est?'≈':'='} ${fN(r.kg)} kg · cerca de ${fD(r.kg/need)} dias de ração`;}
+  if(it.cat==='agua'){const l=liters(it);if(l)t=`= ${fN(l)} L · cerca de ${dTx(l/(NEED.water*E))} de água para a família`;}
+  else if(it.cat==='alimento'){const k=kcal(it);if(k)t=`≈ ${fN(k,0)} kcal · cerca de ${dTx(k/(NEED.kcal*E))} de comida para a família`;}
+  else if(it.cat==='higiene'){const h=HYG.find(x=>x.r.test(norm(it.name)));if(h){const p=pieces(it);t=`= ${fN(p)} ${h.u} · cerca de ${dTx(p/(h.need*H))}`;}}
+  else if(it.cat==='pet'&&(c.dogs||c.cats)&&isPetFood(it)){const r=petKg(it);const need=/gato|felin/.test(norm(it.name))?c.cats*NEED.cat:c.dogs*(NEED.dog[c.dogSize]||.3);if(need)t=`${r.est?'≈':'='} ${fN(r.kg)} kg · cerca de ${dTx(r.kg/need)} de ração`;}
   if(t&&hasSizeRow(it.cat,it.unit)&&!it.size&&it.k==null&&['agua','alimento','pet'].includes(it.cat))t+=' · estimado, informe o conteúdo';
-  el.textContent=t;
+  const w=sizeWarn(it);
+  el.innerHTML=esc(t)+(w?`<b class="warn">Confira: ${esc(w)}</b>`:'');
 }
 function submitItem(){
   readForm();
   const f=formData,q=parseFloat(String(f.qty).replace(',','.'));
   if(!f.name){toast('Informe o nome do produto');$('#f-name').focus();return;}
   if(!(q>0)){toast('Informe a quantidade');$('#f-qty').focus();return;}
+  const w=sizeWarn({...formItem(),qty:q});
+  if(w&&warnArmed!==w){warnArmed=w;toast('Confira o conteúdo. Toque de novo para salvar assim.');$('#f-size').focus();return;}
+  warnArmed='';
   const base=editingId?S.stock.find(i=>i.id===editingId)||{}:{};
   const it={...base,id:editingId||uid(),name:f.name,cat:f.cat,qty:q,unit:f.unit,expiry:f.expiry||'',barcode:f.barcode||'',notes:f.notes||'',ts:Date.now()};
   const sz=numIn(f.size);delete it.size;delete it.su;
@@ -1079,7 +1103,7 @@ async function makePdf(){
     doc.splitTextToSize(pt(t),CW-(o.ind||0)).forEach(l=>{room(5.5);doc.text(l,M+(o.ind||0),y);y+=fs*.42+.9;});y+=o.after??2.2;};
   const table=(head,body,opt={})=>{doc.autoTable({startY:y,head:[head.map(pt)],body:body.map(r=>r.map(pt)),theme:'grid',margin:{left:M,right:M,top:18,bottom:18},
     styles:{font:'helvetica',fontSize:8.8,cellPadding:1.9,textColor:INK,lineColor:[205,198,194],lineWidth:.15,overflow:'linebreak',valign:'middle'},
-    headStyles:{fillColor:RED,textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[247,244,242]},...opt});y=doc.lastAutoTable.finalY+8;};
+    rowPageBreak:'avoid',headStyles:{fillColor:RED,textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[247,244,242]},...opt});y=doc.lastAutoTable.finalY+8;};
   const days=d=>`${fD(d)} ${Math.floor(d)===1?'dia':'dias'}`;
 
   /* 1. resumo */
@@ -1158,6 +1182,7 @@ async function makePdf(){
 function exportBackup(){
   const data={app:'protocolo-vermelho',v:3,exported:new Date().toISOString(),cfg:S.cfg,stock:S.stock};
   const f=new File([JSON.stringify(data)],`protocolo-vermelho-backup-${todayISO()}.json`,{type:'application/json'});
+  S.cfg.lastBackup=Date.now();save();if(S.view==='home'||S.view==='family')render();
   if(navigator.canShare&&navigator.canShare({files:[f]}))shareFile(f);else saveFile(f);
 }
 function importBackup(inp){
@@ -1187,6 +1212,8 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden&&cam.mode&&
 
 load();
 render();
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});}catch(e){}
 </script>
 </body>
 </html>
