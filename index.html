@@ -85,7 +85,7 @@ svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke
 .fam-body{position:relative;padding:12px 18px 18px;max-width:66%}
 .fam-body h3{font-size:21px;font-weight:700;line-height:1.15;text-wrap:balance}
 .fam-body p{font-size:13.5px;color:#E6DCD8;margin:6px 0 14px}
-.btn-red{display:inline-flex;align-items:center;gap:8px;background:var(--red);color:#fff;font-weight:600;padding:11px 18px;border-radius:999px;box-shadow:0 6px 18px rgba(227,38,45,.32)}
+.btn-red{text-decoration:none;display:inline-flex;align-items:center;gap:8px;background:var(--red);color:#fff;font-weight:600;padding:11px 18px;border-radius:999px;box-shadow:0 6px 18px rgba(227,38,45,.32)}
 .btn-red svg.i{width:18px;height:18px}
 
 .cats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
@@ -176,6 +176,10 @@ label.cfg-r{cursor:pointer}
 .how{padding:16px;font-size:13.5px;color:var(--fg2)}
 .how li{margin:0 0 6px 18px}
 .how b{color:var(--fg)}
+.don{padding:16px;display:flex;gap:14px;align-items:flex-start}
+.don>div{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.don p{font-size:14px;color:var(--fg2)}
+.don .hint{margin-top:-4px}
 
 /* detail */
 .big{padding:18px;margin-top:16px}
@@ -304,6 +308,7 @@ const IC={
   file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/>',
   down:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>',
   up:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>',
+  heart:'<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/>',
   share:'<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/>',
 };
 const ic=(n,st='')=>`<svg class="i" viewBox="0 0 24 24" aria-hidden="true"${st?` style="${st}"`:''}>${IC[n]||''}</svg>`;
@@ -380,6 +385,7 @@ CAT_ORDER.forEach(c=>{
 
 /* ================= STATE ================= */
 const KEY_S='pv_stock',KEY_C='pv_cfg';
+const DONATE_URL='https://link.mercadopago.com.br/eritong';
 const DEF={adults:1,children:0,elderly:0,dogs:0,dogSize:'M',cats:0,target:15,alert:30,_ok:false};
 const S={stock:[],cfg:{...DEF},view:'home',arg:null,q:'',fcat:'',sort:'expiry'};
 let sheetMode=null,formData={},editingId=null,presetCat='',delArmed=false,catQ='';
@@ -767,6 +773,11 @@ function vFamily(R){
     <li><b>Pet:</b> cão P 150 g, M 300 g, G 500 g; gato 70 g de ração por dia.</li>
     <li><b>Saúde, energia e equipamentos:</b> lista de itens essenciais — conta se existe pelo menos um.</li>
     <li>Itens vencidos não entram na conta.</li></ul></div>
+  <div class="sec"><h2>Apoie o projeto</h2></div><div class="card don">
+    <span class="cat-ic">${ic('heart','color:var(--red)')}</span>
+    <div><p>O Protocolo Vermelho é gratuito, sem anúncios e sem coleta de dados. Se ele está sendo útil para a sua família, você pode apoiar com uma doação de qualquer valor.</p>
+    <a class="btn-red" href="${DONATE_URL}" target="_blank" rel="noopener">${ic('heart')}Doar pelo Mercado Pago</a>
+    <span class="hint">Opcional. O app continua completo e gratuito.</span></div></div>
   <p class="note" style="text-align:center;margin-top:18px">Protocolo Vermelho Familiar · v4 · dados salvos só neste aparelho</p>`;
   return h;
 }

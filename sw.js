@@ -1,5 +1,5 @@
 /* Protocolo Vermelho — funciona sem internet */
-const V='pv-v4';
+const V='pv-v5';
 const SHELL=['./','index.html','manifest.webmanifest','logo.png','kit.webp','icon-192.png','icon-512.png'];
 const LIBS=['https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js','https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js','https://cdn.jsdelivr.net/npm/@zxing/library@0.20.0/umd/index.min.js'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(async c=>{await c.addAll(SHELL);await Promise.all(LIBS.map(u=>c.add(u).catch(()=>{})));}).then(()=>self.skipWaiting()));});
